@@ -1,0 +1,24 @@
+server:
+  port: 7891
+
+spring:
+  application:
+    name: JewixApiApplication
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/blog?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.aomsir.jewixapi.pojo.entity
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+blog:
+  security:
+    salt: JewixBlogApi
