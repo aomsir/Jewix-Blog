@@ -22,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -87,8 +88,11 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
                                             Authentication auth) throws IOException, ServletException {
         User user = (User) auth.getPrincipal();
 
-        DecodedJWT decodedJWT = JwtUtils.getToken(user.getId().toString());
-        String token = decodedJWT.getToken();
+        HashMap temp = new HashMap(){{
+            put("userId", user.getId().toString());
+        }};
+
+        String token = JwtUtils.getToken(temp);
         R r = R.ok(token);
 
         resp.setStatus(HttpStatus.OK.value());

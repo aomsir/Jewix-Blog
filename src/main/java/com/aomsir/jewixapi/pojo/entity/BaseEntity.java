@@ -12,7 +12,6 @@ import java.util.Date;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Data
 public class BaseEntity {
     public Date createTime;
     public Date updateTime;

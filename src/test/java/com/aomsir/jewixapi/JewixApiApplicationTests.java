@@ -1,12 +1,10 @@
 package com.aomsir.jewixapi;
 
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.digest.HMac;
-import com.aomsir.jewixapi.utils.BlogPasswordEncoder;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Resource;
 
@@ -14,8 +12,10 @@ import javax.annotation.Resource;
 class JewixApiApplicationTests {
 
 	private static final Logger log = LoggerFactory.getLogger(JewixApiApplicationTests.class);
+
+
 	@Resource
-	BlogPasswordEncoder blogPasswordEncoder;
+	private PasswordEncoder passwordEncoder;
 
 	@Test
 	void contextLoads() {
@@ -23,8 +23,8 @@ class JewixApiApplicationTests {
 
 	@Test
 	public void testEncoder() {
-		String encode = this.blogPasswordEncoder.encode("123456" + "a04879dd-b2d0-47ba-8027-e40d254ba265");
-		log.info("encode is {}", encode);
+		String encode = passwordEncoder.encode("123456");
+		System.out.println("encode = " + encode);
 	}
 
 }

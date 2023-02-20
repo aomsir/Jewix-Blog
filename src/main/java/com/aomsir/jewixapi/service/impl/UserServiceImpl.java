@@ -4,7 +4,6 @@ import com.aomsir.jewixapi.mapper.UserMapper;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
 import com.aomsir.jewixapi.service.UserService;
-import com.aomsir.jewixapi.utils.BlogPasswordEncoder;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +28,6 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
 
-    @Resource
-    BlogPasswordEncoder blogPasswordEncoder;
 
 
     @Override
@@ -41,9 +38,6 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("用户不存在");
         }
 
-        if (!this.blogPasswordEncoder.matches(loginVo.getPassword() + user.getSalt(), user.getPassword())) {
-            throw new RuntimeException("密码错误");
-        }
 
         Map temp = new HashMap(){{
             put("userId", user.getId());

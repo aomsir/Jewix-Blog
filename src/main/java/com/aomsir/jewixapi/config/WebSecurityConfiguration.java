@@ -1,7 +1,6 @@
 package com.aomsir.jewixapi.config;
 
 import com.aomsir.jewixapi.handler.EmailPasswordAuthenticationFilter;
-import com.aomsir.jewixapi.utils.BlogPasswordEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
@@ -33,8 +34,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Resource
     private UserDetailsService userDetailsService;
 
-    @Resource
-    private BlogPasswordEncoder blogPasswordEncoder;
+    @Bean
+    public PasswordEncoder BcryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
 
     /**
@@ -44,7 +48,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(this.userDetailsService).passwordEncoder(this.blogPasswordEncoder);
+        auth.userDetailsService(this.userDetailsService).passwordEncoder(BcryptPasswordEncoder());
     }
 
 

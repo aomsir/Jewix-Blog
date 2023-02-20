@@ -21,4 +21,3 @@ mybatis:
 
 blog:
   security:
-    salt: JewixBlogApi

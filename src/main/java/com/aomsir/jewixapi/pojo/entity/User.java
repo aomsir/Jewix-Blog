@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * @Author: Aomsir
@@ -15,7 +16,7 @@ import java.util.Collection;
  */
 
 @Data
-public class User extends BaseEntity implements UserDetails {
+public class User extends BaseEntity implements UserDetails{
     private Long id;
     private String uuid;
     private String nickname;
@@ -23,6 +24,9 @@ public class User extends BaseEntity implements UserDetails {
     private String salt;
     private String password;
     private String webSite;
+    public Date createTime;
+    public Date updateTime;
+    public Integer status;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -30,27 +34,32 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
     public String getUsername() {
-        return this.email;
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
