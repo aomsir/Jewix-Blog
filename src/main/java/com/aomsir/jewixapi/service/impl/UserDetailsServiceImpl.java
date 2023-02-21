@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -26,12 +27,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserMapper userMapper;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = this.userMapper.queryUserByEmail(username);
 
         if (user == null) {
-            throw new RuntimeException("用户不存在");
+            throw new UsernameNotFoundException("用户不存在");
         }
+
+        // TODO: 查询用户权限
 
         return user;
     }

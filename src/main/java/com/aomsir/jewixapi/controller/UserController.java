@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.controller;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
 import com.aomsir.jewixapi.service.UserService;
 import com.aomsir.jewixapi.utils.R;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,5 +28,10 @@ public class UserController {
     public R login(@RequestBody LoginVo loginVo) {
         String token = this.userService.login(loginVo);
         return R.ok(token);
+    }
+
+    @GetMapping("/hello")
+    public R hello() {
+        return R.ok("hello");
     }
 }

@@ -2,10 +2,12 @@ package com.aomsir.jewixapi.pojo.entity;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: Aomsir
@@ -16,7 +18,7 @@ import java.util.Date;
  */
 
 @Data
-public class User extends BaseEntity implements UserDetails{
+public class User extends BaseEntity implements UserDetails {
     private Long id;
     private String uuid;
     private String nickname;
@@ -24,23 +26,27 @@ public class User extends BaseEntity implements UserDetails{
     private String salt;
     private String password;
     private String webSite;
-    public Date createTime;
-    public Date updateTime;
-    public Integer status;
+
+    private List<Role> roles = new ArrayList<>();
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
         return null;
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return this.email;
     }
 
     @Override
@@ -50,7 +56,7 @@ public class User extends BaseEntity implements UserDetails{
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.status == 1;
     }
 
     @Override
@@ -60,6 +66,6 @@ public class User extends BaseEntity implements UserDetails{
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.status == 1;
     }
 }

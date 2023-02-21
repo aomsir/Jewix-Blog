@@ -34,9 +34,9 @@ public class UserServiceImpl implements UserService {
     public String login(LoginVo loginVo) {
         User user = this.userMapper.queryUserByEmail(loginVo.getUsername());
 
-        if (user == null) {
-            throw new RuntimeException("用户不存在");
-        }
+//        if (user == null) {
+//            throw new RuntimeException("用户不存在");
+//        }
 
 
         Map temp = new HashMap(){{
