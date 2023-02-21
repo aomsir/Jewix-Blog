@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * @Author: Aomsir
  * @Date: 2023/2/19
- * @Description: 用户服务实现类
+ * @Description: 用户业务实现类
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */

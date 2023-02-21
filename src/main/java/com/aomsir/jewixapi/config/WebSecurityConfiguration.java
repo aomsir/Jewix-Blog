@@ -2,7 +2,6 @@ package com.aomsir.jewixapi.config;
 
 import com.aomsir.jewixapi.handler.EmailPasswordAuthenticationFilter;
 import com.aomsir.jewixapi.handler.PerTokenVerifyFilter;
-import com.aomsir.jewixapi.handler.SimpleAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
