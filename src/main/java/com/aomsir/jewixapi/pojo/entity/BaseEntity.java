@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.pojo.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +13,10 @@ import java.util.Date;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-public class BaseEntity {
+public class BaseEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     public Date createTime;
     public Date updateTime;
     public Integer status;

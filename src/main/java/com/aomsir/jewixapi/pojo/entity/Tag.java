@@ -12,7 +12,6 @@ import lombok.Data;
 
 @Data
 public class Tag extends BaseEntity{
-
     private Long id;
     private String tagName;
 }
