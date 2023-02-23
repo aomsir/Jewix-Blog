@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 /**
  * @Author: Aomsir
  * @Date: 2023/2/19
- * @Description:
+ * @Description: UserDetails业务实现类
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */

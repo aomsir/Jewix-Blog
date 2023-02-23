@@ -5,9 +5,9 @@ import lombok.Data;
 /**
  * @Author: Aomsir
  * @Date: 2023/2/21
- * @Description:
+ * @Description: 标签实体类
  * @Email: info@say521.cn
- * @GitHub: https://github.com/aomsir
+ * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
 @Data

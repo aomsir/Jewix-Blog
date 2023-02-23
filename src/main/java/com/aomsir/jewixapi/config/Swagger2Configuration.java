@@ -15,7 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * @Author: Aomsir
  * @Date: 2023/2/21
- * @Description:
+ * @Description: Swagger2配置类
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */

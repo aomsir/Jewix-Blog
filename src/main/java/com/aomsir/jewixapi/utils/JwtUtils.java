@@ -11,12 +11,12 @@ import java.util.Map;
 /**
  * @Author: Aomsir
  * @Date: 2023/2/19
- * @Description:
+ * @Description: 通用JWT工具类
  * @Email: info@say521.cn
- * @GitHub: https://github.com/aomsir
+ * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 public class JwtUtils {
-    private static String TOKEN = "token!Q@W3e4r";
+    private static final String TOKEN = "token!Q@W3e4r";
     /**
      * 生成token
      * @param map  //传入payload
@@ -32,6 +32,7 @@ public class JwtUtils {
         builder.withExpiresAt(instance.getTime());
         return builder.sign(Algorithm.HMAC256(TOKEN)).toString();
     }
+
     /**
      * 验证token
      * @param token
@@ -40,6 +41,7 @@ public class JwtUtils {
     public static void verify(String token){
         JWT.require(Algorithm.HMAC256(TOKEN)).build().verify(token);
     }
+
     /**
      * 获取token中payload
      * @param token
