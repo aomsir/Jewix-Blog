@@ -1,12 +1,9 @@
 package com.aomsir.jewixapi.pojo.entity;
 
 
-<<<<<<< HEAD
 import java.io.Serializable;
-=======
 import lombok.Data;
 
->>>>>>> dev
 import java.util.Date;
 
 
