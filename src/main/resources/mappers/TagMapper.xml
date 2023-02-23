@@ -4,5 +4,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.aomsir.jewixapi.mapper.TagMapper">
+    <insert id="insertTag" parameterType="Tag">
+        INSERT INTO tb_tag(tag_name, create_time, update_time)
+        VALUES(#{tag.tagName}, #{tag.createTime}, #{tag.updateTime})
+    </insert>
+
+    <select id="searchTagCount" resultType="Long">
+        SELECT COUNT(id)
+        FROM tb_tag
+    </select>
+
+    <select id="queryTagListByPage" resultType="Tag">
+        SELECT id,tag_name,create_time,update_time
+        FROM tb_tag
+        LIMIT #{param.start},#{param.length}
+    </select>
+
+    <select id="searchTagByName" resultType="Tag">
+        SELECT id,tag_name,create_time,update_time
+        FROM tb_tag
+        WHERE tag_name = #{tagName}
+    </select>
 
 </mapper>

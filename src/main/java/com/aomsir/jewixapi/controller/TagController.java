@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.pojo.vo.TagAddVo;
 import com.aomsir.jewixapi.pojo.vo.TagPageVo;
 import com.aomsir.jewixapi.service.TagService;
 import com.aomsir.jewixapi.utils.PageUtils;
@@ -26,6 +27,11 @@ public class TagController {
     @Resource
     private TagService tagService;
 
+    /**
+     * 分页获取标签列表
+     * @param tagPageVo
+     * @return
+     */
     @GetMapping("/tag/list")
     public R getTagListByPage(@RequestBody @Validated TagPageVo tagPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(tagPageVo);
@@ -36,5 +42,17 @@ public class TagController {
         PageUtils pageUtils = this.tagService.searchTagByPage(param);
         return R.ok()
                 .put("result", pageUtils);
+    }
+
+    /**
+     * 添加新标签
+     * @param tagAddVo
+     * @return
+     */
+    @PostMapping("/admin/tag/add")
+    public R addTag(@RequestBody @Validated TagAddVo tagAddVo) {
+         int role = this.tagService.addTagByName(tagAddVo.getTagName());
+         return R.ok()
+                 .put("role",role);
     }
 }
