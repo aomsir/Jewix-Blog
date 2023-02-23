@@ -1,6 +1,5 @@
 package com.aomsir.jewixapi.pojo.entity;
 
-
 import java.io.Serializable;
 import lombok.Data;
 import java.util.Date;
