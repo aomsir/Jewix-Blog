@@ -1,6 +1,10 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.exception.CustomerException;
+import com.aomsir.jewixapi.pojo.dto.ArticleTagDTO;
+import com.aomsir.jewixapi.pojo.entity.Tag;
+import com.aomsir.jewixapi.pojo.vo.ArticleTagVo;
 import com.aomsir.jewixapi.pojo.vo.TagAddVo;
 import com.aomsir.jewixapi.pojo.vo.TagPageVo;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
@@ -67,5 +71,29 @@ public class TagController {
         int role = this.tagService.updateTagById(updateVo);
         return R.ok()
                 .put("role", role);
+    }
+
+    /**
+     * 根据id查询标签
+     * @param tagId
+     * @return
+     */
+    @GetMapping("/admin/tag/{tagId}")
+    public R getTagById(@PathVariable("tagId") Long tagId) {
+        if (tagId < 1 || tagId == null) {
+            throw new CustomerException("标签不存在");
+        }
+
+        Tag tag = this.tagService.searchTagById(tagId);
+        return R.ok()
+                .put("tag", tag);
+    }
+
+
+    @GetMapping("/tag/articles")
+    public R getArticlesByTagName(@RequestBody @Validated ArticleTagVo articleTagVo) {
+        ArticleTagDTO articleTagDTO = this.tagService.searchArticleListByTagName(articleTagVo.getTagName());
+        return R.ok()
+                .put("result", articleTagDTO);
     }
 }

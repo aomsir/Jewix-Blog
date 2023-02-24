@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.service.impl;
 
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.TagMapper;
+import com.aomsir.jewixapi.pojo.dto.ArticleTagDTO;
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.service.TagService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -84,5 +86,25 @@ public class TagServiceImpl implements TagService {
 
         int role = this.tagMapper.updateTagById(tag);
         return role;
+    }
+
+    @Override
+    public Tag searchTagById(Long tagId) {
+        Tag tag = this.tagMapper.queryTagById(tagId);
+        if (tag == null) {
+            throw new CustomerException("标签不存在");
+        }
+        return tag;
+    }
+
+    @Override
+    public ArticleTagDTO searchArticleListByTagName(String tagName) {
+        Tag tag = this.tagMapper.searchTagByName(tagName);
+        if (tag == null) {
+            throw new CustomerException("标签不存在");
+        }
+
+        ArticleTagDTO articleTagDTO = this.tagMapper.queryArticleListByTagName(tagName);
+        return articleTagDTO;
     }
 }

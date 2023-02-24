@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.aomsir.jewixapi.mapper.TagMapper">
+    
     <insert id="insertTag" parameterType="Tag">
         INSERT INTO tb_tag(tag_name, create_time, update_time)
         VALUES(#{tag.tagName}, #{tag.createTime}, #{tag.updateTime})
@@ -30,6 +31,49 @@
         SELECT id,tag_name,create_time,update_time
         FROM tb_tag
         WHERE id = #{id}
+    </select>
+
+    
+    <resultMap id="TagArticleList" type="com.aomsir.jewixapi.pojo.dto.ArticleTagDTO">
+        <id column="tag_id" property="tagId" />
+        <result column="tag_name" property="tagName" />
+        <collection property="articleList" ofType="com.aomsir.jewixapi.pojo.entity.Article">
+            <id column="a_id" property="id" />
+            <result column="title" property="title" />
+            <result column="cover" property="cover" />
+            <result column="content" property="content" />
+            <result column="type" property="type" />
+            <result column="originUrl" property="originUrl" />
+            <result column="views" property="views" />
+            <result column="isTop" property="isTop" />
+            <result column="isDelete" property="isDelete" />
+            <result column="createTime" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <result column="updateTime" property="updateTime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <result column="status" property="status" />
+        </collection>
+    </resultMap>
+    <select id="queryArticleListByTagName" resultMap="TagArticleList">
+        SELECT t.id AS tag_id,
+               t.tag_name AS tag_name,
+               a.id AS a_id,
+               a.title AS title,
+               a.cover AS cover,
+               a.content AS content,
+               a.type AS type,
+               a.origin_url AS originUrl,
+               a.views AS views,
+               a.is_top AS isTop,
+               a.is_delete AS isDelete,
+               a.create_time AS createTime,
+               a.update_time AS updateTime,
+               a.status AS status
+        FROM tb_tag AS t
+        LEFT JOIN tb_article_tag AS at ON at.tag_id = t.id
+        LEFT JOIN tb_article AS a ON a.id = at.article_id
+        WHERE t.tag_name = #{tagName}
+        AND a.status = 0
+        AND a.is_delete = 0
+        ORDER BY a.create_time DESC
     </select>
 
     <update id="updateTagById">
