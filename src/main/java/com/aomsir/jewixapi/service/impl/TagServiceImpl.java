@@ -1,8 +1,9 @@
 package com.aomsir.jewixapi.service.impl;
 
 import com.aomsir.jewixapi.exception.CustomerException;
+import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.TagMapper;
-import com.aomsir.jewixapi.pojo.dto.ArticleTagDTO;
+import com.aomsir.jewixapi.pojo.dto.ArticleTagPreviewDTO;
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.service.TagService;
@@ -13,11 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -35,9 +32,13 @@ public class TagServiceImpl implements TagService {
     @Resource
     private TagMapper tagMapper;
 
+
+    @Resource
+    private ArticleMapper articleMapper;
+
     @Override
     public PageUtils searchTagByPage(Map<String, Object> param) {
-        Long count = this.tagMapper.searchTagCount();
+        Long count = this.tagMapper.queryTagCount();
         ArrayList<Tag> list = null;
         if (count > 0) {
             list = this.tagMapper.queryTagListByPage(param);
@@ -53,7 +54,7 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public int addTagByName(String tagName) {
-        Tag respTag = this.tagMapper.searchTagByName(tagName);
+        Tag respTag = this.tagMapper.queryTagByName(tagName);
         if (respTag != null) {
             throw new CustomerException("标签已存在");
         }
@@ -63,7 +64,6 @@ public class TagServiceImpl implements TagService {
         tag.setCreateTime(new Date());
         tag.setUpdateTime(new Date());
         int role = this.tagMapper.insertTag(tag);
-        log.error("role is {}", role);
         return role;
     }
 
@@ -76,7 +76,7 @@ public class TagServiceImpl implements TagService {
         }
 
         // TODO: 修改search为query
-        Tag tag_1 = this.tagMapper.searchTagByName(updateVo.getTagName());
+        Tag tag_1 = this.tagMapper.queryTagByName(updateVo.getTagName());
         if (tag_1 != null) {
             throw new CustomerException("修改的标签名已存在");
         }
@@ -98,13 +98,25 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public ArticleTagDTO searchArticleListByTagName(String tagName) {
-        Tag tag = this.tagMapper.searchTagByName(tagName);
+    public PageUtils searchArticleListByTagName(Map<String, Object> param) {
+        Tag tag = this.tagMapper.queryTagByName((String) param.get("tagName"));
         if (tag == null) {
             throw new CustomerException("标签不存在");
         }
 
-        ArticleTagDTO articleTagDTO = this.tagMapper.queryArticleListByTagName(tagName);
-        return articleTagDTO;
+        // 根据标签名查询有无可以返回的文章数
+        Long count = this.articleMapper.queryArticleCountByTagName((String) param.get("tagName"));
+
+        List<ArticleTagPreviewDTO> list = null;
+        if (count > 0) {
+            list = this.tagMapper.queryArticleListByTagName(param);
+        } else {
+            list = new ArrayList<>();
+        }
+
+        int start = (Integer) param.get("start");
+        int length = (Integer) param.get("length");
+        PageUtils resultList = new PageUtils(list,count,start,length);
+        return resultList;
     }
 }

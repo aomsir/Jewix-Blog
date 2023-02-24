@@ -10,7 +10,7 @@
         VALUES(#{tag.tagName}, #{tag.createTime}, #{tag.updateTime})
     </insert>
 
-    <select id="searchTagCount" resultType="Long">
+    <select id="queryTagCount" resultType="Long">
         SELECT COUNT(id)
         FROM tb_tag
     </select>
@@ -21,7 +21,7 @@
         LIMIT #{param.start},#{param.length}
     </select>
 
-    <select id="searchTagByName" resultType="Tag">
+    <select id="queryTagByName" resultType="Tag">
         SELECT id,tag_name,create_time,update_time
         FROM tb_tag
         WHERE tag_name = #{tagName}
@@ -33,47 +33,24 @@
         WHERE id = #{id}
     </select>
 
-    
-    <resultMap id="TagArticleList" type="com.aomsir.jewixapi.pojo.dto.ArticleTagDTO">
-        <id column="tag_id" property="tagId" />
-        <result column="tag_name" property="tagName" />
-        <collection property="articleList" ofType="com.aomsir.jewixapi.pojo.entity.Article">
-            <id column="a_id" property="id" />
-            <result column="title" property="title" />
-            <result column="cover" property="cover" />
-            <result column="content" property="content" />
-            <result column="type" property="type" />
-            <result column="originUrl" property="originUrl" />
-            <result column="views" property="views" />
-            <result column="isTop" property="isTop" />
-            <result column="isDelete" property="isDelete" />
-            <result column="createTime" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
-            <result column="updateTime" property="updateTime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
-            <result column="status" property="status" />
-        </collection>
-    </resultMap>
-    <select id="queryArticleListByTagName" resultMap="TagArticleList">
-        SELECT t.id AS tag_id,
-               t.tag_name AS tag_name,
-               a.id AS a_id,
+
+    <select id="queryArticleListByTagName" resultType="com.aomsir.jewixapi.pojo.dto.ArticleTagPreviewDTO">
+        SELECT a.id AS a_id,
                a.title AS title,
                a.cover AS cover,
-               a.content AS content,
-               a.type AS type,
-               a.origin_url AS originUrl,
+               LEFT(a.content, 30) AS content,
                a.views AS views,
                a.is_top AS isTop,
-               a.is_delete AS isDelete,
                a.create_time AS createTime,
-               a.update_time AS updateTime,
-               a.status AS status
+               a.update_time AS updateTime
         FROM tb_tag AS t
         LEFT JOIN tb_article_tag AS at ON at.tag_id = t.id
         LEFT JOIN tb_article AS a ON a.id = at.article_id
-        WHERE t.tag_name = #{tagName}
+        WHERE t.tag_name = #{param.tagName}
         AND a.status = 0
         AND a.is_delete = 0
         ORDER BY a.create_time DESC
+        LIMIT #{param.start},#{param.length}
     </select>
 
     <update id="updateTagById">

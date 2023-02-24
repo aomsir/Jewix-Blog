@@ -2,7 +2,6 @@ package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.exception.CustomerException;
-import com.aomsir.jewixapi.pojo.dto.ArticleTagDTO;
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.ArticleTagVo;
 import com.aomsir.jewixapi.pojo.vo.TagAddVo;
@@ -11,6 +10,8 @@ import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.service.TagService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ import java.util.Map;
 @RestController
 public class TagController {
 
+    private static final Logger log = LoggerFactory.getLogger(TagController.class);
     @Resource
     private TagService tagService;
 
@@ -90,10 +92,21 @@ public class TagController {
     }
 
 
+    /**
+     * 根据标签名分页查询预览文章列表
+     * @param articleTagVo
+     * @return
+     */
     @GetMapping("/tag/articles")
     public R getArticlesByTagName(@RequestBody @Validated ArticleTagVo articleTagVo) {
-        ArticleTagDTO articleTagDTO = this.tagService.searchArticleListByTagName(articleTagVo.getTagName());
+        Map<String, Object> param = BeanUtil.beanToMap(articleTagVo);
+        int page = articleTagVo.getPage();
+        int length = articleTagVo.getLength();
+        int start = (page - 1) * length;
+        param.put("start", start);
+
+        PageUtils result = this.tagService.searchArticleListByTagName(param);
         return R.ok()
-                .put("result", articleTagDTO);
+                .put("result", result);
     }
 }

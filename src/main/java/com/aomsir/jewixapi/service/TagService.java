@@ -1,7 +1,6 @@
 package com.aomsir.jewixapi.service;
 
 
-import com.aomsir.jewixapi.pojo.dto.ArticleTagDTO;
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.utils.PageUtils;
@@ -18,5 +17,5 @@ public interface TagService {
 
     Tag searchTagById(Long tagId);
 
-    ArticleTagDTO searchArticleListByTagName(String tagName);
+    PageUtils searchArticleListByTagName(Map<String, Object> param);
 }

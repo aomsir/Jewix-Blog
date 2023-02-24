@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aomsir.jewixapi.mapper.ArticleMapper">
+
+    <select id="queryArticleCountByTagName" resultType="Long">
+        SELECT COUNT(a.id)
+        FROM tb_article AS a
+        LEFT JOIN tb_article_tag at on a.id = at.article_id
+        LEFT JOIN tb_tag t on at.tag_id = t.id
+        WHERE a.status = 0
+        AND a.is_delete = 0
+        AND t.tag_name = #{tagName}
+    </select>
+</mapper>
