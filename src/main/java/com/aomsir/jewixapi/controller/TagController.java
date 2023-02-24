@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.pojo.vo.TagAddVo;
 import com.aomsir.jewixapi.pojo.vo.TagPageVo;
+import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.service.TagService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
@@ -54,5 +55,17 @@ public class TagController {
          int role = this.tagService.addTagByName(tagAddVo.getTagName());
          return R.ok()
                  .put("role",role);
+    }
+
+    /**
+     * 根据id修改标签名
+     * @param updateVo
+     * @return
+     */
+    @PostMapping("/admin/tag/update")
+    public R updateTag(@RequestBody @Validated TagUpdateVo updateVo) {
+        int role = this.tagService.updateTagById(updateVo);
+        return R.ok()
+                .put("role", role);
     }
 }

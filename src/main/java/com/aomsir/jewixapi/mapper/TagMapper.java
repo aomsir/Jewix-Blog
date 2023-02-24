@@ -19,4 +19,8 @@ public interface TagMapper {
     Tag searchTagByName(@Param("tagName") String tagName);
 
     int insertTag(@Param("tag") Tag tag);
+
+    Tag queryTagById(@Param("id") Long id);
+
+    int updateTagById(@Param("tag") Tag tag_2);
 }

@@ -26,4 +26,16 @@
         WHERE tag_name = #{tagName}
     </select>
 
+    <select id="queryTagById" resultType="Tag">
+        SELECT id,tag_name,create_time,update_time
+        FROM tb_tag
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateTagById">
+        UPDATE tb_tag
+        SET tag_name = #{tag.tagName},update_time = #{tag.updateTime}
+        WHERE id = #{tag.id}
+    </update>
+
 </mapper>

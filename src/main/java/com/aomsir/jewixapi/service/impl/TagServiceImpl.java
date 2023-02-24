@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.service.impl;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.TagMapper;
 import com.aomsir.jewixapi.pojo.entity.Tag;
+import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.service.TagService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
@@ -61,6 +62,27 @@ public class TagServiceImpl implements TagService {
         tag.setUpdateTime(new Date());
         int role = this.tagMapper.insertTag(tag);
         log.error("role is {}", role);
+        return role;
+    }
+
+
+    @Override
+    public int updateTagById(TagUpdateVo updateVo) {
+        Tag tag = this.tagMapper.queryTagById(updateVo.getId());
+        if (tag == null) {
+            throw new CustomerException("暂无此标签");
+        }
+
+        // TODO: 修改search为query
+        Tag tag_1 = this.tagMapper.searchTagByName(updateVo.getTagName());
+        if (tag_1 != null) {
+            throw new CustomerException("修改的标签名已存在");
+        }
+
+        tag.setTagName(updateVo.getTagName());
+        tag.setUpdateTime(new Date());
+
+        int role = this.tagMapper.updateTagById(tag);
         return role;
     }
 }
