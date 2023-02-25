@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.pojo.vo.CategoryAddVo;
 import com.aomsir.jewixapi.pojo.vo.CategoryParentPageVo;
 import com.aomsir.jewixapi.pojo.vo.CategorySonListById;
 import com.aomsir.jewixapi.service.CategoryService;
@@ -63,5 +64,17 @@ public class CategoryController {
 
         return R.ok()
                 .put("result",pageUtils);
+    }
+
+    /**
+     * 通用分类添加接口
+     * @param categoryAddVo
+     * @return
+     */
+    @PostMapping("/admin/category/add")
+    public R addCategory(@RequestBody @Validated CategoryAddVo categoryAddVo) {
+        int role = this.categoryService.addCategory(categoryAddVo);
+        return R.ok()
+                .put("role", role);
     }
 }

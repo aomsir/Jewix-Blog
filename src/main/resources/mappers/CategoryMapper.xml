@@ -4,6 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.aomsir.jewixapi.mapper.CategoryMapper">
+    <insert id="insertCategory">
+        INSERT tb_category(category_name, parent_id, create_time, update_time)
+        VALUE (#{category.categoryName}, #{category.parentId}, #{category.createTime}, #{category.updateTime})
+    </insert>
 
     <select id="queryCategoryCountByParentId" resultType="Integer">
         SELECT COUNT(id)
@@ -30,5 +34,17 @@
             </if>
         </where>
         LIMIT #{param.start},#{param.length}
+    </select>
+
+    <select id="queryCategoryByParentId" resultType="Category">
+        SELECT id,category_name,parent_id,create_time,update_time
+        FROM tb_category
+        WHERE id = #{parentId}
+    </select>
+
+    <select id="queryCategoryByName" resultType="Category">
+        SELECT id,category_name,parent_id,create_time,update_time
+        FROM tb_category
+        WHERE category_name = #{categoryName}
     </select>
 </mapper>
