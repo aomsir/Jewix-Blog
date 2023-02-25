@@ -9,14 +9,12 @@ import javax.validation.constraints.NotNull;
 /**
  * @Author: Aomsir
  * @Date: 2023/2/25
- * @Description: 分页查询一级分类VO实体类
+ * @Description: 根据父类id查询二级分类VO实体类
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-
 @Data
-public class CategoryParentPageVo {
-
+public class CategorySonListById {
     @NotNull(message = "page不能为空")
     @Min(value = 1, message = "page不能小于1")
     private Integer page;
@@ -25,4 +23,8 @@ public class CategoryParentPageVo {
     @NotNull(message = "length不能为空")
     @Range(min = 10, max = 50, message = "length必须为10~50之间")
     private Integer length;
+
+    @NotNull(message = "parentId不能为空")
+    @Min(value = 0)
+    private Integer parentId;
 }

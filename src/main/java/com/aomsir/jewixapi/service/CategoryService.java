@@ -6,4 +6,6 @@ import java.util.Map;
 
 public interface CategoryService {
     PageUtils searchCategoryParentListByPage(Map<String, Object> param);
+
+    PageUtils searchCategorySonListPageByPatentId(Map<String, Object> param);
 }

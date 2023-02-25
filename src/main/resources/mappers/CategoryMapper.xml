@@ -5,16 +5,30 @@
 
 <mapper namespace="com.aomsir.jewixapi.mapper.CategoryMapper">
 
-    <select id="queryCategoryParentCount" resultType="Integer">
+    <select id="queryCategoryCountByParentId" resultType="Integer">
         SELECT COUNT(id)
         FROM tb_category
-        WHERE parent_id = 0
+        <where>
+            <if test="parentId != null">
+                parent_id = #{parentId}
+            </if>
+            <if test="parentId == null">
+                AND parent_id = 0
+            </if>
+        </where>
     </select>
 
-    <select id="queryCategoryParentListByPage" resultType="Category">
+    <select id="queryCategoryListPageByParentId" resultType="Category">
         SELECT id,category_name,parent_id,create_time,update_time
         FROM tb_category
-        WHERE parent_id = 0
+        <where>
+            <if test="param.parentId != null">
+                parent_id = #{param.parentId}
+            </if>
+            <if test="param.parentId == null">
+                AND parent_id = 0
+            </if>
+        </where>
         LIMIT #{param.start},#{param.length}
     </select>
 </mapper>

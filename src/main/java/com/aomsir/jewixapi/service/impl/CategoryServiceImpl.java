@@ -25,11 +25,28 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public PageUtils searchCategoryParentListByPage(Map<String, Object> param) {
-        int count = this.categoryMapper.queryCategoryParentCount();
+        int count = this.categoryMapper.queryCategoryCountByParentId(0);
 
         ArrayList<Category> list = null;
         if (count > 0) {
-            list = this.categoryMapper.queryCategoryParentListByPage(param);
+            list = this.categoryMapper.queryCategoryListPageByParentId(param);
+        } else {
+            list = new ArrayList<>();
+        }
+
+        int start = (Integer) param.get("start");
+        int length = (Integer) param.get("length");
+        PageUtils pageUtils = new PageUtils(list,count,start,length);
+        return pageUtils;
+    }
+
+    @Override
+    public PageUtils searchCategorySonListPageByPatentId(Map<String, Object> param) {
+        int count = this.categoryMapper.queryCategoryCountByParentId((Integer) param.get("parentId"));
+
+        ArrayList<Category> list = null;
+        if (count > 0) {
+            list = this.categoryMapper.queryCategoryListPageByParentId(param);
         } else {
             list = new ArrayList<>();
         }

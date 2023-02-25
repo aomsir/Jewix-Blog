@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.pojo.vo.CategoryParentPageVo;
+import com.aomsir.jewixapi.pojo.vo.CategorySonListById;
 import com.aomsir.jewixapi.service.CategoryService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
@@ -44,5 +45,23 @@ public class CategoryController {
 
         return R.ok()
                 .put("result",pageutils);
+    }
+
+    /**
+     * 根据id分页查询二级分类接口
+     * @param categorySonListById
+     * @return
+     */
+    @PostMapping("/category/sonList")
+    public R getCategoryListPageByParentId(@RequestBody @Validated CategorySonListById categorySonListById) {
+        Map<String, Object> param = BeanUtil.beanToMap(categorySonListById);
+        int page = (Integer) param.get("page");
+        int length = (Integer) param.get("length");
+        int start = (page - 1) * length;
+        param.put("start",start);
+        PageUtils pageUtils = this.categoryService.searchCategorySonListPageByPatentId(param);
+
+        return R.ok()
+                .put("result",pageUtils);
     }
 }

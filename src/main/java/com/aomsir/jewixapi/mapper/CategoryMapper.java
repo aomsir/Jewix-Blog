@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Mapper
 public interface CategoryMapper {
-    int queryCategoryParentCount();
+    int queryCategoryCountByParentId(@Param("parentId") Integer parentId);
 
-    ArrayList<Category> queryCategoryParentListByPage(@Param("param") Map<String, Object> param);
+    ArrayList<Category> queryCategoryListPageByParentId(@Param("param") Map<String, Object> param);
 }
