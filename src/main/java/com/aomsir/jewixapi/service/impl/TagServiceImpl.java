@@ -3,7 +3,7 @@ package com.aomsir.jewixapi.service.impl;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.TagMapper;
-import com.aomsir.jewixapi.pojo.dto.ArticleTagPreviewDTO;
+import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.service.TagService;
@@ -107,7 +107,7 @@ public class TagServiceImpl implements TagService {
         // 根据标签名查询有无可以返回的文章数
         Long count = this.articleMapper.queryArticleCountByTagName((String) param.get("tagName"));
 
-        List<ArticleTagPreviewDTO> list = null;
+        List<ArticlePreviewDTO> list = null;
         if (count > 0) {
             list = this.tagMapper.queryArticleListByTagName(param);
         } else {

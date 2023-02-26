@@ -11,4 +11,6 @@ public interface CategoryService {
     PageUtils searchCategorySonListPageByPatentId(Map<String, Object> param);
 
     int addCategory(CategoryAddVo categoryAddVo);
+
+    PageUtils searchArticlePageByCategoryName(Map<String, Object> param);
 }

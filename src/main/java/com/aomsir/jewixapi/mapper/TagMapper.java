@@ -1,7 +1,7 @@
 package com.aomsir.jewixapi.mapper;
 
 
-import com.aomsir.jewixapi.pojo.dto.ArticleTagPreviewDTO;
+import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,5 +26,5 @@ public interface TagMapper {
 
     int updateTagById(@Param("tag") Tag tag_2);
 
-    List<ArticleTagPreviewDTO> queryArticleListByTagName(@Param("param") Map<String, Object> param);
+    List<ArticlePreviewDTO> queryArticleListByTagName(@Param("param") Map<String, Object> param);
 }

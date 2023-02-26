@@ -47,4 +47,24 @@
         FROM tb_category
         WHERE category_name = #{categoryName}
     </select>
+
+    <select id="queryArticleListPageByCategoryName"
+            resultType="com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO">
+        SELECT a.id AS a_id,
+               a.title AS title,
+               a.cover AS cover,
+               LEFT(a.content, 30) AS content,
+               a.views AS views,
+               a.is_top AS isTop,
+               a.create_time AS createTime,
+               a.update_time AS updateTime
+        FROM tb_category AS c
+        LEFT JOIN tb_article_category AS ac ON ac.category_id = c.id
+        LEFT JOIN tb_article AS a ON a.id = ac.article_id
+        WHERE c.category_name = #{param.categoryName}
+        AND a.status = 0
+        AND a.is_delete = 0
+        ORDER BY a.create_time DESC
+        LIMIT #{param.start},#{param.length}
+    </select>
 </mapper>

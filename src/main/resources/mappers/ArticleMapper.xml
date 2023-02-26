@@ -14,4 +14,14 @@
         AND a.is_delete = 0
         AND t.tag_name = #{tagName}
     </select>
+
+    <select id="queryArticleCountByCategoryName" resultType="Long">
+        SELECT COUNT(a.id)
+        FROM tb_article AS a
+        LEFT JOIN tb_article_category ac on a.id = ac.article_id
+        LEFT JOIN tb_category c on ac.category_id = c.id
+        WHERE a.status = 0
+        AND a.is_delete = 0
+        AND c.category_name = #{categoryName}
+    </select>
 </mapper>

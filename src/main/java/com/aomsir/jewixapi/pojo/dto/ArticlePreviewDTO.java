@@ -11,7 +11,7 @@ import lombok.Data;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class ArticleTagPreviewDTO extends BaseEntity {
+public class ArticlePreviewDTO extends BaseEntity {
     private Long id;
     private String title;
     private String cover;

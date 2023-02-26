@@ -34,7 +34,7 @@
     </select>
 
 
-    <select id="queryArticleListByTagName" resultType="com.aomsir.jewixapi.pojo.dto.ArticleTagPreviewDTO">
+    <select id="queryArticleListByTagName" resultType="com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO">
         SELECT a.id AS a_id,
                a.title AS title,
                a.cover AS cover,

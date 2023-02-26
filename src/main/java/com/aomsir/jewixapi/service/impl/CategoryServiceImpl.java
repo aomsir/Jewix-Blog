@@ -1,7 +1,9 @@
 package com.aomsir.jewixapi.service.impl;
 
 import com.aomsir.jewixapi.exception.CustomerException;
+import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.CategoryMapper;
+import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
 import com.aomsir.jewixapi.pojo.entity.Category;
 import com.aomsir.jewixapi.pojo.vo.CategoryAddVo;
 import com.aomsir.jewixapi.service.CategoryService;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +31,9 @@ public class CategoryServiceImpl implements CategoryService {
     private static final Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
     @Resource
     private CategoryMapper categoryMapper;
+
+    @Resource
+    private ArticleMapper articleMapper;
 
     @Override
     public PageUtils searchCategoryParentListByPage(Map<String, Object> param) {
@@ -91,5 +97,27 @@ public class CategoryServiceImpl implements CategoryService {
 
         int role = this.categoryMapper.insertCategory(category_2);
         return role;
+    }
+
+
+    @Override
+    public PageUtils searchArticlePageByCategoryName(Map<String, Object> param) {
+        Category category = this.categoryMapper.queryCategoryByName((String) param.get("categoryName"));
+        if (category == null) {
+            throw new CustomerException("分类不存在嗷!");
+        }
+
+        Long count = this.articleMapper.queryArticleCountByCategoryName((String) param.get("categoryName"));
+        List<ArticlePreviewDTO> list = null;
+        if (count > 0) {
+            list = this.categoryMapper.queryArticleListPageByCategoryName(param);
+        } else {
+            list = new ArrayList<>();
+        }
+
+        int start = (Integer) param.get("start");
+        int length = (Integer) param.get("length");
+        PageUtils pageUtils = new PageUtils(list,count,start,length);
+        return pageUtils;
     }
 }

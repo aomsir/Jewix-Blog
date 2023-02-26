@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.pojo.vo.ArticleCategoryVo;
 import com.aomsir.jewixapi.pojo.vo.CategoryAddVo;
 import com.aomsir.jewixapi.pojo.vo.CategoryParentPageVo;
 import com.aomsir.jewixapi.pojo.vo.CategorySonListById;
@@ -76,5 +77,24 @@ public class CategoryController {
         int role = this.categoryService.addCategory(categoryAddVo);
         return R.ok()
                 .put("role", role);
+    }
+
+
+    /**
+     * 根据分类名分页查询文章预览列表
+     * @param articleCategoryVo
+     * @return
+     */
+    @PostMapping("/category/articles")
+    public R getArticlesPageByCategoryName(@RequestBody @Validated ArticleCategoryVo articleCategoryVo) {
+        Map<String, Object> param = BeanUtil.beanToMap(articleCategoryVo);
+        int page = (Integer) param.get("page");
+        int length = (Integer) param.get("length");
+        int start = (page - 1) * length;
+        param.put("start",start);
+        PageUtils pageUtils = this.categoryService.searchArticlePageByCategoryName(param);
+
+        return R.ok()
+                .put("result",pageUtils);
     }
 }
