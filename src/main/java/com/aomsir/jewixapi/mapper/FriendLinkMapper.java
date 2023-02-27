@@ -13,4 +13,12 @@ public interface FriendLinkMapper {
     int queryFriendLinkCount(@Param("location") Integer location);
 
     ArrayList<FriendLink> queryFriendLinkByPage(@Param("param") Map<String, Object> param);
+
+    FriendLink queryFriendLinkByTitle(@Param("title") String title);
+
+    int insertFriendLink(@Param("param") Map<String, Object> param);
+
+    FriendLink queryFriendLinkById(@Param("id") Integer id);
+
+    int updateFriendLink(@Param("param") Map<String, Object> param);
 }

@@ -4,6 +4,21 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.aomsir.jewixapi.mapper.FriendLinkMapper">
+    <insert id="insertFriendLink">
+        INSERT INTO tb_friend_link(title, link, photo, description, location, create_time, update_time)
+        VALUES (#{param.title}, #{param.link}, #{param.photo}, #{param.description}, #{param.location}, #{param.createTime}, #{param.updateTime})
+    </insert>
+
+    <update id="updateFriendLink">
+        UPDATE tb_friend_link
+        SET title = #{param.title},
+            link = #{param.link},
+            photo = #{param.photo},
+            description = #{param.description},
+            location = #{param.location},
+            update_time = #{param.update_time}
+        WHERE id = #{param.id}
+    </update>
 
     <select id="queryFriendLinkCount" resultType="Integer">
         SELECT COUNT(*)
@@ -24,6 +39,18 @@
             </if>
         </where>
         LIMIT #{param.start},#{param.length}
+    </select>
+
+    <select id="queryFriendLinkByTitle" resultType="FriendLink">
+        SELECT id,title,link,photo,description,location,create_time,update_time
+        FROM tb_friend_link
+        WHERE title = #{title}
+    </select>
+
+    <select id="queryFriendLinkById" resultType="FriendLink">
+        SELECT id,title,link,photo,description,location,create_time,update_time
+        FROM tb_friend_link
+        WHERE id = #{id}
     </select>
 
 

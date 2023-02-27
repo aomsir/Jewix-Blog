@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.service.impl;
 
+import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.FriendLinkMapper;
 import com.aomsir.jewixapi.pojo.entity.FriendLink;
 import com.aomsir.jewixapi.service.FriendLinkService;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -39,5 +41,42 @@ public class FriendLinkServiceImpl implements FriendLinkService {
         int length = (Integer) param.get("length");
         PageUtils pageUtils = new PageUtils(list, count, start,length);
         return pageUtils;
+    }
+
+    @Override
+    public int addFriendLink(Map<String, Object> param) {
+        FriendLink friendLink = this.friendLinkMapper.queryFriendLinkByTitle((String) param.get("title"));
+
+        if (friendLink != null) {
+            throw new CustomerException("当前友情链接已经存在了嗷!");
+        }
+
+        param.put("createTime",new Date());
+        param.put("updateTime", new Date());
+        int role = this.friendLinkMapper.insertFriendLink(param);
+        return role;
+    }
+
+    @Override
+    public int updateFriendLink(Map<String, Object> param) {
+        FriendLink friendLink = this.friendLinkMapper.queryFriendLinkById((Integer) param.get("id"));
+        if (friendLink == null) {
+            throw new CustomerException("待修改的友情链接不存在嗷!");
+        }
+
+        param.put("updateTime", new Date());
+
+        int role = this.friendLinkMapper.updateFriendLink(param);
+        return role;
+    }
+
+    @Override
+    public FriendLink findFriendLinkInfoById(Integer id) {
+        if (id == null || id < 1) {
+            throw new CustomerException("友情链接不存在嗷");
+        }
+
+        FriendLink friendLink = this.friendLinkMapper.queryFriendLinkById(id);
+        return friendLink;
     }
 }
