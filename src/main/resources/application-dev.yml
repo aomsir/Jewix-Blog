@@ -20,3 +20,18 @@ mybatis:
     use-generated-keys: true
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES  # 指定加密算法
+    password: 12345678   # 密钥,推荐启动项目的时候虚拟机参数
+
+cloud:
+  upyun:
+    bucket: ENC(b2hDZgpNEVURPBCUYxPN0yQOZ14zpt8U3e1IiVpK/dU=)  # 存储空间名
+    operator-name: ENC(FWy24uV2aAkMdQcEHAHexCl7VlrYZyTwLCQ0b6dMndo=)   # 操作员名称
+    operator-pwd: ENC(kybvZaQpEeSPkmq7a43Rtu7EupPljVRdprNgkYj+VsR8Gs37o3KQ4EiPR6CxHSkAJnoeb+OSDKU=)  # 操作员密码
+
+
+
