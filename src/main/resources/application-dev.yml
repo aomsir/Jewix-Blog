@@ -27,11 +27,12 @@ jasypt:
     algorithm: PBEWithMD5AndDES  # 指定加密算法
     password: 12345678   # 密钥,推荐启动项目的时候虚拟机参数
 
+jewix:
+  basePath: ENC(um/IPJ8aGJn5OBNKfn6MJjC3nS5m71BAiBlK8Qd2HoqsZ+JkCkjMeIY16F2GrJHXkW2jb3BLGVY=)  # 相册本地存储位置
+
 cloud:
   upyun:
     bucket: ENC(b2hDZgpNEVURPBCUYxPN0yQOZ14zpt8U3e1IiVpK/dU=)  # 存储空间名
     operator-name: ENC(FWy24uV2aAkMdQcEHAHexCl7VlrYZyTwLCQ0b6dMndo=)   # 操作员名称
     operator-pwd: ENC(kybvZaQpEeSPkmq7a43Rtu7EupPljVRdprNgkYj+VsR8Gs37o3KQ4EiPR6CxHSkAJnoeb+OSDKU=)  # 操作员密码
-
-
-
+    url: ENC(HvYrWCrNQml8IxhF0uznTMHlB5jpc88nDfKQThmEq9Oe1dgnSzefzrZB4xzXvcPz)    # 存储桶地址

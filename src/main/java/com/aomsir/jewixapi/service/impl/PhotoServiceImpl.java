@@ -1,15 +1,22 @@
 package com.aomsir.jewixapi.service.impl;
 
 import com.aomsir.jewixapi.mapper.PhotoMapper;
+import com.aomsir.jewixapi.pojo.entity.Photo;
 import com.aomsir.jewixapi.service.PhotoService;
+import com.aomsir.jewixapi.utils.PageUtils;
 import com.upyun.RestManager;
 import com.upyun.UpException;
 import okhttp3.Response;
+import org.jasypt.encryption.StringEncryptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -25,11 +32,18 @@ import java.util.*;
 @Service
 public class PhotoServiceImpl implements PhotoService {
 
+    private static final Logger log = LoggerFactory.getLogger(PhotoServiceImpl.class);
     @Resource
     private RestManager restManager;
 
     @Resource
     private PhotoMapper photoMapper;
+
+    @Value("${cloud.upyun.url}")
+    private String upUrl;
+
+    @Value("${jewix.basePath}")
+    private String basePath;
 
     @Override
     @Transactional
@@ -58,7 +72,15 @@ public class PhotoServiceImpl implements PhotoService {
 
         Response response = null;
         if (type == 0) {
-            // TODO: 上传到本地
+            File dir = new File(this.basePath + location);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            try {
+                file.transferTo(new File(this.basePath + location + fileName));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if (type == 1) {
             response  = restManager.writeFile(location + fileName, file.getBytes(), null);
         } else if (type == 2) {
@@ -68,10 +90,46 @@ public class PhotoServiceImpl implements PhotoService {
         }
 
         int role = 0;
-        if (response != null && response.isSuccessful()) {
-            role = this.photoMapper.insertPhoto(param);
+        if (type == 1 && response != null && response.isSuccessful()) {
+            return this.photoMapper.insertPhoto(param);  // TODO:新增用户id字段
+        } else if (type == 2) {
+            // TODO
+        } else if (type == 3) {
+            // TODO
+        } else if (type == 0) {
+            return this.photoMapper.insertPhoto(param);
         }
 
         return role;
+    }
+
+    @Override
+    public PageUtils searchPhotoByPage(Map<String, Object> param) {
+        int count = this.photoMapper.queryPhotoAllCount();
+
+        ArrayList<Photo> list = null;
+        if (count > 0) {
+            list = this.photoMapper.selectPhotoListByPage(param);
+        } else {
+            list = new ArrayList<>();
+        }
+
+        for (Photo photo : list) {
+            if (photo.getType() == 0) {
+                // 服务器本地文件则返回fileName,前端再单独请求接口
+                photo.setFileName(photo.getLocation().substring(1) + "/" + photo.getFileName());
+            } else if (photo.getType() == 1) {
+                photo.setUrl(this.upUrl + photo.getLocation() + photo.getFileName());
+            } else if (photo.getType() == 2) {
+                // TODO：完成阿里云
+            } else {
+                // TODO：完成腾讯云
+            }
+        }
+
+        int start = (Integer) param.get("start");
+        int length = (Integer) param.get("length");
+        PageUtils pageUtils = new PageUtils(list, count, start,length);
+        return pageUtils;
     }
 }

@@ -9,4 +9,23 @@
         INSERT INTO tb_photo(type, location, fileName, create_time)
         VALUES (#{param.type}, #{param.location}, #{param.fileName}, #{param.createTime})
     </insert>
+
+    <select id="queryPhotoAllCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_photo
+    </select>
+
+    <select id="selectPhotoListByPage" resultType="Photo">
+        SELECT id, type, location, fileName, create_time
+        FROM tb_photo
+        <where>
+            <if test="param.type != null">
+                type = #{param.type}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        LIMIT #{param.start},#{param.length}
+
+    </select>
+
 </mapper>
