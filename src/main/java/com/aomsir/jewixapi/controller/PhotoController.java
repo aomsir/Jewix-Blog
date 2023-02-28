@@ -1,11 +1,21 @@
 package com.aomsir.jewixapi.controller;
 
 import com.aomsir.jewixapi.pojo.vo.PhotoUpdateVo;
+import com.aomsir.jewixapi.service.PhotoService;
 import com.aomsir.jewixapi.utils.R;
+import com.upyun.RestManager;
+import com.upyun.UpException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * @Author: Aomsir
@@ -18,10 +28,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class PhotoController {
 
-    @PostMapping("/admin/photo/update")
-    public R updatePhoto(MultipartFile file,
-                         @RequestBody PhotoUpdateVo photoUpdateVo) {
+    @Resource
+    private PhotoService photoService;
 
-        return R.ok();
+    @PostMapping("/photo/update")
+    public R updatePhoto(MultipartFile file,
+                         @Validated PhotoUpdateVo photoUpdateVo) throws UpException, IOException {
+        int role = this.photoService.updatePhoto(file,photoUpdateVo.getType());
+        return R.ok()
+                .put("role", role);
     }
 }

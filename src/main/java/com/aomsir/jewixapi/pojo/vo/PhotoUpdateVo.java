@@ -1,6 +1,9 @@
 package com.aomsir.jewixapi.pojo.vo;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @Author: Aomsir
@@ -12,5 +15,8 @@ import lombok.Data;
 
 @Data
 public class PhotoUpdateVo {
+
+    @NotNull(message = "type不允许为空")
+    @Range(min = 0,max = 3)
     private Integer type;
 }
