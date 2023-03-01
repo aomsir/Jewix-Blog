@@ -15,4 +15,6 @@ public interface PhotoMapper {
     int queryPhotoAllCount();
 
     ArrayList<Photo> selectPhotoListByPage(@Param("param") Map<String, Object> param);
+
+    int deletePhoto(@Param("param") Map<String, Object> param);
 }

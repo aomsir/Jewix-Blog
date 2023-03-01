@@ -1,7 +1,9 @@
 package com.aomsir.jewixapi.service.impl;
 
+import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.PhotoMapper;
 import com.aomsir.jewixapi.pojo.entity.Photo;
+import com.aomsir.jewixapi.pojo.vo.PhotoDeleteVo;
 import com.aomsir.jewixapi.service.PhotoService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.upyun.RestManager;
@@ -117,8 +119,9 @@ public class PhotoServiceImpl implements PhotoService {
         for (Photo photo : list) {
             if (photo.getType() == 0) {
                 // 服务器本地文件则返回fileName,前端再单独请求接口
-                photo.setFileName(photo.getLocation().substring(1) + "/" + photo.getFileName());
+                photo.setFileName(photo.getLocation().substring(1)  + photo.getFileName());
             } else if (photo.getType() == 1) {
+                photo.setFileName(photo.getLocation().substring(1)  + photo.getFileName());
                 photo.setUrl(this.upUrl + photo.getLocation() + photo.getFileName());
             } else if (photo.getType() == 2) {
                 // TODO：完成阿里云
@@ -131,5 +134,42 @@ public class PhotoServiceImpl implements PhotoService {
         int length = (Integer) param.get("length");
         PageUtils pageUtils = new PageUtils(list, count, start,length);
         return pageUtils;
+    }
+
+
+    @Override
+    @Transactional
+    public int deletePhoto(PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
+        String voFileName = photoDeleteVo.getFileName();
+        String fileName = voFileName.substring(voFileName.lastIndexOf("/") + 1);
+        String location = "/" + voFileName.substring(0, voFileName.lastIndexOf("/") + 1);
+        Integer type = photoDeleteVo.getType();
+        Map<String, Object> param = new HashMap(){{
+           put("fileName", fileName);
+           put("location", location);
+           put("type", type);
+        }};
+
+        int role = 0;
+        role = this.photoMapper.deletePhoto(param);   // 先删数据库,数据库没问题再删具体文件,以免会回滚
+
+        if (type == 0) {
+            // 删除本地文件
+            File file = new File(this.basePath + location + fileName);
+            if (!file.delete()) {
+                throw new CustomerException("删除失败");
+            }
+        } else if (type == 1) {
+            Response response = this.restManager.deleteFile(location + fileName, null);
+            if (!response.isSuccessful()) {
+                throw new CustomerException("删除失败");
+            }
+        } else if (type == 2) {
+            // TODO
+        } else {
+            // TODO
+        }
+
+        return role;
     }
 }

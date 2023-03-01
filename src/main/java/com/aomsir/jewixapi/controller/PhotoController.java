@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.pojo.vo.PhotoDeleteVo;
 import com.aomsir.jewixapi.pojo.vo.PhotoPageVo;
 import com.aomsir.jewixapi.pojo.vo.PhotoUpdateVo;
 import com.aomsir.jewixapi.service.PhotoService;
@@ -108,5 +109,20 @@ public class PhotoController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * 根据文件名与类型删除相册信息
+     * @param photoDeleteVo
+     * @return
+     * @throws UpException
+     * @throws IOException
+     */
+    @PostMapping("/photo/delete")
+    public R deletePhoto(@RequestBody @Validated PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
+        int role = this.photoService.deletePhoto(photoDeleteVo);
+        return R.ok()
+                .put("role", role);
     }
 }

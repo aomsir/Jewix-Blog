@@ -6,9 +6,17 @@
 <mapper namespace="com.aomsir.jewixapi.mapper.PhotoMapper">
 
     <insert id="insertPhoto">
-        INSERT INTO tb_photo(type, location, fileName, create_time)
+        INSERT INTO tb_photo(type, location, file_name, create_time)
         VALUES (#{param.type}, #{param.location}, #{param.fileName}, #{param.createTime})
     </insert>
+
+    <delete id="deletePhoto">
+        DELETE FROM
+        tb_photo
+        WHERE type = #{param.type}
+        AND location = #{param.location}
+        AND file_name = #{param.fileName}
+    </delete>
 
     <select id="queryPhotoAllCount" resultType="Integer">
         SELECT COUNT(id)
@@ -16,7 +24,7 @@
     </select>
 
     <select id="selectPhotoListByPage" resultType="Photo">
-        SELECT id, type, location, fileName, create_time
+        SELECT id, type, location, file_name, create_time
         FROM tb_photo
         <where>
             <if test="param.type != null">
