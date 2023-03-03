@@ -17,8 +17,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/2/19
@@ -82,7 +87,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .mvcMatchers("/admin/**").authenticated()   // /admin请求都过SpringSecurity且需要认证
                 .and().csrf().disable()  // 关闭csrf
-                .cors()                 // 开启跨域以便前端调用接口
+                .cors().configurationSource(configurationSource())  // 开启跨域以便前端调用接口
                 .and().exceptionHandling()
                 .authenticationEntryPoint(this.authenticationEntryPoint)    // 认证异常捕获
                 .accessDeniedHandler(this.accessDeniedHandler);             // 失败异常捕获
@@ -90,5 +95,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(this.tokenVerifyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(new EmailPasswordAuthenticationFilter(authenticationManager()), PerTokenVerifyFilter.class);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);   // 禁用Session
+    }
+
+
+
+    CorsConfigurationSource configurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
     }
 }
