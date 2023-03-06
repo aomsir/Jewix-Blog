@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.mapper;
 
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
+import com.aomsir.jewixapi.pojo.vo.UserHaveVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,4 +26,6 @@ public interface UserMapper {
     int insertUser(@Param("param") Map<String, Object> param);
 
     int updateUser(@Param("param") Map<String, Object> param);
+
+    int queryUserByEmailOrNickname(@Param("param") UserHaveVo userHaveVo);
 }

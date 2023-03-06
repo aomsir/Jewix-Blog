@@ -3,6 +3,11 @@ package com.aomsir.jewixapi.exception;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.aomsir.jewixapi.utils.R;
+import org.apache.ibatis.binding.BindingException;
+import org.apache.ibatis.exceptions.IbatisException;
+import org.apache.ibatis.exceptions.PersistenceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -30,15 +36,17 @@ import java.util.Set;
 @ResponseBody
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     /**
      * 全局异常处理器
      * @param e
      * @return
      */
-    @ExceptionHandler(Exception.class)
-    public R exceptionHandler(Exception e) {
-        return R.error(e.getMessage());
-    }
+//    @ExceptionHandler(Exception.class)
+//    public R exceptionHandler(Exception e) {
+//        return R.error(e.getMessage());
+//    }
 
 
     /**
@@ -89,5 +97,23 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomerException.class)
     public R exceptionHandler(CustomerException ex) {
         return R.error(ex.getMessage());
+    }
+
+
+    /**
+     * 数据库类型异常
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(SQLException.class)
+    public R SQLException(SQLException ex) {
+        log.error("{}", ex.getMessage());
+        return R.error("数据库SQL异常,请联系网站负责人");
+    }
+
+    @ExceptionHandler({IbatisException.class})
+    public R IbatisException(IbatisException ex) {
+        log.error("{}", ex.getMessage());
+        return R.error("数据库异常,请联系网站负责人");
     }
 }

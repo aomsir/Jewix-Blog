@@ -51,6 +51,7 @@
         WHERE nickname = #{nickname}
     </select>
 
+
     <insert id="insertUser">
         INSERT INTO tb_user(uuid,nickname, email, salt, description, password, web_site, create_time, update_time, status)
         VALUES (#{param.uuid},
@@ -78,4 +79,18 @@
         WHERE id = #{param.id}
         AND uuid = #{param.uuid}
     </update>
+
+
+    <select id="queryUserByEmailOrNickname" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_user
+        <where>
+            <if test="param.email != null">
+                email = #{param.email}
+            </if>
+            <if test="param.nickname != null">
+                AND nickname = #{param.nickname}
+            </if>
+        </where>
+    </select>
 </mapper>

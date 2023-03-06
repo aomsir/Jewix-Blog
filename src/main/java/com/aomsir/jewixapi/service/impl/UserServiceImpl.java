@@ -9,6 +9,7 @@ import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
 import com.aomsir.jewixapi.pojo.vo.UserAddVo;
+import com.aomsir.jewixapi.pojo.vo.UserHaveVo;
 import com.aomsir.jewixapi.pojo.vo.UserUpdateVo;
 import com.aomsir.jewixapi.service.UserService;
 import com.aomsir.jewixapi.utils.JwtUtils;
@@ -141,5 +142,15 @@ public class UserServiceImpl implements UserService {
         param.put("updateTime", new Date());
 
         return this.userMapper.updateUser(param);
+    }
+
+
+    @Override
+    public int hasUser(UserHaveVo userHaveVo) {
+        if (userHaveVo.getEmail() == null && userHaveVo.getNickname() == null) {
+            throw new CustomerException("用户名/邮箱参数未携带");
+        }
+
+        return this.userMapper.queryUserByEmailOrNickname(userHaveVo);
     }
 }

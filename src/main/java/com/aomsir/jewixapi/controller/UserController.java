@@ -3,10 +3,7 @@ package com.aomsir.jewixapi.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
-import com.aomsir.jewixapi.pojo.vo.LoginVo;
-import com.aomsir.jewixapi.pojo.vo.UserAddVo;
-import com.aomsir.jewixapi.pojo.vo.UserPageVo;
-import com.aomsir.jewixapi.pojo.vo.UserUpdateVo;
+import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.UserService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
@@ -102,6 +99,18 @@ public class UserController {
                 .put("role",role);
     }
 
+
+    /**
+     * 查询邮箱与用户名是否已存在接口
+     * @param userHaveVo
+     * @return
+     */
+    @PostMapping("/users/hasUser")
+    public R hasUser(@RequestBody @Validated UserHaveVo userHaveVo) {
+        int role = this.userService.hasUser(userHaveVo);
+        return R.ok()
+                .put("role",role);
+    }
 
 
 
