@@ -15,5 +15,6 @@ public class UserConfigDTO {
     private Long id;
     private String uuid;
     private String nickname;
+    private String description;
     private String webSite;
 }

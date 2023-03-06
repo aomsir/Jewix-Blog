@@ -24,6 +24,7 @@ public class User extends BaseEntity implements UserDetails {
     private String nickname;
     private String email;
     private String salt;
+    private String description;
     private String password;
     private String webSite;
 

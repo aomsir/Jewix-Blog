@@ -4,7 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
+import com.aomsir.jewixapi.pojo.vo.UserAddVo;
 import com.aomsir.jewixapi.pojo.vo.UserPageVo;
+import com.aomsir.jewixapi.pojo.vo.UserUpdateVo;
 import com.aomsir.jewixapi.service.UserService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
@@ -33,6 +35,36 @@ public class UserController {
 
 
     /**
+     * 前台获取站长用户信息
+     * @return
+     */
+    @GetMapping("/users/10000")
+    public R getConfigUser() {
+        UserConfigDTO userConfigDTO = this.userService.searchConfigUser();
+        return R.ok()
+                .put("result",userConfigDTO);
+    }
+
+    /**
+     * 分页查询用户信息接口
+     * @param userPageVo
+     * @return
+     */
+    @PostMapping("/admin/users/page")
+    public R getUserPage(@RequestBody @Validated UserPageVo userPageVo) {
+        Map<String, Object> param = BeanUtil.beanToMap(userPageVo);
+
+        int page = userPageVo.getPage();
+        int length = userPageVo.getLength();
+        int start = (page - 1) * length;
+        param.put("start", start);
+        PageUtils pageUtils = this.userService.searchUserByPage(param);
+        return R.ok()
+                .put("result", pageUtils);
+    }
+
+
+    /**
      * 后台根据UUID获取用户个人详细信息
      * @param uuid 用户uuid
      * @return  通用返回结果
@@ -46,26 +78,33 @@ public class UserController {
 
 
     /**
-     * 前台获取站长用户信息
+     * 添加/注册新用户接口
+     * @param userAddVo
      * @return
      */
-    @GetMapping("/users/10000")
-    public R getConfigUser() {
-        UserConfigDTO userConfigDTO = this.userService.searchConfigUser();
+    @PostMapping("/admin/users")
+    public R addUser(@RequestBody @Validated UserAddVo userAddVo) {
+        int role = this.userService.addUser(userAddVo);
         return R.ok()
-                .put("result",userConfigDTO);
+                .put("role",role);
     }
 
-    @PostMapping("/users/page")
-    public R getUserPage(@RequestBody @Validated UserPageVo userPageVo) {
-        Map<String, Object> param = BeanUtil.beanToMap(userPageVo);
 
-        int page = userPageVo.getPage();
-        int length = userPageVo.getLength();
-        int start = (page - 1) * length;
-        param.put("start", start);
-        PageUtils pageUtils = this.userService.searchUserByPage(param);
+    /**
+     * 更新用户接口
+     * @param userUpdateVo
+     * @return
+     */
+    @PutMapping("/admin/users")
+    public R update(@RequestBody @Validated UserUpdateVo userUpdateVo) {
+        int role = this.userService.updateUser(userUpdateVo);
         return R.ok()
-                .put("result", pageUtils);
+                .put("role",role);
     }
+
+
+
+
+
+
 }

@@ -19,4 +19,10 @@ public interface UserMapper {
     Long queryUserCount(@Param("status") Integer status, @Param("email") String email);
 
     ArrayList<User> queryUserListByPage(@Param("param") Map<String, Object> param);
+
+    User queryUserByNickname(@Param("nickname") String nickname);
+
+    int insertUser(@Param("param") Map<String, Object> param);
+
+    int updateUser(@Param("param") Map<String, Object> param);
 }

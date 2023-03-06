@@ -29,6 +29,7 @@ public class UserPageVo {
     @Range(min = 0, max = 2, message = "length必须为0-2之间")
     private Integer status;
 
+
     private String email;
 
 }

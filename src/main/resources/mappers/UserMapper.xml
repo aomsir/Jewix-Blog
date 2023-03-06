@@ -5,21 +5,21 @@
 
 <mapper namespace="com.aomsir.jewixapi.mapper.UserMapper">
 
-    <select id="queryUserByEmail" resultType="com.aomsir.jewixapi.pojo.entity.User">
-        SELECT id, uuid, nickname, email, salt, descroption, password, web_site, create_time, update_time, status
+    <select id="queryUserByEmail" resultType="User">
+        SELECT id, uuid, nickname, email, salt, description, password, web_site, create_time, update_time, status
         FROM tb_user
         WHERE email = #{email}
     </select>
 
 
     <select id="queryUserByUUID" resultType="User">
-        SELECT id, uuid, nickname, email, descroption, web_site, create_time, update_time, status
+        SELECT id, uuid, nickname, email, description, web_site, create_time, update_time, status
         FROM tb_user
         WHERE uuid = #{uuid}
     </select>
 
     <select id="queryConfigUser" resultType="com.aomsir.jewixapi.pojo.dto.UserConfigDTO">
-        SELECT id,uuid,nickname,web_site
+        SELECT id,uuid,nickname,description,web_site
         FROM tb_user
         WHERE id = 10000;
     </select>
@@ -34,7 +34,7 @@
     </select>
 
     <select id="queryUserListByPage" resultType="User">
-        SELECT id, uuid, nickname, email, descroption, web_site, create_time, update_time, status
+        SELECT id, uuid, nickname, email, description, web_site, create_time, update_time, status
         FROM tb_user
         WHERE status = #{status}
         <if test="email != null">
@@ -43,4 +43,40 @@
         ORDER BY id DESC
         LIMIT #{param.start},#{param.length}
     </select>
+
+
+    <select id="queryUserByNickname" resultType="User">
+        SELECT id, uuid, nickname, email, salt, description, password, web_site, create_time, update_time, status
+        FROM tb_user
+        WHERE nickname = #{nickname}
+    </select>
+
+    <insert id="insertUser">
+        INSERT INTO tb_user(uuid,nickname, email, salt, description, password, web_site, create_time, update_time, status)
+        VALUES (#{param.uuid},
+                #{param.nickname},
+                #{param.email},
+                #{param.salt},
+                #{param.description},
+                #{param.password},
+                #{param.webSite},
+                #{param.createTime},
+                #{param.updateTime},
+                #{param.status}
+                )
+    </insert>
+
+    <update id="updateUser">
+        UPDATE tb_user
+        SET nickname = #{param.nickname},
+            email = #{param.email},
+            description = #{param.description},
+            web_site = #{param.webSite},
+            update_time = #{param.updateTime},
+            <if test="password != null">
+                password = #{param.password}
+            </if>
+        WHERE id = #{param.id}
+        AND uuid = #{param.uuid}
+    </update>
 </mapper>
