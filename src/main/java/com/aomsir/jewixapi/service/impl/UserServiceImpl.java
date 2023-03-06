@@ -1,15 +1,20 @@
 package com.aomsir.jewixapi.service.impl;
 
+import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.UserMapper;
+import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
+import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
 import com.aomsir.jewixapi.service.UserService;
 import com.aomsir.jewixapi.utils.JwtUtils;
+import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,20 +34,38 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
 
+    @Override
+    public User searchUserByUUID(String uuid) {
+        if (uuid == null) {
+            throw new CustomerException("uuid为空!");
+        }
+
+        User user = this.userMapper.queryUserByUUID(uuid);
+
+        return user;
+    }
 
     @Override
-    public String login(LoginVo loginVo) {
-        User user = this.userMapper.queryUserByEmail(loginVo.getUsername());
+    public UserConfigDTO searchConfigUser() {
+        UserConfigDTO userConfigDTO = this.userMapper.queryConfigUser();
+        if (userConfigDTO == null) {
+            throw new CustomerException("用户不存在");
+        }
+        return userConfigDTO;
+    }
 
-//        if (user == null) {
-//            throw new RuntimeException("用户不存在");
-//        }
-
-
-        Map temp = new HashMap(){{
-            put("userId", user.getId());
-        }};
-        String token = JwtUtils.getToken(temp);
-        return token;
+    @Override
+    public PageUtils searchUserByPage(Map<String, Object> param) {
+        Long count = this.userMapper.queryUserCount((Integer)param.get("status"),(String)param.get("email"));
+        ArrayList<User> list = null;
+        if (count > 0) {
+            list = this.userMapper.queryUserListByPage(param);
+        } else {
+            list = new ArrayList<>();
+        }
+        int start = (Integer) param.get("start");
+        int length = (Integer) param.get("length");
+        PageUtils pageUtils = new PageUtils(list,count,start,length);
+        return pageUtils;
     }
 }

@@ -75,7 +75,6 @@ public class TagServiceImpl implements TagService {
             throw new CustomerException("暂无此标签");
         }
 
-        // TODO: 修改search为query
         Tag tag_1 = this.tagMapper.queryTagByName(updateVo.getTagName());
         if (tag_1 != null) {
             throw new CustomerException("修改的标签名已存在");
