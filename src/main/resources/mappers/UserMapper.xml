@@ -36,9 +36,9 @@
     <select id="queryUserListByPage" resultType="User">
         SELECT id, uuid, nickname, email, description, web_site, create_time, update_time, status
         FROM tb_user
-        WHERE status = #{status}
-        <if test="email != null">
-            AND email = #{email}
+        WHERE status = #{param.status}
+        <if test="param.email != null">
+            AND email = #{param.email}
         </if>
         ORDER BY id DESC
         LIMIT #{param.start},#{param.length}
@@ -62,8 +62,7 @@
                 #{param.webSite},
                 #{param.createTime},
                 #{param.updateTime},
-                #{param.status}
-                )
+                #{param.status})
     </insert>
 
     <update id="updateUser">
@@ -72,9 +71,9 @@
             email = #{param.email},
             description = #{param.description},
             web_site = #{param.webSite},
-            update_time = #{param.updateTime},
-            <if test="password != null">
-                password = #{param.password}
+            update_time = #{param.updateTime}
+            <if test="param.password != null">
+                ,password = #{param.password}
             </if>
         WHERE id = #{param.id}
         AND uuid = #{param.uuid}

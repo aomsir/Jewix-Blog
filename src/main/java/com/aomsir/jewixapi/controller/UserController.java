@@ -96,7 +96,7 @@ public class UserController {
      * @return
      */
     @PutMapping("/admin/users")
-    public R update(@RequestBody @Validated UserUpdateVo userUpdateVo) {
+    public R updateUser(@RequestBody @Validated UserUpdateVo userUpdateVo) {
         int role = this.userService.updateUser(userUpdateVo);
         return R.ok()
                 .put("role",role);

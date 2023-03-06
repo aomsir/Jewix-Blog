@@ -35,10 +35,7 @@ public class UserUpdateVo {
     @NotNull(message = "描述不允许为空")
     private String description;
 
-    @NotNull(message = "密码不允许为空")
-    @Size(min = 6,max = 20,message = "长度只允许在6-20位嗷")
     private String password;
-
 
     @Pattern(regexp = "^(http(s)?:\\/\\/)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:[0-9]{1,5})?[-a-zA-Z0-9()@:%_\\\\\\+\\.~#?&//=]*$",message = "网址格式不对嗷")
     private String webSite;

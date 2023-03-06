@@ -33,6 +33,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
+// TODO:替换所有User类,减少网络数据传输
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -96,17 +97,17 @@ public class UserServiceImpl implements UserService {
 
 
         // 账号加密
-        String password= this.passwordEncoder.encode(user_1.getPassword());
+        String password = this.passwordEncoder.encode(userAddVo.getPassword());
 
         Map<String, Object> param = BeanUtil.beanToMap(userAddVo);
         param.put("createTime",new Date());
         param.put("updateTime",new Date());
         param.put("password", password);
-        param.put("uuid", UUID.randomUUID());
-        param.put("salt",UUID.randomUUID());
+        param.put("uuid", UUID.randomUUID().toString());
+        param.put("salt",UUID.randomUUID().toString());
         param.put("status",1);
-        int role = this.userMapper.insertUser(param);
-        return role;
+
+        return this.userMapper.insertUser(param);
     }
 
     @Override
@@ -117,13 +118,13 @@ public class UserServiceImpl implements UserService {
         if (user_1 != null) {
             // 校验修改后的邮箱是否已存在
             User user_2 = this.userMapper.queryUserByEmail(userUpdateVo.getEmail());
-            if (user_2.getUuid() != user_1.getUuid()) {
+            if (user_2 != null && user_2.getUuid() != user_1.getUuid()) {
                 throw new CustomerException("邮箱已存在");
             }
 
             // 校验修改后的用户名是否已存在
             User user_3 = this.userMapper.queryUserByNickname(userUpdateVo.getNickname());
-            if (user_3.getUuid() == user_1.getUuid()) {
+            if (user_3 != null && user_3.getUuid() == user_1.getUuid()) {
                 throw new CustomerException("用户名已存在");
             }
         } else {
@@ -139,7 +140,6 @@ public class UserServiceImpl implements UserService {
         param.put("password",password);
         param.put("updateTime", new Date());
 
-        int role = this.userMapper.updateUser(param);
-        return role;
+        return this.userMapper.updateUser(param);
     }
 }
