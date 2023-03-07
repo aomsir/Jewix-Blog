@@ -7,10 +7,7 @@ import com.aomsir.jewixapi.mapper.UserMapper;
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.entity.User;
-import com.aomsir.jewixapi.pojo.vo.LoginVo;
-import com.aomsir.jewixapi.pojo.vo.UserAddVo;
-import com.aomsir.jewixapi.pojo.vo.UserHaveVo;
-import com.aomsir.jewixapi.pojo.vo.UserUpdateVo;
+import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.UserService;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.aomsir.jewixapi.utils.PageUtils;
@@ -152,5 +149,16 @@ public class UserServiceImpl implements UserService {
         }
 
         return this.userMapper.queryUserByEmailOrNickname(userHaveVo);
+    }
+
+    @Override
+    @Transactional
+    public int updateStatus(UserStatusVo userStatusVo) {
+        User user = this.userMapper.queryUserByUUID(userStatusVo.getUuid());
+        if (user == null) {
+            throw new CustomerException("用户不存在");
+        }
+
+        return this.userMapper.updateUserStatus(userStatusVo);
     }
 }

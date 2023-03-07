@@ -2,10 +2,7 @@ package com.aomsir.jewixapi.service;
 
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
-import com.aomsir.jewixapi.pojo.vo.LoginVo;
-import com.aomsir.jewixapi.pojo.vo.UserAddVo;
-import com.aomsir.jewixapi.pojo.vo.UserHaveVo;
-import com.aomsir.jewixapi.pojo.vo.UserUpdateVo;
+import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.utils.PageUtils;
 
 import java.util.Map;
@@ -23,4 +20,6 @@ public interface UserService {
     int updateUser(UserUpdateVo userUpdateVo);
 
     int hasUser(UserHaveVo userHaveVo);
+
+    int updateStatus(UserStatusVo userStatusVo);
 }

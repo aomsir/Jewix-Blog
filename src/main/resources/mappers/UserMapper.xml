@@ -93,4 +93,11 @@
             </if>
         </where>
     </select>
+
+
+    <update id="updateUserStatus">
+        UPDATE tb_user
+        SET status = #{param.status}
+        WHERE uuid = #{param.uuid}
+    </update>
 </mapper>

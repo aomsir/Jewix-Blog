@@ -8,7 +8,6 @@ import com.aomsir.jewixapi.service.UserService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -113,7 +112,15 @@ public class UserController {
     }
 
 
-
-
-
+    /**
+     * 根据uuid修改用户状态
+     * @param userStatusVo
+     * @return
+     */
+    @PostMapping("/admin/users/status")
+    public R updateStatus(@RequestBody @Validated UserStatusVo userStatusVo) {
+        int role = this.userService.updateStatus(userStatusVo);
+        return R.ok()
+                .put("role",role);
+    }
 }
