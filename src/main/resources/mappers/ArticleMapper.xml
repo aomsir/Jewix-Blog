@@ -5,6 +5,22 @@
 
 <mapper namespace="com.aomsir.jewixapi.mapper.ArticleMapper">
 
+<!--    <resultMap id="ArticleResultMap" type="Article">-->
+<!--        <id property="id" column="id" />-->
+<!--        <result property="uuid" column="uuid" />-->
+<!--        <result property="title" column="title" />-->
+<!--        <result property="cover" column="cover" />-->
+<!--        <result property="content" column="content" jdbcType="LONGVARCHAR"/>-->
+<!--        <result property="type" column="type" />-->
+<!--        <result property="originUrl" column="origin_url" />-->
+<!--        <result property="views" column="views" />-->
+<!--        <result property="isTop" column="is_top" />-->
+<!--        <result property="isDelete" column="is_delete" />-->
+<!--        <result property="status" column="status" />-->
+<!--        <result property="createTime" column="create_time" />-->
+<!--        <result property="updateTime" column="update_time" />-->
+<!--    </resultMap>-->
+
     <select id="queryArticleCountByTagName" resultType="Long">
         SELECT COUNT(a.id)
         FROM tb_article AS a
@@ -23,5 +39,78 @@
         WHERE a.status = 0
         AND a.is_delete = 0
         AND c.category_name = #{categoryName}
+    </select>
+
+    <select id="queryArticleBackendCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article
+        <where>
+            <if test="param.title != null">
+                title LIKE CONCAT('%',#{param.title} ,'%')
+                OR content LIKE CONCAT('%',#{param.title} ,'%')
+            </if>
+            <if test="param.type != null">
+                AND type = #{param.type}
+            </if>
+            <if test="param.isTop">
+                AND is_top = #{param.isTop}
+            </if>
+            <if test="param.status != null">
+                AND status = #{param.status}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="queryArticleBackendList" resultType="Article">
+        SELECT id, uuid, title, cover, SUBSTRING(content,1,50) AS content,
+        type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        FROM tb_article
+        <where>
+            <if test="param.title != null">
+                title LIKE CONCAT('%',#{param.title} ,'%')
+                OR content LIKE CONCAT('%',#{param.title} ,'%')
+            </if>
+            <if test="param.type != null">
+                AND type = #{param.type}
+            </if>
+            <if test="param.isTop">
+                AND is_top = #{param.isTop}
+            </if>
+            <if test="param.status != null">
+                AND status = #{param.status}
+            </if>
+        </where>
+        ORDER BY is_top,update_time DESC
+        LIMIT #{param.start},#{param.length}
+    </select>
+
+
+    <!--TODO: 联合查询标签和分类表-->
+    <select id="queryArticleFrontCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article
+        <where>
+            <if test="param.title != null">
+                title LIKE CONCAT('%',#{param.title} ,'%')
+                OR content LIKE CONCAT('%',#{param.title} ,'%')
+            </if>
+        </where>
+    </select>
+
+
+    <select id="queryArticleFrontList" resultType="Article">
+        SELECT id, uuid, title, cover, SUBSTRING(content,1,50) AS content,
+               type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        FROM tb_article
+        <where>
+            <if test="param.title != null">
+                title LIKE CONCAT('%',#{param.title} ,'%')
+                OR content LIKE CONCAT('%',#{param.title} ,'%')
+            </if>
+            AND status = 0
+        </where>
+        ORDER BY is_top,update_time DESC
+        LIMIT #{param.start},#{param.length}
     </select>
 </mapper>

@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class Article extends BaseEntity{
     private Long id;
+    private String uuid;
     private String title;
     private String cover;
     private String content;
