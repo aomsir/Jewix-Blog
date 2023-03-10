@@ -5,7 +5,7 @@
 
 <mapper namespace="com.aomsir.jewixapi.mapper.ArticleMapper">
 
-<!--    <resultMap id="ArticleResultMap" type="Article">-->
+    <!--    <resultMap id="ArticleResultMap" type="Article">-->
 <!--        <id property="id" column="id" />-->
 <!--        <result property="uuid" column="uuid" />-->
 <!--        <result property="title" column="title" />-->
@@ -113,4 +113,38 @@
         ORDER BY is_top,update_time DESC
         LIMIT #{param.start},#{param.length}
     </select>
+
+
+    <insert id="insertArticle" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_article(uuid, title, cover, content, type, origin_url, is_top, is_delete, status, create_time, update_time)
+        VALUES (#{param.uuid},
+                #{param.title},
+                #{param.cover},
+                #{param.content},
+                #{param.type},
+                #{param.originUrl},
+                #{param.isTop},
+                #{param.isDelete},
+                #{param.status},
+                #{param.createTime},
+                #{param.createTime})
+    </insert>
+
+    <insert id="insertArticleAndTag">
+        INSERT INTO tb_article_tag(article_id, tag_id)
+        VALUES (#{articleId}, #{tagId})
+    </insert>
+
+
+    <insert id="insertArticleAndCategory">
+        INSERT INTO tb_article_category (article_id, category_id)
+        VALUES (#{articleId}, #{categoryId})
+    </insert>
+
+    <insert id="insertArticleAndUser">
+        INSERT INTO tb_article_user(article_id, user_id)
+        VALUES (#{articleId}, #{userId})
+    </insert>
+
+
 </mapper>

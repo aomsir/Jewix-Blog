@@ -24,4 +24,6 @@ public interface CategoryMapper {
     Category queryCategoryByName(@Param("categoryName") String categoryName);
 
     List<ArticlePreviewDTO> queryArticleListPageByCategoryName(@Param("param") Map<String, Object> param);
+
+    Boolean queryIdsExists(@Param("list") List<Integer> categoryIds);
 }

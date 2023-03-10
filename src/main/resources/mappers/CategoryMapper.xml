@@ -67,4 +67,13 @@
         ORDER BY a.create_time DESC
         LIMIT #{param.start},#{param.length}
     </select>
+
+    <select id="queryIdsExists" resultType="Boolean" parameterType="List">
+        SELECT COUNT(id) > 0
+        FROM tb_category
+        WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

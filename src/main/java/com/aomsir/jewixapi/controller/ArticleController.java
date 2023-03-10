@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleBackendPageVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleFrontPageVo;
 import com.aomsir.jewixapi.service.ArticleService;
@@ -8,6 +9,7 @@ import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -64,5 +66,18 @@ public class ArticleController {
         PageUtils pageUtils = this.articleService.searchFrontArticleListByPage(param);
         return R.ok()
                 .put("result", pageUtils);
+    }
+
+
+    /**
+     * 添加文章
+     * @param articleAddVo
+     * @return
+     */
+    @PostMapping("/article")
+    public R addArticle(@RequestBody @Validated ArticleAddVo articleAddVo) {
+        int role = this.articleService.addArticle(articleAddVo);
+        return R.ok()
+                .put("role",role);
     }
 }

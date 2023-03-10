@@ -59,4 +59,13 @@
         WHERE id = #{tag.id}
     </update>
 
+
+    <select id="queryIdsExists" resultType="Boolean" parameterType="List">
+        SELECT COUNT(id) > 0
+        FROM tb_tag
+        WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

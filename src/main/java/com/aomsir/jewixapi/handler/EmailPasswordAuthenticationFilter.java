@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.handler;
 
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
+import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.aomsir.jewixapi.utils.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,9 @@ import java.util.HashMap;
  */
 @Component
 public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+    @Resource
+    private HostHolder hostHolder;
 
     public EmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.setAuthenticationManager(authenticationManager);
@@ -94,6 +99,8 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         HashMap returnToken = new HashMap(){{
             put("token",token);
         }};
+
+        this.hostHolder.setUserId(user.getId());
 
         // TODO:TOKEN存储到Redis
         R r = R.ok(returnToken);

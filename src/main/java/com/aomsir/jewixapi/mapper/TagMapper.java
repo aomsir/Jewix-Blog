@@ -27,4 +27,6 @@ public interface TagMapper {
     int updateTagById(@Param("tag") Tag tag_2);
 
     List<ArticlePreviewDTO> queryArticleListByTagName(@Param("param") Map<String, Object> param);
+
+    Boolean queryIdsExists(@Param("lisi") List<Integer> tagIds);
 }

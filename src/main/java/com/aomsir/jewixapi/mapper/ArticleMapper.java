@@ -20,4 +20,12 @@ public interface ArticleMapper {
     int queryArticleFrontCount(@Param("param") Map<String, Object> param);
 
     ArrayList<Article> queryArticleFrontList(@Param("param") Map<String, Object> param);
+
+    int insertArticle(@Param("param") Map<String, Object> param);
+
+    int insertArticleAndTag(@Param("articleId") int articleId, @Param("tagId") Integer tagId);
+
+    int insertArticleAndCategory(@Param("articleId") int articleId, @Param("categoryId") Integer categoryId);
+
+    int insertArticleAndUser(@Param("articleId") int articleId, @Param("userId") Long userId);
 }

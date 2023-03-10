@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.config;
 
 import com.aomsir.jewixapi.handler.EmailPasswordAuthenticationFilter;
 import com.aomsir.jewixapi.handler.PerTokenVerifyFilter;
+import com.aomsir.jewixapi.utils.HostHolder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,7 +38,6 @@ import java.util.Arrays;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
 
     @Resource
     private UserDetailsService userDetailsService;

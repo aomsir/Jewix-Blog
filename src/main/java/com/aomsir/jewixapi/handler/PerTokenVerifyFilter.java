@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.handler;
 
+import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,9 @@ import java.util.HashSet;
 @Component
 public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
+    @Resource
+    private HostHolder hostHolder;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -39,6 +44,8 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
 
         // TODO: 完善校验功能
+        // TODO:完善
+        this.hostHolder.setUserId(Long.getLong("1"));
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         String token = request.getHeader("token");
