@@ -1,17 +1,17 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
+import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleBackendPageVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleFrontPageVo;
+import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -74,10 +74,36 @@ public class ArticleController {
      * @param articleAddVo
      * @return
      */
-    @PostMapping("/article")
+    @PostMapping("/articles")
     public R addArticle(@RequestBody @Validated ArticleAddVo articleAddVo) {
         int role = this.articleService.addArticle(articleAddVo);
         return R.ok()
                 .put("role",role);
     }
+
+
+    /**
+     * 修改文章
+     * @param articleUpdateVo
+     * @return
+     */
+    @PutMapping("/articles")
+    public R updateArticle(@RequestBody @Validated ArticleUpdateVo articleUpdateVo) {
+        int role = this.articleService.updateArticle(articleUpdateVo);
+        return R.ok()
+                .put("role", role);
+    }
+
+
+    /**
+     * 文章详情
+     * @param uuid
+     * @return
+     */
+    @GetMapping("/articles/{uuid}")
+    public R getArticleByUuid(@PathVariable("uuid") String uuid) {
+        ArticleDetailDTO articleDetailDTO = this.articleService.queryArticleByUuid(uuid);
+        return null;
+    }
+
 }

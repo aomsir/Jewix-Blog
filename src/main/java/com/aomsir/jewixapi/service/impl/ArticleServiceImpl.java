@@ -5,8 +5,10 @@ import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.CategoryMapper;
 import com.aomsir.jewixapi.mapper.TagMapper;
+import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
+import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
 import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.PageUtils;
@@ -122,5 +124,47 @@ public class ArticleServiceImpl implements ArticleService {
             throw new CustomerException("标签或分类不存在!");
         }
         return articleId > 0 ? 1 : 0;
+    }
+
+
+    @Override
+    public int updateArticle(ArticleUpdateVo articleUpdateVo) {
+        Long id = articleUpdateVo.getId();
+        String uuid = articleUpdateVo.getUuid();
+        Article article_1 = this.articleMapper.queryArticleByUuid(uuid);
+        Article article_2 = this.articleMapper.queryArticleById(id);
+
+        if (article_1 == null || article_2 == null ) {
+            throw new CustomerException("文章不存在");
+        }
+
+        // TODO：处理article_tag与article_category
+
+        Map<String, Object> param = BeanUtil.beanToMap(articleUpdateVo);
+        param.put("updateTime", new Date());
+        return this.articleMapper.updateArticle(param);
+    }
+
+    @Override
+    public ArticleDetailDTO queryArticleByUuid(String uuid) {
+        Article article = this.articleMapper.queryArticleByUuid(uuid);
+        if (article == null) {
+            throw new CustomerException("文章不存在");
+        }
+
+        // 数据复制
+        ArticleDetailDTO articleDetailDTO= new ArticleDetailDTO();
+        BeanUtil.copyProperties(article,articleDetailDTO);
+
+        List<String> categotyList = this.articleMapper.queryArticleCategoryNameList(article.getId());
+        List<String> tagList = this.articleMapper.queryArticleTagNameList(article.getId());
+        String userName = this.articleMapper.queryArticleUserName(article.getId());
+
+        articleDetailDTO.setCategories(categotyList);
+        articleDetailDTO.setTags(tagList);
+        articleDetailDTO.setUserName(userName);
+
+        // TODO：评论数
+        return articleDetailDTO;
     }
 }

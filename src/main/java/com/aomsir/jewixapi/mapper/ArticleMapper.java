@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -28,4 +29,16 @@ public interface ArticleMapper {
     int insertArticleAndCategory(@Param("articleId") int articleId, @Param("categoryId") Integer categoryId);
 
     int insertArticleAndUser(@Param("articleId") int articleId, @Param("userId") Long userId);
+
+    Article queryArticleByUuid(@Param("uuid") String uuid);
+
+    Article queryArticleById(@Param("id") Long id);
+
+    int updateArticle(@Param("param") Map<String, Object> param);
+
+    List<String> queryArticleCategoryNameList(@Param("id") Long id);
+
+    List<String> queryArticleTagNameList(@Param("id") Long id);
+
+    String queryArticleUserName(@Param("id") Long id);
 }

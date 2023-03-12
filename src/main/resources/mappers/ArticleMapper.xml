@@ -5,6 +5,7 @@
 
 <mapper namespace="com.aomsir.jewixapi.mapper.ArticleMapper">
 
+
     <!--    <resultMap id="ArticleResultMap" type="Article">-->
 <!--        <id property="id" column="id" />-->
 <!--        <result property="uuid" column="uuid" />-->
@@ -147,4 +148,69 @@
     </insert>
 
 
+    <select id="queryArticleByUuid" resultType="Article">
+        SELECT id, uuid, title, cover, content, type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        FROM tb_article
+        WHERE uuid = #{uuid}
+    </select>
+
+    <select id="queryArticleById" resultType="Article">
+        SELECT id, uuid, title, cover, content, type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        FROM tb_article
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateArticle">
+        UPDATE tb_article
+        <set>
+            <if test="param.title != null">
+                title = #{param.title},
+            </if>
+            <if test="param.cover != null">
+                cover = #{param.cover},
+            </if>
+            <if test="param.content != null">
+                content = #{param.content},
+            </if>
+            <if test="param.isTop != null">
+                is_top = #{param.isTop},
+            </if>
+            <if test="param.isDelete != null">
+                is_delete = #{param.isDelete},
+            </if>
+            <if test="param.status != null">
+                status = #{param.status},
+            </if>
+            <if test="param.updateTime != null">
+                update_time = #{param.updateTime}
+            </if>
+        </set>
+        WHERE id = #{param.id}
+        AND uuid = #{param.uuid}
+    </update>
+
+
+    <select id="queryArticleCategoryNameList" resultType="String">
+        SELECT tc.category_name
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_category AS tac ON ta.id = tac.article_id
+        LEFT JOIN tb_category AS tc ON tac.category_id = tc.id
+        WHERE ta.id = #{id}
+    </select>
+
+    <select id="queryArticleTagNameList" resultType="String">
+        SELECT tt.tag_name
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_tag AS tat ON ta.id = tat.article_id
+        LEFT JOIN tb_tag AS tt ON tat.tag_id = tt.id
+        WHERE ta.id = #{id}
+    </select>
+
+    <select id="queryArticleUserName" resultType="String">
+        SELECT tu.nickname
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_user AS tau ON ta.id = tau.article_id
+        LEFT JOIN tb_user AS tu ON ta.uuid = tu.uuid
+        WHERE ta.id = #{id}
+    </select>
 </mapper>
