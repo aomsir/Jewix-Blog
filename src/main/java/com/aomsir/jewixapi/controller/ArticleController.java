@@ -2,7 +2,6 @@ package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
-import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleBackendPageVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleFrontPageVo;
@@ -103,7 +102,8 @@ public class ArticleController {
     @GetMapping("/articles/{uuid}")
     public R getArticleByUuid(@PathVariable("uuid") String uuid) {
         ArticleDetailDTO articleDetailDTO = this.articleService.queryArticleByUuid(uuid);
-        return null;
+        return R.ok()
+                .put("result",articleDetailDTO);
     }
 
 }
