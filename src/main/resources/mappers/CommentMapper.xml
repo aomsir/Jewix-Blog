@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aomsir.jewixapi.mapper.CommentMapper">
+
+    <select id="queryCommentBackendCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_comment
+        <where>
+            <if test="param.content != null">
+                content = #{param.content}
+            </if>
+            <if test="param.email != null">
+                AND email = #{param.email}
+            </if>
+            <if test="param.author != null">
+                AND author = #{param.author}
+            </if>
+            <if test="param.status != null">
+                AND status = #{param.status}
+            </if>
+        </where>
+        LIMIT #{param.start},#{param.length}
+    </select>
+
+    <select id="queryCommentBackendPageList" resultType="Comment">
+        SELECT id, author, content, email, url, ip, location, agent, type, target_id, parent_id, status, create_time, update_time
+        FROM tb_comment
+        <where>
+            <if test="param.content != null">
+                content = #{param.content}
+            </if>
+            <if test="param.email != null">
+                AND email = #{param.email}
+            </if>
+            <if test="param.author != null">
+                AND author = #{param.author}
+            </if>
+            <if test="param.status != null">
+                AND status = #{param.status}
+            </if>
+        </where>
+        ORDER BY update_time ASC
+        LIMIT #{param.start},#{param.length}
+    </select>
+
+
+    <select id="queryCommentFrontParentCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_comment
+        WHERE target_id = #{param.targetId}
+        AND parent_id = 0
+        AND type = #{param.type}
+        LIMIT #{param.start},#{param.length}
+    </select>
+
+
+    <select id="queryCommentFrontPageList" resultType="Comment">
+        SELECT id, author, content, email, url, ip, location, agent, type, target_id, parent_id, status, create_time, update_time
+        FROM tb_comment
+        WHERE target_id = #{param.targetId}
+        AND type = #{param.type}
+        LIMIT #{param.start},#{param.length}
+    </select>
+</mapper>

@@ -21,4 +21,12 @@ public class CommentFrontVo {
 
     @Range(min = 0,max = 3)
     private Integer type;
+
+    @NotNull(message = "page不能为空")
+    @Min(value = 1, message = "page不能小于1")
+    private Integer page;
+
+    @NotNull(message = "length不能为空")
+    @Range(min = 1, max = 50, message = "length必须为1~50之间")
+    private Integer length;
 }
