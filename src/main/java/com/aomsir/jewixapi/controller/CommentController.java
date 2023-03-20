@@ -1,8 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.aomsir.jewixapi.pojo.vo.CommentBackendPageVo;
-import com.aomsir.jewixapi.pojo.vo.CommentFrontVo;
+import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.CommentService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
@@ -10,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -63,21 +63,41 @@ public class CommentController {
     }
 
 
-    @PostMapping("/admin/comments")
-    public R addComment() {
+    /**
+     * 添加评论
+     * @param commentAddVo
+     * @param request
+     * @return
+     */
+    @PostMapping("/comments")
+    public R addComment(@RequestBody @Validated CommentAddVo commentAddVo,
+                        HttpServletRequest request) {
+        int role = this.commentService.addComment(commentAddVo,request);
 
-        return null;
+        return R.ok()
+                .put("role",role);
     }
 
+
+    /**
+     * 后台修改评论相关内容
+     * @param commentUpdateVo
+     * @return
+     */
     @PutMapping("/admin/comments")
-    public R updateComment() {
-        // 内容状态等等
+    public R updateComment(@RequestBody CommentUpdateVo commentUpdateVo) {
+        // TODO：内容状态等等
         return null;
     }
 
+    /**
+     * 根据ids删除文章评论
+     * @param commentDeleteVo
+     * @return
+     */
     @DeleteMapping("/admin/comments")
-    public R deleteComment() {
-
+    public R deleteComment(@RequestBody @Validated CommentDeleteVo commentDeleteVo) {
+        // TODO：注意别误删有子评论的评论
         return null;
     }
 

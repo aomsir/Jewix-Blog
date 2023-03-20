@@ -23,4 +23,5 @@ public class Comment extends BaseEntity {
     private Integer type;       // 评论类型 - 1-文章、2-页面
     private Long targetId;      // 文章id或者页面id
     private Long parentId;      // 父级id,0为根评论
+    private Long permId;        // 一级评论id
 }

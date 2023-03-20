@@ -1,18 +1,20 @@
 package com.aomsir.jewixapi.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.CommentMapper;
 import com.aomsir.jewixapi.pojo.dto.CommentDTO;
+import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.entity.Comment;
+import com.aomsir.jewixapi.pojo.vo.CommentAddVo;
 import com.aomsir.jewixapi.service.CommentService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * @Author: Aomsir
@@ -27,6 +29,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Resource
     private CommentMapper commentMapper;
+
+    @Resource
+    private ArticleMapper articleMapper;
 
     @Override
     public PageUtils searchBackendCommentListByPage(Map<String, Object> param) {
@@ -56,7 +61,7 @@ public class CommentServiceImpl implements CommentService {
             list = this.commentMapper.queryCommentFrontPageList(param);     // 当前文章下所有的评论
             commentDTOList = new ArrayList<>();
 
-            // TODO：封装二级评论列表
+
             // 抽出所有一级评论
             for (Comment comment : list) {
                 if (comment.getParentId() == 0) {
@@ -64,11 +69,12 @@ public class CommentServiceImpl implements CommentService {
                 }
             }
 
+            // TODO：封装x级评论
             // 封装所有的二级评论
             for (CommentDTO commentDTO : commentDTOList) {
                 ArrayList<Comment> comments = new ArrayList<>();
                 for (Comment comment : list) {
-                    if (Objects.equals(comment.getParentId(), commentDTO.getId())) {
+                    if (Objects.equals(comment.getPermId(), commentDTO.getId())) {
                         comments.add(comment);
                     }
                 }
@@ -81,5 +87,30 @@ public class CommentServiceImpl implements CommentService {
         int length = (Integer) param.get("length");
         PageUtils pageUtils = new PageUtils(commentDTOList,count,start,length);
         return pageUtils;
+    }
+
+
+    @Override
+    @Transactional
+    public int addComment(CommentAddVo commentAddVo, HttpServletRequest request) {
+        // TODO：处理ip，agent等
+
+        Long parentId = commentAddVo.getParentId();    // 父级评论id
+        Long targetId = commentAddVo.getTargetId();    // 文章/页面id
+        Long permId = commentAddVo.getPermId();        // 一级评论id
+
+        // 去查询 TODO：别忘了页面
+        Map<String, Object> param_1 = new HashMap<String, Object>(){{
+            put("parentId",parentId);
+            put("permId",permId);
+        }};
+        Comment comment = this.commentMapper.queryCommentByParentIdOrPermId(param_1);
+        Article article = this.articleMapper.queryArticleById(targetId);
+
+
+
+        Map<String, Object> param = BeanUtil.beanToMap(commentAddVo);
+
+        return 0;
     }
 }

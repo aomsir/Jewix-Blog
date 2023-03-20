@@ -26,7 +26,7 @@
     </select>
 
     <select id="queryCommentBackendPageList" resultType="Comment">
-        SELECT id, author, content, email, url, ip, location, agent, type, target_id, parent_id, status, create_time, update_time
+        SELECT id, author, content, email, url, ip, location, agent, type, target_id, parent_id,perm_id, status, create_time, update_time
         FROM tb_comment
         <where>
             <if test="param.content != null">
@@ -58,10 +58,24 @@
 
 
     <select id="queryCommentFrontPageList" resultType="Comment">
-        SELECT id, author, content, email, url, ip, location, agent, type, target_id, parent_id, status, create_time, update_time
+        SELECT id, author, content, email, url, ip, location, agent, type, target_id, parent_id, perm_id,status, create_time, update_time
         FROM tb_comment
         WHERE target_id = #{param.targetId}
         AND type = #{param.type}
         LIMIT #{param.start},#{param.length}
+    </select>
+
+
+    <select id="queryCommentByParentIdOrPermId" resultType="Comment">
+        SELECT id,id, author, content, email, url, ip, location, agent, type, target_id, parent_id, perm_id, status, create_time, update_time
+        FROM tb_comment
+        <where>
+            <if test="param.parentId != null">
+
+            </if>
+            <if test="param.permId != null">
+                
+            </if>
+        </where>
     </select>
 </mapper>
