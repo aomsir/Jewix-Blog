@@ -181,6 +181,7 @@
         WHERE id = #{id}
     </delete>
 
+
     <update id="updateCommentStatus">
         UPDATE tb_comment
         <set>
@@ -193,4 +194,11 @@
         </set>
         WHERE id = #{id}
     </update>
+
+
+    <delete id="deleteCommentByPageId">
+        DELETE FROM tb_comment
+        WHERE target_id = #{pageId}
+        AND type = #{type}
+    </delete>
 </mapper>
