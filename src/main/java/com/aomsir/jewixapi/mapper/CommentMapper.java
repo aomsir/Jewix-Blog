@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -26,4 +27,12 @@ public interface CommentMapper {
     Comment queryCommentByPermId(@Param("permId") Long permId);
 
     int insertComment(@Param("param") Map<String, Object> param);
+
+    List<Comment> queryCommentsByPermId(@Param("id") Long id);
+
+    List<Comment> queryCommentsByParentId(@Param("id") Long id);
+
+    int deleteComment(@Param("id") Long id);
+
+    int updateCommentStatus(@Param("param") Map<String, Object> param);
 }

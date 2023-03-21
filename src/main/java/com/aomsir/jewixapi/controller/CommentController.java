@@ -85,7 +85,7 @@ public class CommentController {
      * @return
      */
     @PutMapping("/admin/comments")
-    public R updateComment(@RequestBody CommentUpdateVo commentUpdateVo) {
+    public R updateComment(@RequestBody @Validated CommentUpdateVo commentUpdateVo) {
         // TODO：内容状态等等
         int role = this.commentService.updateComment(commentUpdateVo);
         return R.ok()
@@ -99,14 +99,22 @@ public class CommentController {
      */
     @DeleteMapping("/admin/comments")
     public R deleteComment(@RequestBody @Validated CommentDeleteVo commentDeleteVo) {
-        // TODO：注意别误删有子评论的评论
 
-
-        int role = 0;
+        int role = this.commentService.deleteComment(commentDeleteVo);
         return R.ok()
                 .put("role",role);
     }
 
-
+    /**
+     * 修改评论状态
+     * @param commentUpdateStatusVo
+     * @return
+     */
+    @PutMapping("/admin/comments/status")
+    public R updateCommentStatus(@RequestBody @Validated CommentUpdateStatusVo commentUpdateStatusVo) {
+        int role = this.commentService.updateCommentStatus(commentUpdateStatusVo);
+        return R.ok()
+                .put("role",role);
+    }
 
 }

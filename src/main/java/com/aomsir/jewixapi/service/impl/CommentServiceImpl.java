@@ -8,6 +8,8 @@ import com.aomsir.jewixapi.pojo.dto.CommentDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.entity.Comment;
 import com.aomsir.jewixapi.pojo.vo.CommentAddVo;
+import com.aomsir.jewixapi.pojo.vo.CommentDeleteVo;
+import com.aomsir.jewixapi.pojo.vo.CommentUpdateStatusVo;
 import com.aomsir.jewixapi.pojo.vo.CommentUpdateVo;
 import com.aomsir.jewixapi.service.CommentService;
 import com.aomsir.jewixapi.utils.NetUtils;
@@ -16,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -186,5 +189,44 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Override
+    public int deleteComment(CommentDeleteVo commentDeleteVo) {
+        ArrayList<Long> ids = commentDeleteVo.getIds();
+        int role = 0;
+        for (Long id : ids) {
+            Comment comment = this.commentMapper.queryCommentById(id);
+            if (Objects.isNull(comment)) {
+                throw new CustomerException("评论不存在");
+            }
 
+            // 查询是否有子评论
+            List<Comment> childList_1 = this.commentMapper.queryCommentsByPermId(id);
+            if (childList_1.size() > 0) {
+                throw new CustomerException("请先删除子评论");
+            }
+            List<Comment> childList_2 = this.commentMapper.queryCommentsByParentId(id);
+            if (childList_2.size() > 0) {
+                throw new CustomerException("请先删除子评论");
+            }
+
+            role = this.commentMapper.deleteComment(id);
+        }
+        return role;
+    }
+
+    @Override
+    public int updateCommentStatus(CommentUpdateStatusVo commentUpdateStatusVo) {
+        Long id = commentUpdateStatusVo.getId();
+        Integer status = commentUpdateStatusVo.getStatus();
+        Comment comment = this.commentMapper.queryCommentById(id);
+        if (Objects.isNull(comment)) {
+            throw new CustomerException("评论不存在");
+        }
+
+        Map<String, Object> param = new HashMap<>();
+        param.put("id",id);
+        param.put("status",status);
+        param.put("updateTime",new Date());
+        return this.commentMapper.updateCommentStatus(param);
+    }
 }

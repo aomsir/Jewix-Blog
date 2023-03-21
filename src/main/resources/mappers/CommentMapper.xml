@@ -6,7 +6,6 @@
 <mapper namespace="com.aomsir.jewixapi.mapper.CommentMapper">
 
 
-
     <select id="queryCommentBackendCount" resultType="Integer">
         SELECT COUNT(id)
         FROM tb_comment
@@ -129,7 +128,6 @@
         WHERE id = #{id}
     </update>
 
-
     <insert id="insertComment" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_comment (author,
                                 content,
@@ -157,4 +155,42 @@
                 #{param.createTime},
                 #{param.updateTime})
     </insert>
+
+    <select id="queryCommentsByPermId" resultType="Comment">
+        SELECT id, author, content, email, url, ip, location, agent, type, target_id, parent_id, perm_id, status, create_time, update_time
+        FROM tb_comment
+        <where>
+            <if test="permId != null">
+                perm_id = #{permId}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryCommentsByParentId" resultType="Comment">
+        SELECT id, author, content, email, url, ip, location, agent, type, target_id, parent_id, perm_id, status, create_time, update_time
+        FROM tb_comment
+        <where>
+            <if test="parentId != null">
+                parent_id = #{parentId}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteComment">
+        DELETE FROM tb_comment
+        WHERE id = #{id}
+    </delete>
+
+    <update id="updateCommentStatus">
+        UPDATE tb_comment
+        <set>
+            <if test="param.status != null">
+                status = #{param.status},
+            </if>
+            <if test="param.updateTime != null">
+                update_time = #{param.updateTime},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
 </mapper>

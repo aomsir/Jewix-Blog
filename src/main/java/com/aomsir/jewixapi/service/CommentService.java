@@ -1,6 +1,8 @@
 package com.aomsir.jewixapi.service;
 
 import com.aomsir.jewixapi.pojo.vo.CommentAddVo;
+import com.aomsir.jewixapi.pojo.vo.CommentDeleteVo;
+import com.aomsir.jewixapi.pojo.vo.CommentUpdateStatusVo;
 import com.aomsir.jewixapi.pojo.vo.CommentUpdateVo;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,4 +18,8 @@ public interface CommentService {
     int addComment(CommentAddVo commentAddVo, HttpServletRequest request) throws JsonProcessingException;
 
     int updateComment(CommentUpdateVo commentUpdateVo);
+
+    int deleteComment(CommentDeleteVo commentDeleteVo);
+
+    int updateCommentStatus(CommentUpdateStatusVo commentUpdateStatusVo);
 }
