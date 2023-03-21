@@ -1,14 +1,19 @@
 package com.aomsir.jewixapi.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.CommentMapper;
 import com.aomsir.jewixapi.pojo.dto.CommentDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.entity.Comment;
 import com.aomsir.jewixapi.pojo.vo.CommentAddVo;
+import com.aomsir.jewixapi.pojo.vo.CommentUpdateVo;
 import com.aomsir.jewixapi.service.CommentService;
+import com.aomsir.jewixapi.utils.NetUtils;
 import com.aomsir.jewixapi.utils.PageUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +37,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Resource
     private ArticleMapper articleMapper;
+
+    @Resource
+    private NetUtils netUtils;
 
     @Override
     public PageUtils searchBackendCommentListByPage(Map<String, Object> param) {
@@ -90,27 +98,93 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+
     @Override
     @Transactional
-    public int addComment(CommentAddVo commentAddVo, HttpServletRequest request) {
-        // TODO：处理ip，agent等
+    public int addComment(CommentAddVo commentAddVo, HttpServletRequest request) throws JsonProcessingException {
+        Map<String, Object> param = BeanUtil.beanToMap(commentAddVo);
 
         Long parentId = commentAddVo.getParentId();    // 父级评论id
         Long targetId = commentAddVo.getTargetId();    // 文章/页面id
         Long permId = commentAddVo.getPermId();        // 一级评论id
 
-        // 去查询 TODO：别忘了页面
-        Map<String, Object> param_1 = new HashMap<String, Object>(){{
-            put("parentId",parentId);
-            put("permId",permId);
-        }};
-        Comment comment = this.commentMapper.queryCommentByParentIdOrPermId(param_1);
-        Article article = this.articleMapper.queryArticleById(targetId);
+
+        // 处理目标文章/页面
+        // 1:文章,2:页面
+        // 说明是回复文章
+        if (commentAddVo.getType() == 1) {
+            Article article = this.articleMapper.queryArticleById(targetId);
+            if (Objects.isNull(article)) {
+                throw new CustomerException("文章不存在");
+            }
+            param.put("type",1);
+        } else if (commentAddVo.getType() == 2) {
+            // Page page = this.pageMapper.queryPageById(targetId);
+            // if (Objects.isNull(page)) {
+            //     throw new CustomerException("页面不存在");
+            // }
+            param.put("type",2);
+        }
+
+        // 校验父级评论是否存在,不存在则当前评论为父级评论
+        // TODO: 业务逻辑处理不到位
+        if (parentId != 0) {
+            // 说明是回复评论
+            // 查询父级评论
+            Comment parentComment = this.commentMapper.queryCommentByParentId(parentId);
+            if (Objects.isNull(parentComment)) {
+                param.put("parentId",0);
+            }
+        }
+
+        // 校验一级评论是否存在,不存在则当前评论为一级评论
+        if (permId != 0) {
+            Comment permComment = this.commentMapper.queryCommentByPermId(permId);
+            if (Objects.isNull(permComment)) {
+                param.put("permId",0);
+            }
+
+            if (parentId != 0) {
+                throw new CustomerException("评论异常");
+            }
+        }
 
 
+        // 处理ip，agent等信息
+        String realIp = netUtils.getRealIp(request);
+        String userAgent = request.getHeader("User-Agent");
 
-        Map<String, Object> param = BeanUtil.beanToMap(commentAddVo);
+        Map<String, String> userAgentMap = this.netUtils.parseUserAgent(userAgent);
+        Map<String, String> locationMap = this.netUtils.getLocationInfo(realIp);
 
-        return 0;
+        // 将userAgentMap转换为json
+        String userAgentString = new ObjectMapper().writeValueAsString(userAgentMap);
+        String locationString = new ObjectMapper().writeValueAsString(locationMap);
+
+        param.put("ip",realIp);
+        param.put("agent",userAgentString);
+        param.put("location",locationString);
+
+
+        param.put("status",0);    // 0-待审核
+        param.put("createTime",new Date());
+        param.put("updateTime",new Date());
+        return this.commentMapper.insertComment(param);
     }
+
+    @Override
+    @Transactional
+    public int updateComment(CommentUpdateVo commentUpdateVo) {
+        Comment comment = this.commentMapper.queryCommentById(commentUpdateVo.getId());
+        if (Objects.isNull(comment)) {
+            throw new CustomerException("评论不存在");
+        }
+
+        Map<String, Object> param = BeanUtil.beanToMap(commentUpdateVo);
+        param.put("updateTime",new Date());
+        return this.commentMapper.updateComment(param);
+    }
+
+
+
 }

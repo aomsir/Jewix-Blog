@@ -5,6 +5,7 @@ import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.CommentService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,9 +72,8 @@ public class CommentController {
      */
     @PostMapping("/comments")
     public R addComment(@RequestBody @Validated CommentAddVo commentAddVo,
-                        HttpServletRequest request) {
+                        HttpServletRequest request) throws JsonProcessingException {
         int role = this.commentService.addComment(commentAddVo,request);
-
         return R.ok()
                 .put("role",role);
     }
@@ -87,7 +87,9 @@ public class CommentController {
     @PutMapping("/admin/comments")
     public R updateComment(@RequestBody CommentUpdateVo commentUpdateVo) {
         // TODO：内容状态等等
-        return null;
+        int role = this.commentService.updateComment(commentUpdateVo);
+        return R.ok()
+                .put("role",role);
     }
 
     /**
@@ -98,9 +100,12 @@ public class CommentController {
     @DeleteMapping("/admin/comments")
     public R deleteComment(@RequestBody @Validated CommentDeleteVo commentDeleteVo) {
         // TODO：注意别误删有子评论的评论
-        return null;
-    }
 
+
+        int role = 0;
+        return R.ok()
+                .put("role",role);
+    }
 
 
 

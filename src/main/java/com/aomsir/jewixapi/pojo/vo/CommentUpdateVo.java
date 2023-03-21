@@ -1,6 +1,9 @@
 package com.aomsir.jewixapi.pojo.vo;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @Author: Aomsir
@@ -12,6 +15,11 @@ import lombok.Data;
 
 @Data
 public class CommentUpdateVo {
+    @NotNull(message = "评论ID不能为空")
+    @Range(min = 1, message = "评论ID必须大于0")
+    private Long id;
+
+    private String url;
 
     private String content;
     private Integer status;

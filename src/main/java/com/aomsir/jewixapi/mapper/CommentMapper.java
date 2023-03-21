@@ -17,5 +17,13 @@ public interface CommentMapper {
 
     ArrayList<Comment> queryCommentFrontPageList(@Param("param") Map<String, Object> param);
 
-    Comment queryCommentByParentIdOrPermId(@Param("param") Map<String, Object> param1);
+    Comment queryCommentByParentId(@Param("parentId") Long parentId);
+
+    Comment queryCommentById(@Param("id") Long id);
+
+    int updateComment(@Param("param") Map<String, Object> param);
+
+    Comment queryCommentByPermId(@Param("permId") Long permId);
+
+    int insertComment(@Param("param") Map<String, Object> param);
 }

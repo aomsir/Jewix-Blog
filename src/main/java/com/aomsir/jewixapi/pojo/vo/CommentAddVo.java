@@ -28,10 +28,11 @@ public class CommentAddVo {
     private String url;
 
     @NotNull(message = "类型不允许为空")
-    @Range(min = 1,max = 3)
+    @Range(min = 1,max = 2)
     private Integer type;
 
     @NotNull(message = "目标不允许为空")
+    @Range(min = 1)
     private Long targetId;
 
     @NotNull(message = "父级评论不能为空")

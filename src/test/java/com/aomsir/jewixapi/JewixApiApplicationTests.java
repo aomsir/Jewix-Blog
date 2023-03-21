@@ -2,7 +2,9 @@ package com.aomsir.jewixapi;
 
 import com.aomsir.jewixapi.mapper.UserMapper;
 import com.aomsir.jewixapi.utils.JwtUtils;
+import com.aomsir.jewixapi.utils.NetUtils;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,9 @@ class JewixApiApplicationTests {
 
 	@Resource
 	private UserMapper userMapper;
+
+	@Resource
+	private NetUtils netUtils;
 
 	@Test
 	void contextLoads() {
@@ -44,7 +49,18 @@ class JewixApiApplicationTests {
 	@Test
 	public void testUserMapper() {
 		Long count = this.userMapper.queryUserCount(0, "Aomsir");
-		log.error("{}",count);
+		log.error("{}", count);
 	}
 
+	@Test
+	public void testNetUtilsForAgent() {
+		String agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36";
+		System.out.println("this.netUtils.parseUserAgent(agent) = " + this.netUtils.parseUserAgent(agent));
+	}
+
+	@Test
+	public void testNetUtilsForIp() throws JsonProcessingException {
+		String ip = "194.99.79.36";
+		System.out.println("this.netUtils.getLocationInfo(ip) = " + this.netUtils.getLocationInfo(ip));
+	}
 }
