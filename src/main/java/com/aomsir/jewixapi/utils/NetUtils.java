@@ -19,9 +19,9 @@ import java.util.Map;
 /**
  * @Author: Aomsir
  * @Date: 2023/3/21
- * @Description:
+ * @Description: 网络、UA工具类
  * @Email: info@say521.cn
- * @GitHub: https://github.com/aomsir
+ * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Component
 public class NetUtils {
@@ -30,7 +30,7 @@ public class NetUtils {
     private ObjectMapper objectMapper;
 
 
-    private RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${jewix.gaode-api-key}")
     private String gaodeApiKey;

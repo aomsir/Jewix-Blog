@@ -8,6 +8,7 @@ import com.aomsir.jewixapi.service.UserService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Api("用户接口")
+@Api(tags = "用户控制器")
 @RestController
 public class UserController {
 
@@ -32,8 +33,9 @@ public class UserController {
 
     /**
      * 前台获取站长用户信息
-     * @return
+     * @return 站长基本信息
      */
+    @ApiOperation(value = "前台获取站长用户信息")
     @GetMapping("/users/10000")
     public R getConfigUser() {
         UserConfigDTO userConfigDTO = this.userService.searchConfigUser();
@@ -43,10 +45,11 @@ public class UserController {
 
     /**
      * 分页查询用户信息接口
-     * @param userPageVo
-     * @return
+     * @param userPageVo 分页获取用户VO对象
+     * @return 用户分页列表
      */
-    @PostMapping("/admin/users/page")
+    @ApiOperation(value = "分页查询用户列表")
+    @GetMapping("/admin/users")
     public R getUserPage(@RequestBody @Validated UserPageVo userPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(userPageVo);
 
@@ -63,8 +66,9 @@ public class UserController {
     /**
      * 后台根据UUID获取用户个人详细信息
      * @param uuid 用户uuid
-     * @return  通用返回结果
+     * @return  用户详情
      */
+    @ApiOperation(value = "后台根据UUID获取用户个人详细信息")
     @GetMapping("/admin/users/{uuid}")
     public R getBackendUserByUUID(@PathVariable String uuid) {
         User user = this.userService.searchUserByUUID(uuid);
@@ -75,9 +79,10 @@ public class UserController {
 
     /**
      * 添加/注册新用户接口
-     * @param userAddVo
-     * @return
+     * @param userAddVo 添加用户VO对象
+     * @return 新增用户所影响的行数
      */
+    @ApiOperation(value = "添加/注册新用户")
     @PostMapping("/admin/users")
     public R addUser(@RequestBody @Validated UserAddVo userAddVo) {
         int role = this.userService.addUser(userAddVo);
@@ -88,9 +93,10 @@ public class UserController {
 
     /**
      * 更新用户接口
-     * @param userUpdateVo
-     * @return
+     * @param userUpdateVo 更新用户VO对象
+     * @return 更新用户所影响的行数
      */
+    @ApiOperation(value = "更新用户接口")
     @PutMapping("/admin/users")
     public R updateUser(@RequestBody @Validated UserUpdateVo userUpdateVo) {
         int role = this.userService.updateUser(userUpdateVo);
@@ -101,9 +107,10 @@ public class UserController {
 
     /**
      * 查询邮箱与用户名是否已存在接口
-     * @param userHaveVo
-     * @return
+     * @param userHaveVo 邮箱/用户名是否存在VO对象
+     * @return 所查询的行数
      */
+    @ApiOperation(value = "查询邮箱与用户名是否已存在接口")
     @PostMapping("/users/hasUser")
     public R hasUser(@RequestBody @Validated UserHaveVo userHaveVo) {
         int role = this.userService.hasUser(userHaveVo);
@@ -114,13 +121,17 @@ public class UserController {
 
     /**
      * 根据uuid修改用户状态
-     * @param userStatusVo
-     * @return
+     * @param userStatusVo 修改用户状态VO对象
+     * @return 更新状态所影响的行数
      */
-    @PostMapping("/admin/users/status")
+    @ApiOperation(value = "根据uuid修改用户状态")
+    @PutMapping("/admin/users/status")
     public R updateStatus(@RequestBody @Validated UserStatusVo userStatusVo) {
         int role = this.userService.updateStatus(userStatusVo);
         return R.ok()
                 .put("role",role);
     }
+
+
+    // TODO: 删除接口
 }

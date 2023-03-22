@@ -8,7 +8,10 @@ import com.aomsir.jewixapi.pojo.vo.CategorySonListById;
 import com.aomsir.jewixapi.service.CategoryService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +27,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
+@Api(tags = "分类控制器")
 @RestController
 public class CategoryController {
 
@@ -33,10 +37,11 @@ public class CategoryController {
 
     /**
      * 分页查询一级分类列表
-     * @param categoryParentPageVo
-     * @return
+     * @param categoryParentPageVo 分页查询一级分类列表VO对象
+     * @return 一级分类列表
      */
-    @PostMapping("/category/parentList")
+    @ApiOperation(value = "分页查询一级分类列表")
+    @GetMapping("/categories/parent")
     public R getCategoryParentListByPage(@RequestBody @Validated CategoryParentPageVo categoryParentPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(categoryParentPageVo);
         int page = (Integer) param.get("page");
@@ -51,10 +56,11 @@ public class CategoryController {
 
     /**
      * 根据id分页查询二级分类接口
-     * @param categorySonListById
-     * @return
+     * @param categorySonListById 根据id分页获取二级分类列表VO对象
+     * @return 分类分页列表
      */
-    @PostMapping("/category/sonList")
+    @ApiOperation(value = "根据id分页查询二级分类")
+    @GetMapping("/categories/son")
     public R getCategoryListPageByParentId(@RequestBody @Validated CategorySonListById categorySonListById) {
         Map<String, Object> param = BeanUtil.beanToMap(categorySonListById);
         int page = (Integer) param.get("page");
@@ -68,11 +74,12 @@ public class CategoryController {
     }
 
     /**
-     * 通用分类添加接口
-     * @param categoryAddVo
-     * @return
+     * 添加分类接口
+     * @param categoryAddVo 分类添加VO实体类
+     * @return 添加分类所影响的行数
      */
-    @PostMapping("/admin/category/add")
+    @ApiOperation(value = "添加分类")
+    @PostMapping("/admin/categories")
     public R addCategory(@RequestBody @Validated CategoryAddVo categoryAddVo) {
         int role = this.categoryService.addCategory(categoryAddVo);
         return R.ok()
@@ -80,12 +87,16 @@ public class CategoryController {
     }
 
 
+    // TODO：删除分类、修改分类
+
+
     /**
      * 根据分类名分页查询文章预览列表
-     * @param articleCategoryVo
-     * @return
+     * @param articleCategoryVo 根据分类获取文章列表VO对象
+     * @return 分类文章分页列表
      */
-    @PostMapping("/category/articles")
+    @ApiOperation(value = "根据分类名分页查询文章预览列表")
+    @GetMapping("/categories/articles")
     public R getArticlesPageByCategoryName(@RequestBody @Validated ArticleCategoryVo articleCategoryVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleCategoryVo);
         int page = (Integer) param.get("page");

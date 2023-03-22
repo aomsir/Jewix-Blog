@@ -9,6 +9,8 @@ import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
+@Api(tags = "文章控制器")
 @RestController
 public class ArticleController {
 
@@ -32,10 +35,12 @@ public class ArticleController {
 
     /**
      * 后台无限制获取文章列表
-     * @param articleBackendPageVo
-     * @return
+     * @param articleBackendPageVo 后台无限制获取文章列表VO对象
+     * @return 文章分页列表
      */
-    @GetMapping("/admin/articles/page")
+    // TODO：获取文章列表即可
+    @ApiOperation(value = "后台无限制分页获取文章列表", notes = "后台无限制分页获取文章列表")
+    @GetMapping("/admin/articles")
     public R getBackendArticleByPage(@RequestBody @Validated ArticleBackendPageVo articleBackendPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleBackendPageVo);
         int page = (Integer) param.get("page");
@@ -51,10 +56,11 @@ public class ArticleController {
 
     /**
      * 前台获取文章分页列表
-     * @param articleFrontPageVo
-     * @return
+     * @param articleFrontPageVo 前台分页获取文章预览VO对象
+     * @return 预览文章分页列表
      */
-    @GetMapping("/articles/page")
+    @ApiOperation(value = "前台获取文章分页列表", notes = "前台获取文章分页列表")
+    @GetMapping("/articles")
     public R getFrontArticleByPage(@RequestBody @Validated ArticleFrontPageVo articleFrontPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleFrontPageVo);
         int page = (Integer) param.get("page");
@@ -70,10 +76,11 @@ public class ArticleController {
 
     /**
      * 添加文章
-     * @param articleAddVo
-     * @return
+     * @param articleAddVo 添加文章VO对象
+     * @return 添加文章所影响的行数
      */
-    @PostMapping("/articles")
+    @ApiOperation(value = "添加文章", notes = "添加文章")
+    @PostMapping("/admin/articles")
     public R addArticle(@RequestBody @Validated ArticleAddVo articleAddVo) {
         int role = this.articleService.addArticle(articleAddVo);
         return R.ok()
@@ -83,10 +90,11 @@ public class ArticleController {
 
     /**
      * 修改文章
-     * @param articleUpdateVo
-     * @return
+     * @param articleUpdateVo 更新文章VO对象
+     * @return 更新文章所影响的行数
      */
-    @PutMapping("/articles")
+    @ApiOperation(value = "修改文章", notes = "修改文章")
+    @PutMapping("/admin/articles")
     public R updateArticle(@RequestBody @Validated ArticleUpdateVo articleUpdateVo) {
         int role = this.articleService.updateArticle(articleUpdateVo);
         return R.ok()
@@ -96,9 +104,10 @@ public class ArticleController {
 
     /**
      * 文章详情
-     * @param uuid
-     * @return
+     * @param uuid 文章uuid
+     * @return 文章详情
      */
+    @ApiOperation(value = "文章详情", notes = "文章详情")
     @GetMapping("/articles/{uuid}")
     public R getArticleByUuid(@PathVariable("uuid") String uuid) {
         ArticleDetailDTO articleDetailDTO = this.articleService.queryArticleByUuid(uuid);

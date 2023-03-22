@@ -8,8 +8,8 @@ import com.aomsir.jewixapi.service.PhotoService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
 import com.upyun.UpException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,10 +31,10 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
+@Api(tags = "相册控制器")
 @RestController
 public class PhotoController {
 
-    private static final Logger log = LoggerFactory.getLogger(PhotoController.class);
     @Resource
     private PhotoService photoService;
 
@@ -45,13 +45,14 @@ public class PhotoController {
 
     /**
      * 上传照片到云端
-     * @param file
-     * @param photoUpdateVo
-     * @return
-     * @throws UpException
-     * @throws IOException
+     * @param file 上传的文件
+     * @param photoUpdateVo 上传相册VO对象
+     * @return 上传相册所影响的行数
+     * @throws UpException 又拍云异常
+     * @throws IOException IO异常
      */
-    @PostMapping("/photo/update")
+    @ApiOperation(value = "上传照片到云端")
+    @PostMapping("/admin/photos")
     public R updatePhoto(MultipartFile file,
                          @Validated PhotoUpdateVo photoUpdateVo) throws UpException, IOException {
         // TODO: 修改为权限校验
@@ -62,10 +63,11 @@ public class PhotoController {
 
     /**
      * 根据类型分页查询相册列表
-     * @param photoPageVo
-     * @return
+     * @param photoPageVo 分页获取相册VO对象
+     * @return 相册分页列表
      */
-    @PostMapping("/photo/list")
+    @ApiOperation(value = "根据类型分页查询相册列表")
+    @GetMapping("/admin/photos")
     public R getPhotoListByPage(@RequestBody @Validated PhotoPageVo photoPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(photoPageVo);
 
@@ -81,10 +83,11 @@ public class PhotoController {
 
     /**
      * 根据文件名获取服务器本地相册文件
-     * @param response
-     * @param name
+     * @param response ServletResponse
+     * @param name 上传后更新的文件名
      */
-    @GetMapping("/photo/download")
+    @ApiOperation(value = "根据文件名获取服务器本地相册文件")
+    @GetMapping("/photos/download")
     public void download(ServletResponse response,
                          @RequestParam("name") String name) {
         try {
@@ -114,12 +117,13 @@ public class PhotoController {
 
     /**
      * 根据文件名与类型删除相册信息
-     * @param photoDeleteVo
-     * @return
-     * @throws UpException
-     * @throws IOException
+     * @param photoDeleteVo 删除相册VO对象
+     * @return 删除所影响的行数
+     * @throws UpException 又拍云异常
+     * @throws IOException IO异常
      */
-    @PostMapping("/photo/delete")
+    @ApiOperation(value = "根据文件名与类型删除相册信息")
+    @DeleteMapping("/admin/photos")
     public R deletePhoto(@RequestBody @Validated PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
         int role = this.photoService.deletePhoto(photoDeleteVo);
         return R.ok()

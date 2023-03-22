@@ -8,6 +8,8 @@ import com.aomsir.jewixapi.pojo.vo.FriendLinkUpdateVo;
 import com.aomsir.jewixapi.service.FriendLinkService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
+@Api(tags = "友情链接控制器")
 @RestController
 public class FriendLinkController {
 
@@ -31,10 +34,11 @@ public class FriendLinkController {
 
     /**
      * 分页查询友链列表
-     * @param friendLinkPageVo
-     * @return
+     * @param friendLinkPageVo 分页获取友链列表VO对象
+     * @return 友链列表
      */
-    @PostMapping("/friend-link/list")
+    @ApiOperation(value = "分页查询友链列表")
+    @GetMapping("/friend-links/page")
     public R getFriendLinksByPage(@RequestBody @Validated FriendLinkPageVo friendLinkPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(friendLinkPageVo);
         int page = (Integer) param.get("page");
@@ -50,10 +54,11 @@ public class FriendLinkController {
 
     /**
      * 添加友情链接
-     * @param friendLinkAddVo
-     * @return
+     * @param friendLinkAddVo 添加友链VO对象
+     * @return 友链分页列表
      */
-    @PostMapping("/admin/friend-link/add")
+    @ApiOperation(value = "添加友情链接")
+    @PostMapping("/admin/friend-links")
     public R addFriendLink(@RequestBody @Validated FriendLinkAddVo friendLinkAddVo) {
         Map<String, Object> param = BeanUtil.beanToMap(friendLinkAddVo);
         int role = this.friendLinkService.addFriendLink(param);
@@ -64,10 +69,11 @@ public class FriendLinkController {
 
     /**
      * 更新友情链接信息
-     * @param friendLinkUpdateVo
-     * @return
+     * @param friendLinkUpdateVo 更新友链VO对象
+     * @return 更新友链所影响的行数
      */
-    @PutMapping("/admin/friend-link/update")
+    @ApiOperation(value = "修改友情链接信息")
+    @PutMapping("/admin/friend-links")
     public R updateFriendLink(@RequestBody @Validated FriendLinkUpdateVo friendLinkUpdateVo) {
         Map<String, Object> param = BeanUtil.beanToMap(friendLinkUpdateVo);
 
@@ -76,7 +82,13 @@ public class FriendLinkController {
                 .put("role", role);
     }
 
-    @GetMapping("/friend-link/{id}")
+    /**
+     * 根据id获取友情链接详情
+     * @param id 友链ID
+     * @return 友链详情
+     */
+    @ApiOperation(value = "根据id获取友情链接详情")
+    @GetMapping("/admin/friend-links/{id}")
     public R getFriendLinkInfo(@PathVariable("id") Integer id) {
         FriendLink friendLink = this.friendLinkService.findFriendLinkInfoById(id);
         return R.ok()
