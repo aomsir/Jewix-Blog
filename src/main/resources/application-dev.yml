@@ -1,5 +1,7 @@
 server:
   port: 7891
+  servlet:
+    context-path: /api
 
 spring:
   application:
@@ -10,6 +12,7 @@ spring:
     url: jdbc:mysql://localhost:3307/blog?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
+
 
 
 

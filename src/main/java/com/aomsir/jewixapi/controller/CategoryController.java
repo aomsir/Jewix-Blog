@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.pojo.dto.CategoryListDTO;
 import com.aomsir.jewixapi.pojo.vo.ArticleCategoryVo;
 import com.aomsir.jewixapi.pojo.vo.CategoryAddVo;
 import com.aomsir.jewixapi.pojo.vo.CategoryParentPageVo;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,7 +43,7 @@ public class CategoryController {
      * @return 一级分类列表
      */
     @ApiOperation(value = "分页查询一级分类列表")
-    @GetMapping("/categories/parent")
+    @PostMapping("/categories/parent")
     public R getCategoryParentListByPage(@RequestBody @Validated CategoryParentPageVo categoryParentPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(categoryParentPageVo);
         int page = (Integer) param.get("page");
@@ -60,7 +62,7 @@ public class CategoryController {
      * @return 分类分页列表
      */
     @ApiOperation(value = "根据id分页查询二级分类")
-    @GetMapping("/categories/son")
+    @PostMapping("/categories/son")
     public R getCategoryListPageByParentId(@RequestBody @Validated CategorySonListById categorySonListById) {
         Map<String, Object> param = BeanUtil.beanToMap(categorySonListById);
         int page = (Integer) param.get("page");
@@ -71,6 +73,19 @@ public class CategoryController {
 
         return R.ok()
                 .put("result",pageUtils);
+    }
+
+
+    /**
+     * 查询一级分类及其二级分类
+     * @return 分类列表
+     */
+    @ApiOperation(value = "获取一级分类及其子分类")
+    @GetMapping("/categories")
+    public R getCategoryList() {
+        List<CategoryListDTO> resultList = this.categoryService.searchCategoryList();
+        return R.ok()
+                .put("result",resultList);
     }
 
     /**
@@ -96,7 +111,7 @@ public class CategoryController {
      * @return 分类文章分页列表
      */
     @ApiOperation(value = "根据分类名分页查询文章预览列表")
-    @GetMapping("/categories/articles")
+    @PostMapping("/categories/articles")
     public R getArticlesPageByCategoryName(@RequestBody @Validated ArticleCategoryVo articleCategoryVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleCategoryVo);
         int page = (Integer) param.get("page");

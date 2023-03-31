@@ -146,12 +146,14 @@
 			<version>2.12.1</version>
 		</dependency>
 
+		<!--工具类依赖-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.12.0</version>
 		</dependency>
 
+		<!--获取用户浏览器信息-->
 		<dependency>
 			<groupId>eu.bitwalker</groupId>
 			<artifactId>UserAgentUtils</artifactId>

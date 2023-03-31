@@ -49,7 +49,7 @@ public class UserController {
      * @return 用户分页列表
      */
     @ApiOperation(value = "分页查询用户列表")
-    @GetMapping("/admin/users")
+    @PostMapping("/admin/users")
     public R getUserPage(@RequestBody @Validated UserPageVo userPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(userPageVo);
 

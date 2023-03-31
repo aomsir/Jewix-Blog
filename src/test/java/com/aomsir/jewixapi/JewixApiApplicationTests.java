@@ -1,6 +1,8 @@
 package com.aomsir.jewixapi;
 
+import com.aomsir.jewixapi.mapper.CategoryMapper;
 import com.aomsir.jewixapi.mapper.UserMapper;
+import com.aomsir.jewixapi.pojo.dto.CategoryListDTO;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.aomsir.jewixapi.utils.NetUtils;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @SpringBootTest
 class JewixApiApplicationTests {
@@ -24,6 +27,9 @@ class JewixApiApplicationTests {
 
 	@Resource
 	private UserMapper userMapper;
+
+	@Resource
+	private CategoryMapper categoryMapper;
 
 	@Resource
 	private NetUtils netUtils;
@@ -62,5 +68,12 @@ class JewixApiApplicationTests {
 	public void testNetUtilsForIp() throws JsonProcessingException {
 		String ip = "194.99.79.36";
 		System.out.println("this.netUtils.getLocationInfo(ip) = " + this.netUtils.getLocationInfo(ip));
+	}
+
+	@Test
+	public void testCategoryList() {
+		List<CategoryListDTO> categoryListDTOS =
+				this.categoryMapper.queryCategoryList();
+		System.out.println("categoryListDTOS = " + categoryListDTOS);
 	}
 }

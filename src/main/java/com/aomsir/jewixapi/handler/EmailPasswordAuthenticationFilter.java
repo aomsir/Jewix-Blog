@@ -100,7 +100,9 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
             put("token",token);
         }};
 
-        this.hostHolder.setUserId(user.getId());
+        System.out.println("user = " + user);
+        // System.out.println("hostHolder = " + hostHolder);
+        // this.hostHolder.setUserId(user.getId());
 
         // TODO:TOKEN存储到Redis
         R r = R.ok(returnToken);

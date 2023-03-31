@@ -4,6 +4,7 @@ import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.CategoryMapper;
 import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
+import com.aomsir.jewixapi.pojo.dto.CategoryListDTO;
 import com.aomsir.jewixapi.pojo.entity.Category;
 import com.aomsir.jewixapi.pojo.vo.CategoryAddVo;
 import com.aomsir.jewixapi.service.CategoryService;
@@ -119,5 +120,10 @@ public class CategoryServiceImpl implements CategoryService {
         int length = (Integer) param.get("length");
         PageUtils pageUtils = new PageUtils(list,count,start,length);
         return pageUtils;
+    }
+
+    @Override
+    public List<CategoryListDTO> searchCategoryList() {
+        return this.categoryMapper.queryCategoryList();
     }
 }

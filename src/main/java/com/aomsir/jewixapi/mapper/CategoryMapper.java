@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.mapper;
 
 
 import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
+import com.aomsir.jewixapi.pojo.dto.CategoryListDTO;
 import com.aomsir.jewixapi.pojo.entity.Category;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,4 +27,6 @@ public interface CategoryMapper {
     List<ArticlePreviewDTO> queryArticleListPageByCategoryName(@Param("param") Map<String, Object> param);
 
     Boolean queryIdsExists(@Param("list") List<Integer> categoryIds);
+
+    List<CategoryListDTO> queryCategoryList();
 }
