@@ -12,10 +12,7 @@ import com.aomsir.jewixapi.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -43,8 +40,8 @@ public class CategoryController {
      * @return 一级分类列表
      */
     @ApiOperation(value = "分页查询一级分类列表")
-    @PostMapping("/categories/parent")
-    public R getCategoryParentListByPage(@RequestBody @Validated CategoryParentPageVo categoryParentPageVo) {
+    @GetMapping("/categories/parent")
+    public R getCategoryParentListByPage(@Validated CategoryParentPageVo categoryParentPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(categoryParentPageVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");
@@ -62,8 +59,8 @@ public class CategoryController {
      * @return 分类分页列表
      */
     @ApiOperation(value = "根据id分页查询二级分类")
-    @PostMapping("/categories/son")
-    public R getCategoryListPageByParentId(@RequestBody @Validated CategorySonListById categorySonListById) {
+    @GetMapping("/categories/son")
+    public R getCategoryListPageByParentId(@Validated CategorySonListById categorySonListById) {
         Map<String, Object> param = BeanUtil.beanToMap(categorySonListById);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");
@@ -94,8 +91,8 @@ public class CategoryController {
      * @return 添加分类所影响的行数
      */
     @ApiOperation(value = "添加分类")
-    @PostMapping("/admin/categories")
-    public R addCategory(@RequestBody @Validated CategoryAddVo categoryAddVo) {
+    @GetMapping("/admin/categories")
+    public R addCategory(@RequestParam @Validated CategoryAddVo categoryAddVo) {
         int role = this.categoryService.addCategory(categoryAddVo);
         return R.ok()
                 .put("role", role);
@@ -111,8 +108,8 @@ public class CategoryController {
      * @return 分类文章分页列表
      */
     @ApiOperation(value = "根据分类名分页查询文章预览列表")
-    @PostMapping("/categories/articles")
-    public R getArticlesPageByCategoryName(@RequestBody @Validated ArticleCategoryVo articleCategoryVo) {
+    @GetMapping("/categories/articles")
+    public R getArticlesPageByCategoryName(@Validated ArticleCategoryVo articleCategoryVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleCategoryVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");

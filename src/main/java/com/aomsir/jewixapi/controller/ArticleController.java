@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -40,8 +41,8 @@ public class ArticleController {
      */
     // TODO：获取文章列表即可
     @ApiOperation(value = "后台无限制分页获取文章列表", notes = "后台无限制分页获取文章列表")
-    @PostMapping("/admin/articles")
-    public R getBackendArticleByPage(@RequestBody @Validated ArticleBackendPageVo articleBackendPageVo) {
+    @GetMapping("/admin/articles")
+    public R getBackendArticleByPage(@Validated ArticleBackendPageVo articleBackendPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleBackendPageVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");
@@ -60,8 +61,8 @@ public class ArticleController {
      * @return 预览文章分页列表
      */
     @ApiOperation(value = "前台获取文章分页列表", notes = "前台获取文章分页列表")
-    @PostMapping("/articles")
-    public R getFrontArticleByPage(@RequestBody @Validated ArticleFrontPageVo articleFrontPageVo) {
+    @GetMapping("/articles")
+    public R getFrontArticleByPage(@Valid ArticleFrontPageVo articleFrontPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleFrontPageVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");

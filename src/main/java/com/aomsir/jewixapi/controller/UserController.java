@@ -49,8 +49,8 @@ public class UserController {
      * @return 用户分页列表
      */
     @ApiOperation(value = "分页查询用户列表")
-    @PostMapping("/admin/users")
-    public R getUserPage(@RequestBody @Validated UserPageVo userPageVo) {
+    @GetMapping("/admin/users")
+    public R getUserPage(@Validated UserPageVo userPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(userPageVo);
 
         int page = userPageVo.getPage();
@@ -111,8 +111,8 @@ public class UserController {
      * @return 所查询的行数
      */
     @ApiOperation(value = "查询邮箱与用户名是否已存在接口")
-    @PostMapping("/users/hasUser")
-    public R hasUser(@RequestBody @Validated UserHaveVo userHaveVo) {
+    @GetMapping("/users/hasUser")
+    public R hasUser(@Validated UserHaveVo userHaveVo) {
         int role = this.userService.hasUser(userHaveVo);
         return R.ok()
                 .put("role",role);

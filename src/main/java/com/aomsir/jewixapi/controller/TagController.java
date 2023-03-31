@@ -39,8 +39,8 @@ public class TagController {
      * @return 分页标签列表
      */
     @ApiOperation(value = "分页获取标签列表")
-    @PostMapping("/tags")
-    public R getTagListByPage(@RequestBody @Validated TagPageVo tagPageVo) {
+    @GetMapping("/tags")
+    public R getTagListByPage(@Validated TagPageVo tagPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(tagPageVo);
         int page = tagPageVo.getPage();
         int length = tagPageVo.getLength();
@@ -104,8 +104,8 @@ public class TagController {
      * @return 根据标签获取的文章分页列表
      */
     @ApiOperation(value = "根据标签名分页查询预览文章列表")
-    @PostMapping("/tags/articles")
-    public R getArticlesByTagName(@RequestBody @Validated ArticleTagVo articleTagVo) {
+    @GetMapping("/tags/articles")
+    public R getArticlesByTagName(@Validated ArticleTagVo articleTagVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleTagVo);
         int page = articleTagVo.getPage();
         int length = articleTagVo.getLength();
