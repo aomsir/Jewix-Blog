@@ -86,6 +86,7 @@
 <!--        <result-->
 <!--    </resultMap>-->
 
+    <!--TODO:待完成-->
     <select id="queryCategoryList" resultType="com.aomsir.jewixapi.pojo.dto.CategoryListDTO">
 #         SELECT id, category_name, parent_id
 #         FROM tb_category

@@ -91,8 +91,8 @@ public class CategoryController {
      * @return 添加分类所影响的行数
      */
     @ApiOperation(value = "添加分类")
-    @GetMapping("/admin/categories")
-    public R addCategory(@RequestParam @Validated CategoryAddVo categoryAddVo) {
+    @PostMapping("/admin/categories")
+    public R addCategory(@RequestBody @Validated CategoryAddVo categoryAddVo) {
         int role = this.categoryService.addCategory(categoryAddVo);
         return R.ok()
                 .put("role", role);
