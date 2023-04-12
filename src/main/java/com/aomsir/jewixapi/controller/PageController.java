@@ -89,7 +89,7 @@ public class PageController {
      */
     @ApiOperation(value = "删除页面")
     @DeleteMapping("/admin/pages")
-    public R deletePage(@RequestBody @Validated PageDeleteVo page) {
+    public R deletePage(@RequestParam PageDeleteVo page) {
         int role = this.pageService.deletePage(page);
         return R.ok()
                 .put("role", role);

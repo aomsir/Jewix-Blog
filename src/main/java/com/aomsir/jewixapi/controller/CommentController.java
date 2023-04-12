@@ -105,7 +105,7 @@ public class CommentController {
      */
     @ApiOperation(value = "根据id列表删除文章评论")
     @DeleteMapping("/admin/comments")
-    public R deleteComment(@RequestBody @Validated CommentDeleteVo commentDeleteVo) {
+    public R deleteComment(@RequestParam CommentDeleteVo commentDeleteVo) {
 
         int role = this.commentService.deleteComment(commentDeleteVo);
         return R.ok()

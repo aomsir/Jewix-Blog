@@ -94,4 +94,6 @@ public class FriendLinkController {
         return R.ok()
                 .put("result",friendLink);
     }
+
+    // TODO：删除友链
 }

@@ -191,6 +191,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public int deleteComment(CommentDeleteVo commentDeleteVo) {
+
+        if (Objects.isNull(commentDeleteVo.getIds()) || Objects.isNull(commentDeleteVo)) {
+            throw new CustomerException("删除列表不许为空");
+        }
         ArrayList<Long> ids = commentDeleteVo.getIds();
         int role = 0;
         for (Long id : ids) {

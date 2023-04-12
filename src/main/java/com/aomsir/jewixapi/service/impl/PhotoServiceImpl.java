@@ -140,6 +140,10 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     @Transactional
     public int deletePhoto(PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
+        if (Objects.isNull(photoDeleteVo.getFileName()) || Objects.isNull(photoDeleteVo.getType())) {
+            throw new CustomerException("参数传递异常");
+        }
+
         String voFileName = photoDeleteVo.getFileName();
         String fileName = voFileName.substring(voFileName.lastIndexOf("/") + 1);
         String location = "/" + voFileName.substring(0, voFileName.lastIndexOf("/") + 1);

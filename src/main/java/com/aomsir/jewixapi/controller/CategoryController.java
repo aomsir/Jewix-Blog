@@ -99,9 +99,6 @@ public class CategoryController {
     }
 
 
-    // TODO：删除分类、修改分类
-
-
     /**
      * 根据分类名分页查询文章预览列表
      * @param articleCategoryVo 根据分类获取文章列表VO对象
@@ -120,4 +117,6 @@ public class CategoryController {
         return R.ok()
                 .put("result",pageUtils);
     }
+
+    // TODO：删除分类、修改分类
 }

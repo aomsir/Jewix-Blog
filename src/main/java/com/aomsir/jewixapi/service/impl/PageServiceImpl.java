@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.CommentMapper;
 import com.aomsir.jewixapi.mapper.PageMapper;
 import com.aomsir.jewixapi.pojo.entity.Page;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Author: Aomsir
@@ -61,6 +63,10 @@ public class PageServiceImpl implements PageService {
     @Override
     @Transactional
     public int deletePage(PageDeleteVo page) {
+        if (Objects.isNull(page.getId()) || Objects.isNull(page.getOmit())) {
+            throw new CustomerException("参数传递异常");
+        }
+
         Page page_1 = this.pageMapper.queryPageById(page.getId());
         if (page_1 == null) {
             throw new RuntimeException("页面不存在");
