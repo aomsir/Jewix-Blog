@@ -98,4 +98,11 @@
 #         )
 
     </select>
+
+    <select id="queryArticleCountsById" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_comment
+        WHERE target_id = #{articleId}
+        AND type = 1
+    </select>
 </mapper>

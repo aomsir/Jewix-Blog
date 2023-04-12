@@ -29,4 +29,6 @@ public interface CategoryMapper {
     Boolean queryIdsExists(@Param("list") List<Integer> categoryIds);
 
     List<CategoryListDTO> queryCategoryList();
+
+    Integer queryArticleCountsById(@Param("articleId") Long id);
 }

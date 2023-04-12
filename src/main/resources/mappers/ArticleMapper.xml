@@ -209,8 +209,24 @@
     <select id="queryArticleUserName" resultType="String">
         SELECT tu.nickname
         FROM tb_article AS ta
-        LEFT JOIN tb_article_user AS tau ON ta.id = tau.article_id
-        LEFT JOIN tb_user AS tu ON ta.uuid = tu.uuid
+        LEFT JOIN tb_article_user AS tau ON tau.article_id = ta.id
+        LEFT JOIN tb_user AS tu ON tau.user_id = tu.id
         WHERE ta.id = #{id}
+    </select>
+
+    <select id="queryLastUuidByCreateTime" resultType="String">
+        SELECT uuid
+        FROM tb_article
+        WHERE create_time &lt; #{createTime}
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="queryNextUuidByCreateTime" resultType="String">
+        SELECT uuid
+        FROM tb_article
+        WHERE create_time &gt; #{createTime}
+        ORDER BY create_time ASC
+        LIMIT 1
     </select>
 </mapper>

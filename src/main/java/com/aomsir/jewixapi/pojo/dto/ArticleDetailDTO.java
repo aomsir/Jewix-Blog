@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.pojo.dto;
 
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +25,8 @@ public class ArticleDetailDTO {
     private Integer views;
     private Integer isTop;
     private Integer isDelete;
+    private Date createTime;
+    private Date updateTime;
 
     private Integer commentCount;
 
@@ -32,5 +35,8 @@ public class ArticleDetailDTO {
     private List<String> tags;
 
     private String userName;
+
+    private String lastUuid;
+    private String nextUuid;
 
 }

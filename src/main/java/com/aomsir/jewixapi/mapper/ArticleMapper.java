@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,4 +42,8 @@ public interface ArticleMapper {
     List<String> queryArticleTagNameList(@Param("id") Long id);
 
     String queryArticleUserName(@Param("id") Long id);
+
+    String queryLastUuidByCreateTime(@Param("createTime") Date createTime);
+
+    String queryNextUuidByCreateTime(@Param("createTime") Date createTime);
 }

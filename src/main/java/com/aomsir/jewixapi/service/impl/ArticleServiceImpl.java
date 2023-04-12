@@ -4,12 +4,14 @@ import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.CategoryMapper;
+import com.aomsir.jewixapi.mapper.CommentMapper;
 import com.aomsir.jewixapi.mapper.TagMapper;
 import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
+import com.aomsir.jewixapi.service.CommentService;
 import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
@@ -43,6 +45,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private HostHolder hostHolder;
+
+    @Resource
+    private CommentMapper commentMapper;
 
 
     @Override
@@ -158,13 +163,21 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<String> categotyList = this.articleMapper.queryArticleCategoryNameList(article.getId());
         List<String> tagList = this.articleMapper.queryArticleTagNameList(article.getId());
-        String userName = this.articleMapper.queryArticleUserName(article.getId());
+        String userName = this.articleMapper.queryArticleUserName(article.getId());    // 根据文章id获取文章的作者名
 
         articleDetailDTO.setCategories(categotyList);
         articleDetailDTO.setTags(tagList);
         articleDetailDTO.setUserName(userName);
 
+        // 封装上一篇与下一篇文章uuid
+        String lastUuid = this.articleMapper.queryLastUuidByCreateTime(article.getCreateTime());
+        String nextUuid = this.articleMapper.queryNextUuidByCreateTime(article.getCreateTime());
+        articleDetailDTO.setLastUuid(lastUuid);
+        articleDetailDTO.setNextUuid(nextUuid);
+
         // TODO：评论数
+        Integer count = this.categoryMapper.queryArticleCountsById(article.getId());
+        articleDetailDTO.setCommentCount(count);
         return articleDetailDTO;
     }
 }
