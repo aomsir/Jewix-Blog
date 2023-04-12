@@ -64,7 +64,7 @@
 
 
     <select id="queryArticleBackendList" resultType="Article">
-        SELECT id, uuid, title, cover, SUBSTRING(content,1,50) AS content,
+        SELECT id, uuid, title, cover, description AS content,
         type, origin_url, views, is_top, is_delete, status, create_time, update_time
         FROM tb_article
         <where>
@@ -101,7 +101,7 @@
 
 
     <select id="queryArticleFrontList" resultType="Article">
-        SELECT id, uuid, title, cover, SUBSTRING(content,1,50) AS content,
+        SELECT id, uuid, title, cover, description AS content,
                type, origin_url, views, is_top, is_delete, status, create_time, update_time
         FROM tb_article
         <where>
@@ -117,11 +117,12 @@
 
 
     <insert id="insertArticle" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_article(uuid, title, cover, content, type, origin_url, is_top, is_delete, status, create_time, update_time)
+        INSERT INTO tb_article(uuid, title, cover, content, description,type, origin_url, is_top, is_delete, status, create_time, update_time)
         VALUES (#{param.uuid},
                 #{param.title},
                 #{param.cover},
                 #{param.content},
+                #{param.description}
                 #{param.type},
                 #{param.originUrl},
                 #{param.isTop},
@@ -183,6 +184,9 @@
             </if>
             <if test="param.updateTime != null">
                 update_time = #{param.updateTime}
+            </if>
+            <if test="param.description != null">
+                description = #{param.description}
             </if>
         </set>
         WHERE id = #{param.id}

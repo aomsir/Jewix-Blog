@@ -29,6 +29,9 @@ public class ArticleAddVo {
     @Range(min = 1,max = 2,message = "类型只允许在1-2之间")
     private Integer type;
 
+    @NotNull(message = "文章描述不允许为空")
+    private String description;
+
     private String originUrl;
 
     @NotNull(message = "置顶状态不允许为空")

@@ -21,4 +21,5 @@ public class Article extends BaseEntity{
     private Integer views;
     private Integer isTop;
     private Integer isDelete;
+    private String description;
 }

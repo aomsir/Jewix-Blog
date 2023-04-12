@@ -10,6 +10,7 @@ import lombok.Data;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
+// TODO:添加字段校验
 @Data
 public class ArticleUpdateVo {
     private Long id;
@@ -17,6 +18,7 @@ public class ArticleUpdateVo {
     private String title;
     private String cover;
     private String content;
+    private String description;
     private Integer type;
     private String originUrl;
     private Integer views;

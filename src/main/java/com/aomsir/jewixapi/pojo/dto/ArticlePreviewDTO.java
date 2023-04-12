@@ -15,7 +15,7 @@ public class ArticlePreviewDTO extends BaseEntity {
     private Long id;
     private String title;
     private String cover;
-    private String content;
+    private String description;
     private Integer views;
     private Integer isTop;
 }
