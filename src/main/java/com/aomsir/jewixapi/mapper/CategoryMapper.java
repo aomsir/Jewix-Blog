@@ -31,4 +31,8 @@ public interface CategoryMapper {
     List<CategoryListDTO> queryCategoryList();
 
     Integer queryArticleCountsById(@Param("articleId") Long id);
+
+    List<Category> queryCategoryListByParentId(@Param("parentId") Integer parentId);
+
+    Category queryCategoryByNameAndParentId(@Param("categoryName") String categoryName, @Param("parentId") Integer parentId);
 }

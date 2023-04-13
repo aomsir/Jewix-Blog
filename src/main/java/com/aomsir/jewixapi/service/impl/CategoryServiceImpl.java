@@ -12,6 +12,7 @@ import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -72,8 +73,12 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
+    @Transactional
     public int addCategory(CategoryAddVo categoryAddVo) {
-        Category category = this.categoryMapper.queryCategoryByName(categoryAddVo.getCategoryName());
+        //  根据子分类名与父类id去查询是否已经存在
+        Category category = this.categoryMapper.queryCategoryByNameAndParentId(categoryAddVo.getCategoryName(),categoryAddVo.getParentId());
+
+        // 存在则无法进行添加(一级分类与二级分类均适用)
         if (category != null) {
             throw new CustomerException("分类已存在嗷!");
         }
@@ -81,12 +86,21 @@ public class CategoryServiceImpl implements CategoryService {
         // 非一级分类的情况
         if (categoryAddVo.getParentId() != 0) {
             Category category_1 = this.categoryMapper.queryCategoryByParentId(categoryAddVo.getParentId());
+
             if (category_1 == null) {
                 throw new CustomerException("一级分类不存在嗷,请重新选择!");
             }
 
             if (category_1.getParentId() != 0) {
                 throw new CustomerException("选择的分类不是一级分类嗷!");
+            }
+
+            // 再次保证a子分类可以出现在多个父分类下
+            List<Category> list = this.categoryMapper.queryCategoryListByParentId(categoryAddVo.getParentId());
+            for (Category category1 : list) {
+                if (category1.getCategoryName().equals(categoryAddVo.getCategoryName())) {
+                    throw new CustomerException(category_1.getCategoryName() + "分类下已有 "+categoryAddVo.getCategoryName()+" 分类");
+                }
             }
         }
 
@@ -96,8 +110,7 @@ public class CategoryServiceImpl implements CategoryService {
         category_2.setCreateTime(new Date());
         category_2.setUpdateTime(new Date());
 
-        int role = this.categoryMapper.insertCategory(category_2);
-        return role;
+        return this.categoryMapper.insertCategory(category_2);
     }
 
 

@@ -105,4 +105,17 @@
         WHERE target_id = #{articleId}
         AND type = 1
     </select>
+
+    <select id="queryCategoryListByParentId" resultType="Category">
+        SELECT id,category_name,parent_id,create_time,update_time
+        FROM tb_category
+        WHERE parent_id = #{parentId}
+    </select>
+
+    <select id="queryCategoryByNameAndParentId" resultType="Category">
+        SELECT id,category_name,parent_id,create_time,update_time
+        FROM tb_category
+        WHERE category_name = #{categoryName}
+        AND parent_id = #{parentId}
+    </select>
 </mapper>
