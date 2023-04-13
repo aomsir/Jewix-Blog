@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: Aomsir
@@ -116,13 +113,14 @@ public class UserServiceImpl implements UserService {
         if (user_1 != null) {
             // 校验修改后的邮箱是否已存在
             User user_2 = this.userMapper.queryUserByEmail(userUpdateVo.getEmail());
-            if (user_2 != null && user_2.getUuid() != user_1.getUuid()) {
+            // 对象中==判断的是两个对象的地址,不是内容,所以使用equals方法
+            if (user_2 != null && !Objects.equals(user_2.getUuid(), user_1.getUuid())) {
                 throw new CustomerException("邮箱已存在");
             }
 
             // 校验修改后的用户名是否已存在
             User user_3 = this.userMapper.queryUserByNickname(userUpdateVo.getNickname());
-            if (user_3 != null && user_3.getUuid() == user_1.getUuid()) {
+            if (user_3 != null && Objects.equals(user_3.getUuid(), user_1.getUuid())) {
                 throw new CustomerException("用户名已存在");
             }
         } else {
