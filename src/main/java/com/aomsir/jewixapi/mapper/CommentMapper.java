@@ -28,9 +28,9 @@ public interface CommentMapper {
 
     int insertComment(@Param("param") Map<String, Object> param);
 
-    List<Comment> queryCommentsByPermId(@Param("id") Long id);
+    List<Comment> queryCommentsByPermId(@Param("permId") Long id);
 
-    List<Comment> queryCommentsByParentId(@Param("id") Long id);
+    List<Comment> queryCommentsByParentId(@Param("parentId") Long id);
 
     int deleteComment(@Param("id") Long id);
 

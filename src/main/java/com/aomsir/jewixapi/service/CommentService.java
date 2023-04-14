@@ -8,6 +8,7 @@ import com.aomsir.jewixapi.utils.PageUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 public interface CommentService {
@@ -19,7 +20,7 @@ public interface CommentService {
 
     int updateComment(CommentUpdateVo commentUpdateVo);
 
-    int deleteComment(CommentDeleteVo commentDeleteVo);
+    int deleteComment(List<Long> list);
 
     int updateCommentStatus(CommentUpdateStatusVo commentUpdateStatusVo);
 }

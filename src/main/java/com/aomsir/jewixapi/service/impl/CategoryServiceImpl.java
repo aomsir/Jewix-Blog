@@ -11,6 +11,7 @@ import com.aomsir.jewixapi.service.CategoryService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -153,6 +154,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryListDTO> searchCategoryList() {
-        return this.categoryMapper.queryCategoryList();
+
+        List<Category> categories = this.categoryMapper.queryCategoryListByParentId(0L);
+        if (categories == null) {
+            return null;
+        }
+        List<CategoryListDTO> categoryListDTOS = new ArrayList<>();
+        for (Category category : categories) {
+            CategoryListDTO categoryListDTO = new CategoryListDTO();
+            BeanUtils.copyProperties(category,categoryListDTO);
+            List<Category> categories_sonList = this.categoryMapper.queryCategoryListByParentId(categoryListDTO.getId());
+            categoryListDTO.setSonList(categories_sonList);
+            categoryListDTOS.add(categoryListDTO);
+        }
+
+        return categoryListDTOS;
     }
 }

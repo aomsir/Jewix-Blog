@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.vo.PhotoDeleteVo;
 import com.aomsir.jewixapi.pojo.vo.PhotoPageVo;
 import com.aomsir.jewixapi.pojo.vo.PhotoUpdateVo;
@@ -110,7 +111,7 @@ public class PhotoController {
             outputStream.close();
             fileInputStream.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new CustomerException("图片加载异常");
         }
     }
 
@@ -124,7 +125,7 @@ public class PhotoController {
      */
     @ApiOperation(value = "根据文件名与类型删除相册信息")
     @DeleteMapping("/admin/photos")
-    public R deletePhoto(@RequestBody @Validated PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
+    public R deletePhoto(@RequestParam PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
         int role = this.photoService.deletePhoto(photoDeleteVo);
         return R.ok()
                 .put("role", role);

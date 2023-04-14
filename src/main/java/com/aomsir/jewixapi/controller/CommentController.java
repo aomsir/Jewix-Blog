@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -100,14 +101,14 @@ public class CommentController {
 
     /**
      * 根据ids删除文章评论
-     * @param commentDeleteVo 删除评论VO对象
+     * @param ids 删除评论VO对象
      * @return 删除评论所影响的行数
      */
     @ApiOperation(value = "根据id列表删除文章评论")
     @DeleteMapping("/admin/comments")
-    public R deleteComment(@RequestParam CommentDeleteVo commentDeleteVo) {
+    public R deleteComment(@RequestParam("ids") List<Long> ids) {
 
-        int role = this.commentService.deleteComment(commentDeleteVo);
+        int role = this.commentService.deleteComment(ids);
         return R.ok()
                 .put("role",role);
     }

@@ -107,7 +107,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public PageUtils searchPhotoByPage(Map<String, Object> param) {
-        int count = this.photoMapper.queryPhotoAllCount();
+        int count = this.photoMapper.queryPhotoCountByType((Integer) param.get("type"));
 
         ArrayList<Photo> list = null;
         if (count > 0) {
@@ -121,8 +121,8 @@ public class PhotoServiceImpl implements PhotoService {
                 // 服务器本地文件则返回fileName,前端再单独请求接口
                 photo.setFileName(photo.getLocation().substring(1)  + photo.getFileName());
             } else if (photo.getType() == 1) {
-                photo.setFileName(photo.getLocation().substring(1)  + photo.getFileName());
-                photo.setUrl(this.upUrl + photo.getLocation() + photo.getFileName());
+                photo.setFileName(photo.getLocation()  + photo.getFileName());
+                photo.setUrl(this.upUrl + photo.getFileName());
             } else if (photo.getType() == 2) {
                 // TODO：完成阿里云
             } else {

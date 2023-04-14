@@ -129,22 +129,24 @@ public class CommentServiceImpl implements CommentService {
             param.put("type",2);
         }
 
-        // 校验父级评论是否存在,不存在则当前评论为父级评论
+        // 校验父级评论是否存在
         // TODO: 业务逻辑处理不到位
         if (parentId != 0) {
             // 说明是回复评论
             // 查询父级评论
             Comment parentComment = this.commentMapper.queryCommentByParentId(parentId);
             if (Objects.isNull(parentComment)) {
-                param.put("parentId",0);
+                // param.put("parentId",0);
+                throw new CustomerException("父评论不存在");
             }
         }
 
-        // 校验一级评论是否存在,不存在则当前评论为一级评论
+        // 校验一级评论是否存在
         if (permId != 0) {
             Comment permComment = this.commentMapper.queryCommentByPermId(permId);
             if (Objects.isNull(permComment)) {
-                param.put("permId",0);
+                // param.put("permId",0);
+                throw new CustomerException("一级评论不存在");
             }
 
             if (parentId != 0) {
@@ -190,12 +192,12 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public int deleteComment(CommentDeleteVo commentDeleteVo) {
+    @Transactional
+    public int deleteComment(List<Long> ids) {
 
-        if (Objects.isNull(commentDeleteVo.getIds()) || Objects.isNull(commentDeleteVo)) {
+        if (Objects.isNull(ids) || ids.size() == 0) {
             throw new CustomerException("删除列表不许为空");
         }
-        ArrayList<Long> ids = commentDeleteVo.getIds();
         int role = 0;
         for (Long id : ids) {
             Comment comment = this.commentMapper.queryCommentById(id);
@@ -204,6 +206,7 @@ public class CommentServiceImpl implements CommentService {
             }
 
             // 查询是否有子评论
+            // parentId与permId同为0则为一级评论
             List<Comment> childList_1 = this.commentMapper.queryCommentsByPermId(id);
             if (childList_1.size() > 0) {
                 throw new CustomerException("请先删除子评论");

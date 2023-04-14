@@ -36,4 +36,10 @@
 
     </select>
 
+    <select id="queryPhotoCountByType" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_photo
+        WHERE type = #{type}
+    </select>
+
 </mapper>
