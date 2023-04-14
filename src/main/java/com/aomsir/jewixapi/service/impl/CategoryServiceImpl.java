@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: Aomsir
@@ -39,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public PageUtils searchCategoryParentListByPage(Map<String, Object> param) {
-        int count = this.categoryMapper.queryCategoryCountByParentId(0);
+        int count = this.categoryMapper.queryCategoryCountByParentId(0L);
 
         ArrayList<Category> list = null;
         if (count > 0) {
@@ -56,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public PageUtils searchCategorySonListPageByPatentId(Map<String, Object> param) {
-        int count = this.categoryMapper.queryCategoryCountByParentId((Integer) param.get("parentId"));
+        int count = this.categoryMapper.queryCategoryCountByParentId((Long) param.get("parentId"));
 
         ArrayList<Category> list = null;
         if (count > 0) {
@@ -76,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public int addCategory(CategoryAddVo categoryAddVo) {
         //  根据子分类名与父类id去查询是否已经存在
-        Category category = this.categoryMapper.queryCategoryByNameAndParentId(categoryAddVo.getCategoryName(),categoryAddVo.getParentId());
+        Category category = this.categoryMapper.queryCategoryByNameAndParentId(categoryAddVo.getCategoryName(), categoryAddVo.getParentId());
 
         // 存在则无法进行添加(一级分类与二级分类均适用)
         if (category != null) {
@@ -114,14 +111,33 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
 
+
     @Override
     public PageUtils searchArticlePageByCategoryName(Map<String, Object> param) {
-        Category category = this.categoryMapper.queryCategoryByName((String) param.get("categoryName"));
-        if (category == null) {
-            throw new CustomerException("分类不存在嗷!");
+        if ((String) param.get("parentCategoryName") != null) {
+            // 查询父分类是否存在
+            Category temp_1 = this.categoryMapper.queryCategoryByNameAndParentId((String) param.get("parentCategoryName"),0L);
+            if (temp_1 == null) {
+                throw new CustomerException("分类不存在");
+            }
+
+            // 封装父分类与id(如果有子分类就进入if中封装逻辑中继续封装)
+            param.put("parentCategoryId",0L);
+            param.put("categoryName",temp_1.getCategoryName());
+
+            // 携带子分类的情况下,查看当前父分类下有无此子分类
+            if (!((String) param.get("sonCategoryName")).isEmpty()) {
+                param.put("parentCategoryId",temp_1.getId());
+                Category temp_2 = this.categoryMapper.queryCategoryByNameAndParentId((String) param.get("sonCategoryName"), (Long) param.get("parentCategoryId"));
+                if (temp_2 == null) {
+                    throw new CustomerException("分类不存在");
+                }
+                param.put("categoryName",temp_2.getCategoryName());
+            }
         }
 
-        Long count = this.articleMapper.queryArticleCountByCategoryName((String) param.get("categoryName"));
+        // 根据父分类ID与分类名获取(分类名是有可能为空的,父分类ID是不会的)
+        Long count = this.articleMapper.queryArticleCountByCategoryName((String) param.get("categoryName"), (Long) param.get("parentCategoryId"));
         List<ArticlePreviewDTO> list = null;
         if (count > 0) {
             list = this.categoryMapper.queryArticleListPageByCategoryName(param);

@@ -22,5 +22,5 @@ public class CategoryAddVo {
 
     @NotNull(message = "父类id不能为空")
     @Min(value = 0)
-    private Integer parentId;
+    private Long parentId;
 }

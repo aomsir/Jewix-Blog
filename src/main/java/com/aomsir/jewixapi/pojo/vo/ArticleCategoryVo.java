@@ -16,8 +16,10 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class ArticleCategoryVo {
-    @NotNull
-    private String categoryName;
+    @NotNull(message = "分类不允许为空")
+    private String parentCategoryName;
+
+    private String sonCategoryName;
 
     @NotNull(message = "page不能为空")
     @Min(value = 1, message = "page不能小于1")

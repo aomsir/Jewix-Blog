@@ -13,7 +13,8 @@ import java.util.Map;
 public interface ArticleMapper {
     public Long queryArticleCountByTagName(@Param("tagName") String tagName);
 
-    Long queryArticleCountByCategoryName(@Param("categoryName") String categoryName);
+    Long queryArticleCountByCategoryName(@Param("categoryName") String sonCategoryName,
+                                         @Param("parentCategoryId") Long parentCategoryId);
 
     int queryArticleBackendCount(@Param("param") Map<String, Object> param);
 

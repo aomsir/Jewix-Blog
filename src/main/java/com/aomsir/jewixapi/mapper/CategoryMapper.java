@@ -14,11 +14,11 @@ import java.util.Map;
 
 @Mapper
 public interface CategoryMapper {
-    int queryCategoryCountByParentId(@Param("parentId") Integer parentId);
+    int queryCategoryCountByParentId(@Param("parentId") Long parentId);
 
     ArrayList<Category> queryCategoryListPageByParentId(@Param("param") Map<String, Object> param);
 
-    Category queryCategoryByParentId(@Param("parentId") Integer parentId);
+    Category queryCategoryByParentId(@Param("parentId") Long parentId);
 
     int insertCategory(@Param("category") Category category_2);
 
@@ -32,7 +32,7 @@ public interface CategoryMapper {
 
     Integer queryArticleCountsById(@Param("articleId") Long id);
 
-    List<Category> queryCategoryListByParentId(@Param("parentId") Integer parentId);
+    List<Category> queryCategoryListByParentId(@Param("parentId") Long parentId);
 
-    Category queryCategoryByNameAndParentId(@Param("categoryName") String categoryName, @Param("parentId") Integer parentId);
+    Category queryCategoryByNameAndParentId(@Param("categoryName") String categoryName, @Param("parentId") Long parentId);
 }

@@ -14,5 +14,6 @@ import lombok.Data;
 public class Category extends BaseEntity{
     private Long id;
     private String categoryName;
-    private Integer parentId;
+
+    private Long parentId;
 }
