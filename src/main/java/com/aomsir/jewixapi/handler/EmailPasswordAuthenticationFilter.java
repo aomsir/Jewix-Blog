@@ -44,17 +44,14 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
 
     /**
      * 登录验证
-     * @param request
-     * @param response
-     * @return
-     * @throws AuthenticationException
+     * @param request 请求对象
+     * @param response 响应对象
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-        // System.out.println("EmailPasswordAuthenticationFilter");
         if (!request.getMethod().equals("POST")) {
-            throw new AuthenticationServiceException("Authentication method not supported" + request.getMethod());
+            throw new AuthenticationServiceException("请求方式不受支持");
         }
         if (request.getContentType().equalsIgnoreCase(MediaType.APPLICATION_JSON_VALUE)) {
             try {
@@ -63,7 +60,8 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
 
                 // TODO: 校验验证码、校验数据格式
 
-                // 生成令牌
+                // 生成令牌(调用UserDetailServiceImpl->PasswordEncoder)
+                // 成功以后调用下面的回调函
                 UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userInfo.getUsername(), userInfo.getPassword());
                 return this.getAuthenticationManager().authenticate(authRequest);
             } catch (IOException e) {
@@ -77,12 +75,10 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
 
     /**
      * 登录成功回调
-     * @param req
-     * @param resp
-     * @param chain
-     * @param auth
-     * @throws IOException
-     * @throws ServletException
+     * @param req 请求对象
+     * @param resp 详情对象
+     * @param chain 调用链
+     * @param auth 认证对象
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest req,
@@ -91,38 +87,31 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
                                             Authentication auth) throws IOException, ServletException {
         User user = (User) auth.getPrincipal();
 
-        HashMap temp = new HashMap(){{
+        HashMap<String,String> temp = new HashMap<String,String>(){{
             put("userId", user.getId().toString());
+            put("uuid",user.getUuid());
         }};
 
         String token = JwtUtils.getToken(temp);
-        HashMap returnToken = new HashMap(){{
+        HashMap<String,String> returnToken = new HashMap<String,String>(){{
             put("token",token);
         }};
 
-        System.out.println("user = " + user);
-        // System.out.println("hostHolder = " + hostHolder);
-        // this.hostHolder.setUserId(user.getId());
-
         // TODO:TOKEN存储到Redis
-        R r = R.ok(returnToken);
+        this.hostHolder.setUserId(user.getId());
+        R r = R.ok(String.valueOf(returnToken));
 
         resp.setStatus(HttpStatus.OK.value());
-
         resp.setContentType("application/json;charset=UTF-8");
         String s = new ObjectMapper().writeValueAsString(r);
-
         resp.getWriter().println(s);
     }
 
 
     /**
      * 登录失败回调
-     * @param req
-     * @param resp
-     * @param e
-     * @throws IOException
-     * @throws ServletException
+     * @param req 请求对象
+     * @param resp 响应对象
      */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest req,

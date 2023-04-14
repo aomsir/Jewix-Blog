@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -132,6 +133,17 @@ public class UserController {
                 .put("role",role);
     }
 
+    /**
+     *
+     * @return 查询当前登录的用户信息
+     */
+    @ApiOperation(value = "查询当前登录的用户信息")
+    @GetMapping("/users/current")
+    public R getCurrentUser() {
+        User user = this.userService.searchCurrentUser();
+        return R.ok()
+                .put("status", user);
+    }
 
     // TODO: 删除接口
 }

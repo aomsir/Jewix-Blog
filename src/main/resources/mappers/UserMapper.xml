@@ -94,10 +94,15 @@
         </where>
     </select>
 
-
     <update id="updateUserStatus">
         UPDATE tb_user
         SET status = #{param.status}
         WHERE uuid = #{param.uuid}
     </update>
+
+    <select id="queryUserById" resultType="User">
+        SELECT id, uuid, nickname, email, salt, description, password, web_site, create_time, update_time, status
+        FROM tb_user
+        WHERE id = #{userId}
+    </select>
 </mapper>

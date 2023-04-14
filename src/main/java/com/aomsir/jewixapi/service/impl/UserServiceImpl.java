@@ -9,6 +9,7 @@ import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.UserService;
+import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
@@ -38,6 +39,10 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private PasswordEncoder passwordEncoder;
+
+
+    @Resource
+    private HostHolder hostHolder;
 
 
     @Override
@@ -158,5 +163,19 @@ public class UserServiceImpl implements UserService {
         }
 
         return this.userMapper.updateUserStatus(userStatusVo);
+    }
+
+    @Override
+    public User searchCurrentUser() {
+
+        Long userId = this.hostHolder.getUserId();
+        if (userId == null) {
+            throw new CustomerException("登录凭证失效,请重新登录");
+        }
+
+        // TODO:后续改为Redis
+        User user = this.userMapper.queryUserById(userId);
+        user.setPassword("");
+        return user;
     }
 }

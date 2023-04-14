@@ -1,7 +1,9 @@
 package com.aomsir.jewixapi.handler;
 
+import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.JwtUtils;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,7 +38,6 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        // System.out.println("PerTokenVerifyFilter");
         if (request.getRequestURI().equals("/login")) {
             filterChain.doFilter(request,response);
             return;
@@ -44,19 +45,29 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
 
         // TODO: 完善校验功能
-        // TODO:完善
-        this.hostHolder.setUserId(Long.getLong("1"));
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         String token = request.getHeader("token");
+
+        // 没有携带token则进入后续的Filter,后续的Filter会验证当前程序能否正常行走
         if (token == null) {
             securityContext.setAuthentication(null);
             filterChain.doFilter(request,response);
             return;
         }
 
-        DecodedJWT jwt = JwtUtils.getToken(token);
+        // 验证token能否验证
+        try {
+            JwtUtils.verify(token);
+        } catch (Exception e) {
+            throw new CustomerException("token过期");
+        }
 
+        DecodedJWT jwt = JwtUtils.getToken(token);
+        String userId = jwt.getClaim("userId").asString();
+        this.hostHolder.setUserId(Long.valueOf(userId));
+
+        // 通过id在Redis中查询User信息进行封装
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("info@say521.cn",null,null));
         filterChain.doFilter(request, response);
     }

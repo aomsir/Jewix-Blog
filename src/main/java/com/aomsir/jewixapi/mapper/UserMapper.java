@@ -31,4 +31,6 @@ public interface UserMapper {
     int queryUserByEmailOrNickname(@Param("param") UserHaveVo userHaveVo);
 
     int updateUserStatus(@Param("param") UserStatusVo userStatusVo);
+
+    User queryUserById(@Param("userId") Long userId);
 }

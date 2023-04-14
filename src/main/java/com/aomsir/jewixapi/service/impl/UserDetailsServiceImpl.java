@@ -35,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户不存在");
         }
 
-        // TODO: 查询用户权限
+        // TODO: 查询用户权限进行封装
 
         return user;
     }

@@ -22,4 +22,6 @@ public interface UserService {
     int hasUser(UserHaveVo userHaveVo);
 
     int updateStatus(UserStatusVo userStatusVo);
+
+    User searchCurrentUser();
 }
