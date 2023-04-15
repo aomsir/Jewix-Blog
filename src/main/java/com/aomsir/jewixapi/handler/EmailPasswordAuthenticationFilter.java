@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.handler;
 
+import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
 import com.aomsir.jewixapi.utils.HostHolder;
@@ -33,8 +34,6 @@ import java.util.HashMap;
 @Component
 public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    @Resource
-    private HostHolder hostHolder;
 
     public EmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.setAuthenticationManager(authenticationManager);
@@ -58,11 +57,24 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
                 // 使用Spring工具将请求流反序列化
                 LoginVo userInfo = new ObjectMapper().readValue(request.getInputStream(), LoginVo.class);
 
-                // TODO: 校验验证码、校验数据格式
+                // TODO: 2.0版本添加校验验证码(邮箱)
+                String username = userInfo.getUsername();
+                String password = userInfo.getPassword();
+
+                if (!EmailValidator.validate(username)) {
+                    // 抛出的异常,会被下面的失败回调处理
+                    try {
+                        throw new CustomerException("邮箱格式有误");
+                    } catch (CustomerException e) {
+                        throw new AuthenticationServiceException(e.getMessage());
+                    }
+
+                }
+
 
                 // 生成令牌(调用UserDetailServiceImpl->PasswordEncoder)
                 // 成功以后调用下面的回调函
-                UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userInfo.getUsername(), userInfo.getPassword());
+                UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username,password);
                 return this.getAuthenticationManager().authenticate(authRequest);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -98,7 +110,6 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         }};
 
         // TODO:TOKEN存储到Redis
-        this.hostHolder.setUserId(user.getId());
         R r = R.ok(String.valueOf(returnToken));
 
         resp.setStatus(HttpStatus.OK.value());
@@ -122,7 +133,10 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
             r = R.error("用户名或密码错误");
         } else if (e instanceof LockedException) {
             r = R.error("账户禁用,请联系管理员");
+        } else if (e instanceof AuthenticationServiceException) {
+            r = R.error(e.getMessage());   // TODO:邮箱格式有误(自己对SpringSecurity进行一层封装)
         }
+
 
         resp.setStatus(HttpStatus.OK.value());
 

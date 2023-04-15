@@ -1,5 +1,7 @@
 package com.aomsir.jewixapi.utils;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,8 +13,9 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class HostHolder {
-    private final ThreadLocal<Long> users = new ThreadLocal<>();
+    private static final ThreadLocal<Long> users = new ThreadLocal<>();
 
     public void setUserId(Long id) {
         users.set(id);
