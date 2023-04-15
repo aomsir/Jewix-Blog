@@ -43,10 +43,15 @@ public class GlobalExceptionHandler {
      * @param e
      * @return
      */
-//    @ExceptionHandler(Exception.class)
-//    public R exceptionHandler(Exception e) {
-//        return R.error(e.getMessage());
-//    }
+    @ExceptionHandler(Exception.class)
+    public R exceptionHandler(Exception e) {
+        return R.error(e.getMessage());
+    }
+
+    @ExceptionHandler(CustomerAuthenticationException.class)
+    public R authenticationException(CustomerAuthenticationException e) {
+        return R.error(e.getMessage());
+    }
 
 
     /**

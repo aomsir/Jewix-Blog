@@ -7,6 +7,7 @@ import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.aomsir.jewixapi.utils.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.*;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: Aomsir
@@ -31,12 +33,14 @@ import java.util.HashMap;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-@Component
 public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    private RedisTemplate<String,Object> redisTemplate;
 
-    public EmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
+
+    public EmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager,RedisTemplate<String,Object> redisTemplate) {
         this.setAuthenticationManager(authenticationManager);
+        this.redisTemplate = redisTemplate;
         this.setPostOnly(false);
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login","POST"));
     }
@@ -68,7 +72,6 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
                     } catch (CustomerException e) {
                         throw new AuthenticationServiceException(e.getMessage());
                     }
-
                 }
 
 
@@ -109,7 +112,8 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
             put("token",token);
         }};
 
-        // TODO:TOKEN存储到Redis
+        this.redisTemplate.opsForValue().set("user:token:"+user.getId().toString(),token,7, TimeUnit.DAYS);
+        // TODO:用户权限信息封装进Redis
         R r = R.ok(String.valueOf(returnToken));
 
         resp.setStatus(HttpStatus.OK.value());
@@ -136,7 +140,6 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         } else if (e instanceof AuthenticationServiceException) {
             r = R.error(e.getMessage());   // TODO:邮箱格式有误(自己对SpringSecurity进行一层封装)
         }
-
 
         resp.setStatus(HttpStatus.OK.value());
 

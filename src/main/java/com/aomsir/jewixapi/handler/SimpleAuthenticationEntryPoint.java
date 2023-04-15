@@ -1,11 +1,11 @@
 package com.aomsir.jewixapi.handler;
 
+import com.aomsir.jewixapi.exception.CustomerAuthenticationException;
 import com.aomsir.jewixapi.utils.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,14 +20,17 @@ import java.io.IOException;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Component
 public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    public SimpleAuthenticationEntryPoint() {
+    }
 
     @Override
     public void commence(HttpServletRequest req,
                          HttpServletResponse resp,
                          AuthenticationException e) throws IOException, ServletException {
-        R r = R.error("认证失败,请重新登录");
+
+        R r = R.error("权限不够");
         resp.setStatus(HttpStatus.OK.value());
 
         resp.setContentType("application/json;charset=UTF-8");

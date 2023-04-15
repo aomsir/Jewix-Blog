@@ -28,7 +28,7 @@ public class JwtUtils {
             builder.withClaim(k,v);
         });
         Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.HOUR,168);
+        instance.add(Calendar.DAY_OF_YEAR,7);
         builder.withExpiresAt(instance.getTime());
         return builder.sign(Algorithm.HMAC256(TOKEN)).toString();
     }

@@ -1,10 +1,13 @@
 package com.aomsir.jewixapi.handler;
 
+import com.aomsir.jewixapi.exception.CustomerAuthenticationException;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * @Author: Aomsir
@@ -34,6 +38,9 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
     @Resource
     private HostHolder hostHolder;
 
+    @Resource
+    private RedisTemplate<String,Object> redisTemplate;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -43,8 +50,6 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
             return;
         }
 
-
-        // TODO: 完善校验功能
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         String token = request.getHeader("token");
@@ -56,18 +61,29 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 验证token能否验证
+        // token能否正确
         try {
             JwtUtils.verify(token);
         } catch (Exception e) {
-            throw new CustomerException("token过期");
+            throw new CustomerAuthenticationException("登录凭证已过期,请重新登录");
         }
 
+        // 解析token中的内容
         DecodedJWT jwt = JwtUtils.getToken(token);
         String userId = jwt.getClaim("userId").asString();
+
+        String tokenInRedis = (String) this.redisTemplate.opsForValue().get("user:token:" + userId);
+        if (Objects.isNull(tokenInRedis) || tokenInRedis.isEmpty()) {
+            throw new AuthenticationServiceException("登录凭证已过期,请重新登录");
+        } else if (!tokenInRedis.equals(token)) {
+            // 两次携带token不一致则将Redis中的删除
+            this.redisTemplate.delete("user:token:" + userId);
+            throw new CustomerAuthenticationException("登录凭证已过期,请重新登录");
+        }
+
         this.hostHolder.setUserId(Long.valueOf(userId));
 
-        // 通过id在Redis中查询User信息进行封装
+        // TODO:通过Redis查询封装的用户信息等
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("info@say521.cn",null,null));
         filterChain.doFilter(request, response);
     }

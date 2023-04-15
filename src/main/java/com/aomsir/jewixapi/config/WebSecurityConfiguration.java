@@ -2,9 +2,12 @@ package com.aomsir.jewixapi.config;
 
 import com.aomsir.jewixapi.handler.EmailPasswordAuthenticationFilter;
 import com.aomsir.jewixapi.handler.PerTokenVerifyFilter;
+import com.aomsir.jewixapi.handler.SimpleAccessDeniedHandler;
+import com.aomsir.jewixapi.handler.SimpleAuthenticationEntryPoint;
 import com.aomsir.jewixapi.utils.HostHolder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -42,14 +45,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Resource
     private UserDetailsService userDetailsService;
 
-    @Resource
-    private AuthenticationEntryPoint authenticationEntryPoint;
-
-    @Resource
-    private AccessDeniedHandler accessDeniedHandler;
 
     @Resource
     private PerTokenVerifyFilter tokenVerifyFilter;
+
+    @Resource
+    private RedisTemplate<String,Object> redisTemplate;
 
     @Bean
     public PasswordEncoder BcryptPasswordEncoder() {
@@ -60,8 +61,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     /**
      * 采用自定义数据源进行认证
-     * @param auth
-     * @throws Exception
+     * @param auth 认证对象
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -71,8 +71,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     /**
      * 暴露AuthenticationManager
-     * @return
-     * @throws Exception
      */
     @Bean
     @Override
@@ -86,14 +84,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/admin/**").authenticated()   // /admin请求都过SpringSecurity且需要认证
+                .and().exceptionHandling()     // 开启异常处理
+                    .authenticationEntryPoint(new SimpleAuthenticationEntryPoint())    // 认证异常捕获
+                    .accessDeniedHandler(new SimpleAccessDeniedHandler())           // 失败异常捕获
                 .and().csrf().disable()  // 关闭csrf
-                .cors().configurationSource(configurationSource())  // 开启跨域以便前端调用接口
-                .and().exceptionHandling()
-                .authenticationEntryPoint(this.authenticationEntryPoint)    // 认证异常捕获
-                .accessDeniedHandler(this.accessDeniedHandler);             // 失败异常捕获
+                    .cors().configurationSource(configurationSource());  // 开启跨域以便前端调用接口
 
         http.addFilterBefore(this.tokenVerifyFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAfter(new EmailPasswordAuthenticationFilter(authenticationManager()), PerTokenVerifyFilter.class);
+        http.addFilterAfter(new EmailPasswordAuthenticationFilter(authenticationManager(),redisTemplate),
+                PerTokenVerifyFilter.class);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);   // 禁用Session
     }
 
