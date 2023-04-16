@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.handler;
 
+import com.aomsir.jewixapi.exception.CustomerAuthenticationException;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
@@ -132,13 +134,23 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
     protected void unsuccessfulAuthentication(HttpServletRequest req,
                                               HttpServletResponse resp,
                                               AuthenticationException e) throws IOException, ServletException {
-        R r = R.error(e.getMessage());
+        R r;
         if (e instanceof BadCredentialsException) {
-            r = R.error("用户名或密码错误");
+            r = R.error("凭证无效，拒绝访问");
+        } else if (e instanceof CredentialsExpiredException) {
+            r = R.error("凭证已过期，拒绝访问");
+        } else if (e instanceof DisabledException) {
+            r = R.error("帐户被禁用，拒绝访问");
         } else if (e instanceof LockedException) {
-            r = R.error("账户禁用,请联系管理员");
+            r = R.error("帐户被锁定，拒绝访问");
+        } else if (e instanceof ProviderNotFoundException) {
+            r = R.error("找不到提供程序，拒绝访问");
+        } else if (e instanceof UsernameNotFoundException) {
+            r = R.error("找不到用户名，拒绝访问");
         } else if (e instanceof AuthenticationServiceException) {
             r = R.error(e.getMessage());   // TODO:邮箱格式有误(自己对SpringSecurity进行一层封装)
+        } else {
+            r = R.error("登录失败");
         }
 
         resp.setStatus(HttpStatus.OK.value());

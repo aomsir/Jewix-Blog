@@ -15,6 +15,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Configuration
-public class WebMvcConfiguration implements WebMvcConfigurer {
-}
+//@Configuration
+//public class WebMvcConfiguration implements WebMvcConfigurer {
+//}

@@ -97,7 +97,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
-
+    /**
+     * SpringSecurity跨域配置
+     */
     CorsConfigurationSource configurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedHeaders(Arrays.asList("*"));

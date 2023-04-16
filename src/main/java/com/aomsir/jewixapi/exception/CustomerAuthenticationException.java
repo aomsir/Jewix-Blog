@@ -18,6 +18,4 @@ public class CustomerAuthenticationException extends AuthenticationException{
         super(msg, cause);
     }
 
-
-
 }
