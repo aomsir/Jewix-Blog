@@ -33,7 +33,7 @@ import java.util.Objects;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-
+// TODO:解决异常抛出捕获的问题
 @Component
 public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
@@ -70,6 +70,7 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
         try {
             JwtUtils.verify(token);
         } catch (Exception e) {
+            request.setAttribute("CustomerAuthenticationException","登录凭证已过期,请重新登录");
             filterChain.doFilter(request,response);
             return;
              // throw new CustomerAuthenticationException("登录凭证已过期,请重新登录");
@@ -81,12 +82,14 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
         String tokenInRedis = (String) this.redisTemplate.opsForValue().get("user:token:" + userId);
         if (Objects.isNull(tokenInRedis) || tokenInRedis.isEmpty()) {
+            request.setAttribute("CustomerAuthenticationException","登录凭证已过期,请重新登录");
             filterChain.doFilter(request,response);
             return;
             // throw new AuthenticationServiceException("登录凭证已过期,请重新登录");
         } else if (!tokenInRedis.equals(token)) {
             // 两次携带token不一致则将Redis中的删除
             this.redisTemplate.delete("user:token:" + userId);
+            request.setAttribute("CustomerAuthenticationException","登录凭证已过期,请重新登录");
             filterChain.doFilter(request,response);
             return;
             // throw new CustomerAuthenticationException("登录凭证已过期,请重新登录");

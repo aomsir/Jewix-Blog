@@ -35,7 +35,13 @@ public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          AuthenticationException e) throws IOException, ServletException {
         log.error("SimpleAuthenticationEntryPoint-commence执行了,message:{}",e.getMessage());
 
-        R r = R.error("登录凭证已过期,请重新登录");;
+        R r;
+        if (req.getAttribute("CustomerAuthenticationException") != null) {
+            r = R.error("登录凭证已过期,请重新登录");;
+        } else {
+            r = R.error("访问被拒绝,原因:"+e.getMessage());
+        }
+
 
         resp.setStatus(HttpStatus.OK.value());
         resp.setContentType("application/json;charset=UTF-8");
