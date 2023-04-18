@@ -2,10 +2,7 @@ package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.pojo.dto.CategoryListDTO;
-import com.aomsir.jewixapi.pojo.vo.ArticleCategoryVo;
-import com.aomsir.jewixapi.pojo.vo.CategoryAddVo;
-import com.aomsir.jewixapi.pojo.vo.CategoryParentPageVo;
-import com.aomsir.jewixapi.pojo.vo.CategorySonListById;
+import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.CategoryService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
@@ -118,5 +115,31 @@ public class CategoryController {
                 .put("result",pageUtils);
     }
 
-    // TODO：删除分类、修改分类
+
+    /**
+     * 删除分类信息接口
+     * @param ids 待删除分类id列表
+     * @return 影响的行数
+     */
+    @ApiOperation(value = "删除分类信息")
+    @DeleteMapping("/admin/categories")
+    public R deleteCategory(List<Long> ids) {
+        int role = this.categoryService.deleteCategories(ids);
+        return R.ok()
+                .put("role",role);
+    }
+
+
+    /**
+     * 更新分类信息
+     * @param categoryUpdateVo 更改分类VO对象
+     * @return 所影响的行数
+     */
+    @ApiOperation(value = "更新分类信息")
+    @PutMapping("/admin/categories")
+    public R updateCategory(@RequestBody CategoryUpdateVo categoryUpdateVo) {
+        int role = this.categoryService.updateCategory(categoryUpdateVo);
+        return R.ok()
+                .put("role",role);
+    }
 }

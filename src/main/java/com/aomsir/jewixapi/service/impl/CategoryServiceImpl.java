@@ -7,6 +7,7 @@ import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
 import com.aomsir.jewixapi.pojo.dto.CategoryListDTO;
 import com.aomsir.jewixapi.pojo.entity.Category;
 import com.aomsir.jewixapi.pojo.vo.CategoryAddVo;
+import com.aomsir.jewixapi.pojo.vo.CategoryUpdateVo;
 import com.aomsir.jewixapi.service.CategoryService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
@@ -169,5 +170,54 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         return categoryListDTOS;
+    }
+
+    @Override
+    @Transactional
+    public int updateCategory(CategoryUpdateVo categoryUpdateVo) {
+        if (this.categoryMapper.queryCategoryId(categoryUpdateVo.getId()) == null) {
+            throw new CustomerException("分类不存在");
+        }
+
+        Category category = this.categoryMapper.queryCategoryByNameAndParentId(categoryUpdateVo.getCategoryName(), categoryUpdateVo.getParentId());
+        if (category != null) {
+            throw new CustomerException("分类名已存在");
+        }
+
+        return this.categoryMapper.updateCategory(categoryUpdateVo);
+    }
+
+
+    @Override
+    @Transactional
+    public int deleteCategories(List<Long> ids) {
+        if (ids == null || ids.size() == 0) {
+            throw new CustomerException("参数携带异常");
+        }
+
+        List<Long> trueIds = new ArrayList<>();
+        for (Long id : ids) {
+            Category category = this.categoryMapper.queryCategoryId(id);
+            // 判断是否为父节点
+            if (category.getParentId() != 0) {
+
+                // 是否有文章引用
+                if (this.categoryMapper.queryCategoryOfArticleCounts(id) == 0) {
+                    trueIds.add(id);
+                }
+            } else {
+                // 为父节点
+                // 是否有子节点
+                List<Category> categories = this.categoryMapper.queryCategoryListByParentId(id);
+                if (categories == null || categories.size() == 0) {
+                    // 当前分类是否有文章引用
+                    if (this.categoryMapper.queryCategoryOfArticleCounts(id) == 0) {
+                        trueIds.add(id);
+                    }
+                }
+            }
+        }
+
+        return this.categoryMapper.deleteCategories(trueIds);
     }
 }

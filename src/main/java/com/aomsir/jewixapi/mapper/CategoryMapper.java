@@ -4,6 +4,7 @@ package com.aomsir.jewixapi.mapper;
 import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
 import com.aomsir.jewixapi.pojo.dto.CategoryListDTO;
 import com.aomsir.jewixapi.pojo.entity.Category;
+import com.aomsir.jewixapi.pojo.vo.CategoryUpdateVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,9 +31,17 @@ public interface CategoryMapper {
 
     List<CategoryListDTO> queryCategoryList();
 
-    Integer queryArticleCountsById(@Param("articleId") Long id);
+    Integer queryArticleCommentCountsById(@Param("articleId") Long id);
 
     List<Category> queryCategoryListByParentId(@Param("parentId") Long parentId);
 
     Category queryCategoryByNameAndParentId(@Param("categoryName") String categoryName, @Param("parentId") Long parentId);
+
+    Category queryCategoryId(@Param("id") Long id);
+
+    int updateCategory(@Param("param") CategoryUpdateVo categoryUpdateVo);
+
+    int queryCategoryOfArticleCounts(@Param("id") Long id);
+
+    int deleteCategories(@Param("ids") List<Long> trueIds);
 }

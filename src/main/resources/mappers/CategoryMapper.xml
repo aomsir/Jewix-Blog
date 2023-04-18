@@ -9,6 +9,7 @@
         VALUE (#{category.categoryName}, #{category.parentId}, #{category.createTime}, #{category.updateTime})
     </insert>
 
+
     <select id="queryCategoryCountByParentId" resultType="Integer">
         SELECT COUNT(id)
         FROM tb_category
@@ -100,7 +101,7 @@
 
     </select>
 
-    <select id="queryArticleCountsById" resultType="Integer">
+    <select id="queryArticleCommentCountsById" resultType="Integer">
         SELECT COUNT(id)
         FROM tb_comment
         WHERE target_id = #{articleId}
@@ -119,4 +120,32 @@
         WHERE category_name = #{categoryName}
         AND parent_id = #{parentId}
     </select>
+
+    <select id="queryCategoryId" resultType="Category">
+        SELECT id,category_name,parent_id
+        FROM tb_category
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateCategory">
+        UPDATE tb_category
+        SET category_name = #{param.categoryName}
+        WHERE id = #{param.id}
+        AND parent_id = #{param.parentId}
+    </update>
+
+    <select id="queryCategoryOfArticleCounts" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article_category
+        WHERE category_id = #{id}
+    </select>
+
+    <delete id="deleteCategories">
+        DELETE FROM
+        tb_category
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

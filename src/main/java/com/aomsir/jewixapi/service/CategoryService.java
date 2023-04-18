@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.service;
 
 import com.aomsir.jewixapi.pojo.dto.CategoryListDTO;
 import com.aomsir.jewixapi.pojo.vo.CategoryAddVo;
+import com.aomsir.jewixapi.pojo.vo.CategoryUpdateVo;
 import com.aomsir.jewixapi.utils.PageUtils;
 
 import java.util.List;
@@ -18,4 +19,7 @@ public interface CategoryService {
 
     List<CategoryListDTO> searchCategoryList();
 
+    int updateCategory(CategoryUpdateVo categoryUpdateVo);
+
+    int deleteCategories(List<Long> ids);
 }

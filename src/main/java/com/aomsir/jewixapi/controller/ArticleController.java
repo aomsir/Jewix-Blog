@@ -121,7 +121,7 @@ public class ArticleController {
     /**
      *
      * @param ids 待删除的文章id列表
-     * @return
+     * @return 删除所影响的行数
      */
     @ApiOperation(value = "理论删除文章", notes = "理论删除文章")
     @DeleteMapping("/admin/articles/archive")

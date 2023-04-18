@@ -175,7 +175,7 @@ public class ArticleServiceImpl implements ArticleService {
         articleDetailDTO.setNextUuid(nextUuid);
 
         // TODO：评论数
-        Integer count = this.categoryMapper.queryArticleCountsById(article.getId());
+        Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId());
         articleDetailDTO.setCommentCount(count);
         return articleDetailDTO;
     }
