@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,5 +96,17 @@ public class FriendLinkController {
                 .put("result",friendLink);
     }
 
-    // TODO：删除友链
+
+    /**
+     * 删除友情链接
+     * @param ids 待删除友情链接id列表
+     * @return 删除影响的数据库行数
+     */
+    @ApiOperation(value = "删除友情链接")
+    @DeleteMapping("/admin/friend-links")
+    public R deleteFriendLink(List<Integer> ids) {
+        int role = this.friendLinkService.deleteFriendLinks(ids);
+        return R.ok()
+                .put("role",role);
+    }
 }

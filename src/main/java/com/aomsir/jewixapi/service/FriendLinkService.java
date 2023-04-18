@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.service;
 import com.aomsir.jewixapi.pojo.entity.FriendLink;
 import com.aomsir.jewixapi.utils.PageUtils;
 
+import java.util.List;
 import java.util.Map;
 
 public interface FriendLinkService {
@@ -13,4 +14,6 @@ public interface FriendLinkService {
     int updateFriendLink(Map<String, Object> param);
 
     FriendLink findFriendLinkInfoById(Integer id);
+
+    int deleteFriendLinks(List<Integer> ids);
 }

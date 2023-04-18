@@ -54,4 +54,11 @@
     </select>
 
 
+    <delete id="deleteFriendLinks">
+        DELETE FROM tb_friend_link
+        WHERE id IN
+        <foreach collection="ids" separator="," item="id" open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

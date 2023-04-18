@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -21,4 +22,6 @@ public interface FriendLinkMapper {
     FriendLink queryFriendLinkById(@Param("id") Integer id);
 
     int updateFriendLink(@Param("param") Map<String, Object> param);
+
+    int deleteFriendLinks(@Param("ids") List<Integer> ids);
 }

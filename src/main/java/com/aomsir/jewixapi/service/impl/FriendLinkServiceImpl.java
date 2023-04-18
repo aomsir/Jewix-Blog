@@ -6,10 +6,12 @@ import com.aomsir.jewixapi.pojo.entity.FriendLink;
 import com.aomsir.jewixapi.service.FriendLinkService;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -78,5 +80,15 @@ public class FriendLinkServiceImpl implements FriendLinkService {
 
         FriendLink friendLink = this.friendLinkMapper.queryFriendLinkById(id);
         return friendLink;
+    }
+
+    @Override
+    @Transactional
+    public int deleteFriendLinks(List<Integer> ids) {
+        if (ids == null || ids.size() == 0) {
+            throw new CustomerException("参数异常");
+        }
+
+        return this.friendLinkMapper.deleteFriendLinks(ids);
     }
 }
