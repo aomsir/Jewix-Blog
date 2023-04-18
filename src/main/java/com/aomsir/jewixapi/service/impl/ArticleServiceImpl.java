@@ -107,7 +107,6 @@ public class ArticleServiceImpl implements ArticleService {
             param.put("updateTime", new Date());
 
             articleId = this.articleMapper.insertArticle(param);
-            log.error("{}",articleId);
 
             // 文章正常插入再插入关联表
             if (articleId != 0) {

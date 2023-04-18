@@ -146,7 +146,7 @@ public class PhotoServiceImpl implements PhotoService {
 
         String voFileName = photoDeleteVo.getFileName();
         String fileName = voFileName.substring(voFileName.lastIndexOf("/") + 1);
-        String location = "/" + voFileName.substring(0, voFileName.lastIndexOf("/") + 1);
+        String location = voFileName.substring(0, voFileName.lastIndexOf("/") + 1);
         Integer type = photoDeleteVo.getType();
         Map<String, Object> param = new HashMap(){{
            put("fileName", fileName);
@@ -157,21 +157,25 @@ public class PhotoServiceImpl implements PhotoService {
         int role = 0;
         role = this.photoMapper.deletePhoto(param);   // 先删数据库,数据库没问题再删具体文件,以免会回滚
 
-        if (type == 0) {
-            // 删除本地文件
-            File file = new File(this.basePath + location + fileName);
-            if (!file.delete()) {
-                throw new CustomerException("删除失败");
+        // 数据库成功删除再删文件
+        if (0 == role) {
+            if (type == 0) {
+                // 删除本地文件
+                File file = new File(this.basePath + location + fileName);
+                if (!file.delete()) {
+                    throw new CustomerException("删除失败");
+                }
+            } else if (type == 1) {
+                try (Response response = this.restManager.deleteFile(location + fileName, null)) {
+                    if (!response.isSuccessful()) {
+                        throw new CustomerException("删除失败");
+                    }
+                }
+            } else if (type == 2) {
+                // TODO
+            } else {
+                // TODO
             }
-        } else if (type == 1) {
-            Response response = this.restManager.deleteFile(location + fileName, null);
-            if (!response.isSuccessful()) {
-                throw new CustomerException("删除失败");
-            }
-        } else if (type == 2) {
-            // TODO
-        } else {
-            // TODO
         }
 
         return role;

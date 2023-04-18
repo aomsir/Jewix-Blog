@@ -37,9 +37,9 @@ public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         R r;
         if (req.getAttribute("CustomerAuthenticationException") != null) {
-            r = R.error("登录凭证已过期,请重新登录");;
+            r = R.error(500,"登录凭证已过期,请重新登录");;
         } else {
-            r = R.error("访问被拒绝,原因:"+e.getMessage());
+            r = R.error(500,"访问被拒绝,原因:"+e.getMessage());
         }
 
 

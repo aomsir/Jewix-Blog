@@ -65,7 +65,7 @@
 
 
     <select id="queryArticleBackendList" resultType="Article">
-        SELECT id, uuid, title, cover, description AS content,
+        SELECT id, uuid, title, cover, description,
         type, origin_url, views, is_top, is_delete, status, create_time, update_time
         FROM tb_article
         <where>
@@ -123,7 +123,7 @@
                 #{param.title},
                 #{param.cover},
                 #{param.content},
-                #{param.description}
+                #{param.description},
                 #{param.type},
                 #{param.originUrl},
                 #{param.isTop},

@@ -23,7 +23,7 @@ public class SimpleAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest req,
                        HttpServletResponse resp,
                        AccessDeniedException e) throws IOException, ServletException {
-        R r = R.error("权限不足,无法访问");
+        R r = R.error(500,"权限不足,无法访问");
         resp.setStatus(HttpStatus.OK.value());
 
         resp.setContentType("application/json;charset=UTF-8");

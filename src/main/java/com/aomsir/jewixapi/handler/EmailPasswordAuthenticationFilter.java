@@ -1,10 +1,9 @@
 package com.aomsir.jewixapi.handler;
 
-import com.aomsir.jewixapi.exception.CustomerAuthenticationException;
+
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
-import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.aomsir.jewixapi.utils.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,9 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -77,7 +74,7 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
                 }
 
 
-                // 生成令牌(调用UserDetailServiceImpl->PasswordEncoder)
+                // 生成SS令牌(调用UserDetailServiceImpl->PasswordEncoder)
                 // 成功以后调用下面的回调函
                 UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username,password);
                 return this.getAuthenticationManager().authenticate(authRequest);
@@ -110,13 +107,11 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         }};
 
         String token = JwtUtils.getToken(temp);
-        HashMap<String,String> returnToken = new HashMap<String,String>(){{
-            put("token",token);
-        }};
 
         this.redisTemplate.opsForValue().set("user:token:"+user.getId().toString(),token,7, TimeUnit.DAYS);
         // TODO:用户权限信息封装进Redis
-        R r = R.ok(String.valueOf(returnToken));
+        R r = R.ok()
+                .put("token",token);
 
         resp.setStatus(HttpStatus.OK.value());
         resp.setContentType("application/json;charset=UTF-8");
@@ -136,21 +131,21 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
                                               AuthenticationException e) throws IOException, ServletException {
         R r;
         if (e instanceof BadCredentialsException) {
-            r = R.error("凭证无效，拒绝访问");
+            r = R.error(500,"凭证无效，拒绝访问");
         } else if (e instanceof CredentialsExpiredException) {
-            r = R.error("凭证已过期，拒绝访问");
+            r = R.error(500,"凭证已过期，拒绝访问");
         } else if (e instanceof DisabledException) {
-            r = R.error("帐户被禁用，拒绝访问");
+            r = R.error(500,"帐户被禁用，拒绝访问");
         } else if (e instanceof LockedException) {
-            r = R.error("帐户被锁定，拒绝访问");
+            r = R.error(500,"帐户被锁定，拒绝访问");
         } else if (e instanceof ProviderNotFoundException) {
-            r = R.error("找不到提供程序，拒绝访问");
+            r = R.error(500,"找不到提供程序，拒绝访问");
         } else if (e instanceof UsernameNotFoundException) {
-            r = R.error("找不到用户名，拒绝访问");
+            r = R.error(500,"找不到用户名，拒绝访问");
         } else if (e instanceof AuthenticationServiceException) {
-            r = R.error(e.getMessage());   // TODO:邮箱格式有误(自己对SpringSecurity进行一层封装)
+            r = R.error(500,e.getMessage());   // TODO:邮箱格式有误(自己对SpringSecurity进行一层封装)
         } else {
-            r = R.error("登录失败");
+            r = R.error(500,"登录失败");
         }
 
         resp.setStatus(HttpStatus.OK.value());

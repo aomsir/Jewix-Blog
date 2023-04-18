@@ -125,7 +125,7 @@ public class PhotoController {
      */
     @ApiOperation(value = "根据文件名与类型删除相册信息")
     @DeleteMapping("/admin/photos")
-    public R deletePhoto(@RequestParam PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
+    public R deletePhoto(PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
         int role = this.photoService.deletePhoto(photoDeleteVo);
         return R.ok()
                 .put("role", role);
