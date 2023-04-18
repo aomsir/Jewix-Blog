@@ -26,14 +26,12 @@ public class InfoWebConfigAddVo {
     @NotNull(message = "关键词不允许为空")
     private List<String> keyword;
 
-    // TODO
     @NotNull(message = "站点链接不允许为空")
     private String webSite;
 
     @NotNull(message = "建站日期不允许为空")
     private Date buildDate;
 
-    // TODO
     @NotNull(message = "类型不能为空")
     private Integer type;
 }

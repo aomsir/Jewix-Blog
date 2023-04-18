@@ -42,6 +42,6 @@ public class ArticleAddVo {
     @Range(min = 0,max = 1,message = "状态范围只允许在0-1之间")
     private Integer status;
 
-    private List<Integer> categoryIds;
-    private List<Integer> tagIds;
+    private List<Long> categoryIds;
+    private List<Long> tagIds;
 }

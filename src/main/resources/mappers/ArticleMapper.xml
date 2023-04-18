@@ -243,6 +243,7 @@
         </foreach>
     </select>
 
+
     <update id="deleteArticlesByArchive">
         UPDATE tb_article
         SET is_delete = 1
@@ -283,4 +284,11 @@
             #{id}
         </foreach>
     </delete>
+
+    <select id="queryArticleCountByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        FROM tb_article_user
+        WHERE user_id = #{id}
+    </select>
+
 </mapper>

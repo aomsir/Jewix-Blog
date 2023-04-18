@@ -5,6 +5,7 @@ import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.utils.PageUtils;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -24,4 +25,8 @@ public interface UserService {
     int updateStatus(UserStatusVo userStatusVo);
 
     User searchCurrentUser();
+
+    int deleteUserByArchive(List<Long> ids);
+
+    int deleteUserByPhysics(List<Long> ids);
 }

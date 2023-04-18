@@ -83,7 +83,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
-    // TODO:添加退出登录成功回调handler
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()

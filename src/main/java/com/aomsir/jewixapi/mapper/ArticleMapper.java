@@ -24,13 +24,13 @@ public interface ArticleMapper {
 
     ArrayList<Article> queryArticleFrontList(@Param("param") Map<String, Object> param);
 
-    int insertArticle(@Param("param") Map<String, Object> param);
+    Long insertArticle(@Param("param") Map<String, Object> param);
 
-    int insertArticleAndTag(@Param("articleId") int articleId, @Param("tagId") Integer tagId);
+    int insertArticleAndTag(@Param("articleId") Long articleId, @Param("tagId") Long tagId);
 
-    int insertArticleAndCategory(@Param("articleId") int articleId, @Param("categoryId") Integer categoryId);
+    int insertArticleAndCategory(@Param("articleId") Long articleId, @Param("categoryId") Long categoryId);
 
-    int insertArticleAndUser(@Param("articleId") int articleId, @Param("userId") Long userId);
+    int insertArticleAndUser(@Param("articleId") Long articleId, @Param("userId") Long userId);
 
     Article queryArticleByUuid(@Param("uuid") String uuid);
 
@@ -59,4 +59,7 @@ public interface ArticleMapper {
     int deleteArticleOfTags(@Param("ids") List<Long> ids);
 
     void deleteArticleOfUser(@Param("ids") List<Long> ids);
+
+    int queryArticleCountByUserId(@Param("id") Long id);
+
 }

@@ -109,6 +109,7 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         String token = JwtUtils.getToken(temp);
 
         this.redisTemplate.opsForValue().set("user:token:"+user.getId().toString(),token,7, TimeUnit.DAYS);
+        this.redisTemplate.opsForValue().set("user:info:"+user.getId().toString(),user,7,TimeUnit.DAYS);
         // TODO:用户权限信息封装进Redis
         R r = R.ok()
                 .put("token",token);
@@ -143,7 +144,7 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         } else if (e instanceof UsernameNotFoundException) {
             r = R.error(500,"找不到用户名，拒绝访问");
         } else if (e instanceof AuthenticationServiceException) {
-            r = R.error(500,e.getMessage());   // TODO:邮箱格式有误(自己对SpringSecurity进行一层封装)
+            r = R.error(500,e.getMessage());   // 邮箱格式有误(自己对SpringSecurity进行一层封装)
         } else {
             r = R.error(500,"登录失败");
         }

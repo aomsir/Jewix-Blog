@@ -26,7 +26,6 @@ import java.util.Objects;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-// TODO:解决异常抛出捕获的问题
 @Component
 public class PerTokenVerifyFilter extends OncePerRequestFilter {
 

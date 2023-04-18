@@ -105,4 +105,21 @@
         FROM tb_user
         WHERE id = #{userId}
     </select>
+
+    <update id="deleteUserByArchive">
+        UPDATE tb_user
+        SET status = 3
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <delete id="deleteUserByPhysics">
+        DELETE FROM tb_user
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

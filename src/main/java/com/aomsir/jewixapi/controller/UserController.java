@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -145,5 +146,29 @@ public class UserController {
                 .put("status", user);
     }
 
-    // TODO: 删除接口
+    /**
+     * 理论删除用户接口
+     * @param ids 待删除用户id列表
+     * @return 删除所影响的行数
+     */
+    @ApiOperation(value = "理论删除用户")
+    @DeleteMapping("/admin/users/archive")
+    public R deleteUserByArchive(List<Long> ids) {
+        int role = this.userService.deleteUserByArchive(ids);
+        return R.ok()
+                .put("role",role);
+    }
+
+    /**
+     * 物理删除用户接口
+     * @param ids 待删除用户id列表
+     * @return 删除所影响的行数
+     */
+    @ApiOperation(value = "物理删除用户")
+    @DeleteMapping("/admin/users/physics")
+    public R deleteUserByPhysics(List<Long> ids) {
+        int role = this.userService.deleteUserByPhysics(ids);
+        return R.ok()
+                .put("role",role);
+    }
 }

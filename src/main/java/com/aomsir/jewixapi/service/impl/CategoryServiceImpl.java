@@ -200,10 +200,11 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = this.categoryMapper.queryCategoryId(id);
             // 判断是否为父节点
             if (category.getParentId() != 0) {
-
                 // 是否有文章引用
                 if (this.categoryMapper.queryCategoryOfArticleCounts(id) == 0) {
                     trueIds.add(id);
+                } else {
+                    throw new CustomerException("id为" + id + "的分类有文章引用,请重新选择");
                 }
             } else {
                 // 为父节点
@@ -213,7 +214,11 @@ public class CategoryServiceImpl implements CategoryService {
                     // 当前分类是否有文章引用
                     if (this.categoryMapper.queryCategoryOfArticleCounts(id) == 0) {
                         trueIds.add(id);
+                    } else {
+                        throw new CustomerException("id为" + id + "的分类有文章引用,请重新选择");
                     }
+                } else {
+                    throw new CustomerException("id为" + id + "的分类有子分类,请重新选择");
                 }
             }
         }

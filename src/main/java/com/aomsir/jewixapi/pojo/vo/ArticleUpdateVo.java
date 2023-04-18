@@ -2,6 +2,8 @@ package com.aomsir.jewixapi.pojo.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/3/12
@@ -24,4 +26,6 @@ public class ArticleUpdateVo {
     private Integer views;
     private Integer isTop;
     private Integer isDelete;
+    private List<Long> tagIds;
+    private List<Long> categoryIds;
 }

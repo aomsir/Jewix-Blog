@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -33,4 +34,8 @@ public interface UserMapper {
     int updateUserStatus(@Param("param") UserStatusVo userStatusVo);
 
     User queryUserById(@Param("userId") Long userId);
+
+    int deleteUserByArchive(@Param("ids") List<Long> ids);
+
+    int deleteUserByPhysics(@Param("ids") List<Long> ids);
 }

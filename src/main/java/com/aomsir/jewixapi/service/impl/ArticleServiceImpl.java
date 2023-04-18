@@ -92,12 +92,12 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         // 查询分类id和标签id是否都存在
-        List<Integer> categoryIds = articleAddVo.getCategoryIds();
-        List<Integer> tagIds = articleAddVo.getTagIds();
+        List<Long> categoryIds = articleAddVo.getCategoryIds();
+        List<Long> tagIds = articleAddVo.getTagIds();
         Boolean categoryFlag = this.categoryMapper.queryIdsExists(categoryIds);
         Boolean tagFlag = this.tagMapper.queryIdsExists(tagIds);
 
-        int articleId = 0;
+        Long articleId = 0L;
 
         // 存在则进行插入
         if (categoryFlag && tagFlag) {
@@ -112,12 +112,12 @@ public class ArticleServiceImpl implements ArticleService {
             if (articleId != 0) {
 
                 // 遍历插入tb_tag_article
-                for (Integer tagId : tagIds) {
+                for (Long tagId : tagIds) {
                     this.articleMapper.insertArticleAndTag(articleId,tagId);
                 }
 
                 // 遍历tb_category_article
-                for (Integer categoryId : categoryIds) {
+                for (Long categoryId : categoryIds) {
                     this.articleMapper.insertArticleAndCategory(articleId,categoryId);
                 }
             }
@@ -132,6 +132,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
+    @Transactional
     public int updateArticle(ArticleUpdateVo articleUpdateVo) {
         Long id = articleUpdateVo.getId();
         String uuid = articleUpdateVo.getUuid();
@@ -142,7 +143,25 @@ public class ArticleServiceImpl implements ArticleService {
             throw new CustomerException("文章不存在");
         }
 
-        // TODO：处理article_tag与article_category
+        this.articleMapper.deleteArticleOfCategories(Collections.singletonList(articleUpdateVo.getId()));
+        this.articleMapper.deleteArticleOfTags(Collections.singletonList(articleUpdateVo.getId()));
+
+        Long articleId = articleUpdateVo.getId();
+        for (Long categoryId : articleUpdateVo.getCategoryIds()) {
+            if (this.categoryMapper.queryCategoryId(categoryId) != null) {
+                this.articleMapper.insertArticleAndCategory(articleId,categoryId);
+            } else {
+                throw new CustomerException("提交有不存在分类,请重新提交");
+            }
+        }
+
+        for (Long tagId : articleUpdateVo.getTagIds()) {
+            if (this.tagMapper.queryTagById(tagId) != null) {
+                this.articleMapper.insertArticleAndTag(articleId,tagId);
+            } else {
+                throw new CustomerException("提交有不存在标签,请重新提交");
+            }
+        }
 
         Map<String, Object> param = BeanUtil.beanToMap(articleUpdateVo);
         param.put("updateTime", new Date());
@@ -174,7 +193,6 @@ public class ArticleServiceImpl implements ArticleService {
         articleDetailDTO.setLastUuid(lastUuid);
         articleDetailDTO.setNextUuid(nextUuid);
 
-        // TODO：评论数
         Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId());
         articleDetailDTO.setCommentCount(count);
         return articleDetailDTO;

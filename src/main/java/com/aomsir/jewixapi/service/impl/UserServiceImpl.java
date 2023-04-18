@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
 import com.aomsir.jewixapi.exception.CustomerException;
+import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.UserMapper;
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.Tag;
@@ -14,6 +15,7 @@ import com.aomsir.jewixapi.utils.JwtUtils;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +31,6 @@ import java.util.*;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-// TODO:替换所有User类,减少网络数据传输
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -38,8 +39,13 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Resource
+    private ArticleMapper articleMapper;
+
+    @Resource
     private PasswordEncoder passwordEncoder;
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
     private HostHolder hostHolder;
@@ -173,9 +179,46 @@ public class UserServiceImpl implements UserService {
             throw new CustomerException("登录凭证失效,请重新登录");
         }
 
-        // TODO:后续改为Redis
-        User user = this.userMapper.queryUserById(userId);
-        user.setPassword("");
-        return user;
+        return (User) this.redisTemplate.opsForValue().get("user:info:" + userId);
+    }
+
+    @Override
+    @Transactional
+    public int deleteUserByArchive(List<Long> ids) {
+        if (ids == null || ids.size() == 0) {
+             throw new CustomerException("参数异常");
+        }
+
+        List<Long> trueIds = new ArrayList<>();
+        for (Long id : ids) {
+            // 查看有无文章引用
+            if (this.articleMapper.queryArticleCountByUserId(id) == 0) {
+                trueIds.add(id);
+            } else {
+                throw new CustomerException("用户id为" + id + "的用户分类下有文章,请先删除");
+            }
+        }
+
+        return this.userMapper.deleteUserByArchive(ids);
+    }
+
+    @Override
+    @Transactional
+    public int deleteUserByPhysics(List<Long> ids) {
+        if (ids == null || ids.size() == 0) {
+            throw new CustomerException("参数异常");
+        }
+
+        List<Long> trueIds = new ArrayList<>();
+        for (Long id : ids) {
+            // 查看有无文章引用
+            if (this.articleMapper.queryArticleCountByUserId(id) == 0) {
+                trueIds.add(id);
+            } else {
+                throw new CustomerException("用户id为" + id + "的用户分类下有文章,请先删除");
+            }
+        }
+
+        return this.userMapper.deleteUserByPhysics(ids);
     }
 }
