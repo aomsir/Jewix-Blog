@@ -179,4 +179,56 @@ public class ArticleServiceImpl implements ArticleService {
         articleDetailDTO.setCommentCount(count);
         return articleDetailDTO;
     }
+
+
+    @Override
+    @Transactional
+    public int deleteArticleByArchive(List<Long> ids) {
+        if (Objects.isNull(ids) || ids.size()==0) {
+            throw new CustomerException("请选择要删除的文章");
+        }
+
+        int articleCounts = this.articleMapper.queryArticleCountById(ids);
+        if (articleCounts != ids.size()) {
+            throw new CustomerException("选择文章列表异常,请刷新重试");
+        }
+
+        int role = this.articleMapper.deleteArticlesByArchive(ids);
+        if (role != ids.size()) {
+            throw new CustomerException("删除异常,请刷新重试");
+        }
+        return role;
+    }
+
+    @Override
+    @Transactional
+    public int deleteArticleByPhysics(List<Long> ids) {
+        if (Objects.isNull(ids) || ids.size()==0) {
+            throw new CustomerException("请选择要删除的文章");
+        }
+
+        // 确保选择的文章没有被别人删除(比如页面长时间没刷新)
+        int articleCounts = this.articleMapper.queryArticleCountById(ids);
+        if (articleCounts != ids.size()) {
+            throw new CustomerException("选择文章列表异常,请刷新重新选择");
+        }
+
+
+        // 1、删除文章表中的数据(is_delete置1即可)
+        int role = this.articleMapper.deleteArticlesByPhysics(ids);
+        if (role != ids.size()) {
+            throw new CustomerException("删除异常,请刷新重试");
+        }
+
+        // 2、删除文章-分类表中的数据
+        this.articleMapper.deleteArticleOfCategories(ids);
+
+        // 3、删除文章-标签表中的数据
+        this.articleMapper.deleteArticleOfTags(ids);
+
+        // 4、删除文章-用户表中的数据
+        this.articleMapper.deleteArticleOfUser(ids);
+
+        return role;
+    }
 }

@@ -47,4 +47,16 @@ public interface ArticleMapper {
     String queryLastUuidByCreateTime(@Param("createTime") Date createTime);
 
     String queryNextUuidByCreateTime(@Param("createTime") Date createTime);
+
+    int queryArticleCountById(@Param("ids") List<Long> ids);
+
+    int deleteArticlesByArchive(@Param("ids") List<Long> ids);
+
+    int deleteArticlesByPhysics(@Param("ids") List<Long> ids);
+
+    int deleteArticleOfCategories(@Param("ids") List<Long> ids);
+
+    int deleteArticleOfTags(@Param("ids") List<Long> ids);
+
+    void deleteArticleOfUser(@Param("ids") List<Long> ids);
 }

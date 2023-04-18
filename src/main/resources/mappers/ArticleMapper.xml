@@ -5,7 +5,6 @@
 
 <mapper namespace="com.aomsir.jewixapi.mapper.ArticleMapper">
 
-
     <!--    <resultMap id="ArticleResultMap" type="Article">-->
 <!--        <id property="id" column="id" />-->
 <!--        <result property="uuid" column="uuid" />-->
@@ -234,4 +233,54 @@
         ORDER BY create_time ASC
         LIMIT 1
     </select>
+
+    <select id="queryArticleCountById" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <update id="deleteArticlesByArchive">
+        UPDATE tb_article
+        SET is_delete = 1
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <delete id="deleteArticlesByPhysics">
+        DELETE FROM tb_article
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteArticleOfCategories">
+        DELETE FROM tb_article_category
+        WHERE article_id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteArticleOfTags">
+        DELETE FROM tb_article_tag
+        WHERE article_id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteArticleOfUser">
+        DELETE FROM tb_article_user
+        WHERE article_id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

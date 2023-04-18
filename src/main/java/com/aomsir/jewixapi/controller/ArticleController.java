@@ -11,11 +11,13 @@ import com.aomsir.jewixapi.utils.PageUtils;
 import com.aomsir.jewixapi.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,7 +41,6 @@ public class ArticleController {
      * @param articleBackendPageVo 后台无限制获取文章列表VO对象
      * @return 文章分页列表
      */
-    // TODO：获取文章列表即可
     @ApiOperation(value = "后台无限制分页获取文章列表", notes = "后台无限制分页获取文章列表")
     @GetMapping("/admin/articles")
     public R getBackendArticleByPage(@Validated ArticleBackendPageVo articleBackendPageVo) {
@@ -117,6 +118,29 @@ public class ArticleController {
     }
 
 
-    // TODO：删除文章
+    /**
+     *
+     * @param ids 待删除的文章id列表
+     * @return
+     */
+    @ApiOperation(value = "理论删除文章", notes = "理论删除文章")
+    @DeleteMapping("/admin/articles/archive")
+    public R deleteArticleByArchive(List<Long> ids) {
+        int role = this.articleService.deleteArticleByArchive(ids);
+        return R.ok()
+                .put("role",role);
+    }
 
+    /**
+     *
+     * @param ids 待删除的文章id列表
+     * @return 删除所影响的行数
+     */
+    @ApiOperation(value = "物理删除文章", notes = "物理删除文章")
+    @DeleteMapping("/admin/articles/physics")
+    public R deleteArticleByPhysics(List<Long> ids) {
+        int role = this.articleService.deleteArticleByPhysics(ids);
+        return R.ok()
+                .put("role",role);
+    }
 }
