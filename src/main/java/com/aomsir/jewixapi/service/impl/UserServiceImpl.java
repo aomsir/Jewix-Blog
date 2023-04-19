@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: Aomsir
@@ -131,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
             // 校验修改后的用户名是否已存在
             User user_3 = this.userMapper.queryUserByNickname(userUpdateVo.getNickname());
-            if (user_3 != null && Objects.equals(user_3.getUuid(), user_1.getUuid())) {
+            if (user_3 != null && !Objects.equals(user_3.getUuid(), user_1.getUuid())) {
                 throw new CustomerException("用户名已存在");
             }
         } else {
@@ -178,8 +179,13 @@ public class UserServiceImpl implements UserService {
         if (userId == null) {
             throw new CustomerException("登录凭证失效,请重新登录");
         }
+        User user = (User) this.redisTemplate.opsForValue().get("user:info:" + userId);
+        if (user == null) {
+            this.redisTemplate.delete("user:token:" + userId);
+            throw new CustomerException("登录凭证失效,请重新登录");
+        }
 
-        return (User) this.redisTemplate.opsForValue().get("user:info:" + userId);
+        return user;
     }
 
     @Override

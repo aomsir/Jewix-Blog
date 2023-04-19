@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +19,9 @@ import java.util.List;
  */
 
 @Data
-public class User extends BaseEntity implements UserDetails {
+public class User extends BaseEntity implements UserDetails, Serializable {
+    private static final long serialVersionUID = 123456789L;
+
     private Long id;
     private String uuid;
     private String nickname;

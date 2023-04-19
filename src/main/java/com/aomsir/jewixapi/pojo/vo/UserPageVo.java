@@ -26,7 +26,7 @@ public class UserPageVo {
     private Integer length;
 
     @NotNull(message = "状态不能为空")
-    @Range(min = 0, max = 2, message = "length必须为0-2之间")
+    @Range(min = 0, max = 3, message = "length必须为0-3之间")
     private Integer status;
 
 

@@ -94,7 +94,7 @@ public class UserController {
 
 
     /**
-     * 更新用户接口
+     * 更新用户接口(管理员)
      * @param userUpdateVo 更新用户VO对象
      * @return 更新用户所影响的行数
      */
@@ -105,6 +105,8 @@ public class UserController {
         return R.ok()
                 .put("role",role);
     }
+
+    // TODO：用户自己修改账户密码
 
 
     /**

@@ -116,7 +116,7 @@
     </select>
 
 
-    <insert id="insertArticle" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertArticle" keyProperty="id" useGeneratedKeys="true" >
         INSERT INTO tb_article(uuid, title, cover, content, description,type, origin_url, is_top, is_delete, status, create_time, update_time)
         VALUES (#{param.uuid},
                 #{param.title},
@@ -183,7 +183,7 @@
                 status = #{param.status},
             </if>
             <if test="param.updateTime != null">
-                update_time = #{param.updateTime}
+                update_time = #{param.updateTime},
             </if>
             <if test="param.description != null">
                 description = #{param.description}

@@ -44,6 +44,7 @@ public class SimpleLogoutSuccessHandler implements LogoutSuccessHandler {
             r = R.error("请先登录");
         } else {
             Boolean deleted = this.redisTemplate.delete("user:token:" + userId);
+            this.redisTemplate.delete("user:info:" + userId);
             r = R.ok("注销成功");
             // if (deleted) {
             //     r = R.ok("注销成功");

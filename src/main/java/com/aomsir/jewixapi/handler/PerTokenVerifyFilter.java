@@ -53,7 +53,7 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
         // 没有携带token则进入后续的Filter,后续的Filter会验证当前程序能否正常行走
         if (token == null) {
-            securityContext.setAuthentication(null);
+             securityContext.setAuthentication(null);
             filterChain.doFilter(request,response);
             return;
         }
@@ -81,6 +81,7 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
         } else if (!tokenInRedis.equals(token)) {
             // 两次携带token不一致则将Redis中的删除
             this.redisTemplate.delete("user:token:" + userId);
+            this.redisTemplate.delete("user:info:" + userId);
             request.setAttribute("CustomerAuthenticationException","登录凭证已过期,请重新登录");
             filterChain.doFilter(request,response);
             return;
