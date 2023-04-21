@@ -34,6 +34,9 @@ public class ArticleDetailDTO {
 
     private List<String> tags;
 
+    private List<Long> tagIds;
+    private List<Long> categoryIds;
+
     private String userName;
 
     private String lastUuid;

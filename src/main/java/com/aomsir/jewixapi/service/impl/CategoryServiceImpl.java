@@ -156,6 +156,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryListDTO> searchCategoryList() {
 
+        // 查询
         List<Category> categories = this.categoryMapper.queryCategoryListByParentId(0L);
         if (categories == null) {
             return null;

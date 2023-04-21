@@ -62,4 +62,7 @@ public interface ArticleMapper {
 
     int queryArticleCountByUserId(@Param("id") Long id);
 
+    List<Long> queryArticleTagIdList(@Param("id") Long id);
+
+    List<Long> queryArticleCategoryIdList(@Param("id") Long id);
 }

@@ -291,4 +291,20 @@
         WHERE user_id = #{id}
     </select>
 
+    <select id="queryArticleTagIdList" resultType="Long">
+        SELECT tat.tag_id
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_tag AS tat ON ta.id = tat.article_id
+        LEFT JOIN tb_tag AS tt ON tat.tag_id = tt.id
+        WHERE ta.id = #{id}
+    </select>
+
+    <select id="queryArticleCategoryIdList" resultType="Long">
+        SELECT tac.category_id
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_category AS tac ON ta.id = tac.article_id
+        LEFT JOIN tb_category AS tc ON tac.category_id = tc.id
+        WHERE ta.id = #{id}
+    </select>
+
 </mapper>

@@ -196,6 +196,14 @@ public class ArticleServiceImpl implements ArticleService {
         articleDetailDTO.setLastUuid(lastUuid);
         articleDetailDTO.setNextUuid(nextUuid);
 
+
+        // 封装tagIds和categoryIds
+        List<Long> tagIdList = this.articleMapper.queryArticleTagIdList(article.getId());
+        List<Long> categoryIdList = this.articleMapper.queryArticleCategoryIdList(article.getId());
+        articleDetailDTO.setTagIds(tagIdList);
+        articleDetailDTO.setCategoryIds(categoryIdList);
+
+
         Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId());
         articleDetailDTO.setCommentCount(count);
         return articleDetailDTO;
