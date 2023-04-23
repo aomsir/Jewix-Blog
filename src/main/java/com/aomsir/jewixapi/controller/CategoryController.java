@@ -123,7 +123,7 @@ public class CategoryController {
      */
     @ApiOperation(value = "删除分类信息")
     @DeleteMapping("/admin/categories")
-    public R deleteCategory(List<Long> ids) {
+    public R deleteCategory(@RequestParam List<Long> ids) {
         int role = this.categoryService.deleteCategories(ids);
         return R.ok()
                 .put("role",role);

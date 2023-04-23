@@ -104,7 +104,7 @@ public class FriendLinkController {
      */
     @ApiOperation(value = "删除友情链接")
     @DeleteMapping("/admin/friend-links")
-    public R deleteFriendLink(List<Integer> ids) {
+    public R deleteFriendLink(@RequestParam List<Integer> ids) {
         int role = this.friendLinkService.deleteFriendLinks(ids);
         return R.ok()
                 .put("role",role);

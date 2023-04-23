@@ -125,7 +125,7 @@ public class ArticleController {
      */
     @ApiOperation(value = "理论删除文章", notes = "理论删除文章")
     @DeleteMapping("/admin/articles/archive")
-    public R deleteArticleByArchive(List<Long> ids) {
+    public R deleteArticleByArchive(@RequestParam List<Long> ids) {
         int role = this.articleService.deleteArticleByArchive(ids);
         return R.ok()
                 .put("role",role);
@@ -138,7 +138,7 @@ public class ArticleController {
      */
     @ApiOperation(value = "物理删除文章", notes = "物理删除文章")
     @DeleteMapping("/admin/articles/physics")
-    public R deleteArticleByPhysics(List<Long> ids) {
+    public R deleteArticleByPhysics(@RequestParam List<Long> ids) {
         int role = this.articleService.deleteArticleByPhysics(ids);
         return R.ok()
                 .put("role",role);

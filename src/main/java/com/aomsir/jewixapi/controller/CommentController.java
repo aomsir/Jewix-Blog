@@ -76,7 +76,7 @@ public class CommentController {
      * @return 添加评论所影响的行数
      */
     @ApiOperation(value = "添加评论")
-    @PostMapping("/admin/comments")
+    @PostMapping("/comments")
     public R addComment(@RequestBody @Validated CommentAddVo commentAddVo,
                         HttpServletRequest request) throws JsonProcessingException {
         int role = this.commentService.addComment(commentAddVo,request);
