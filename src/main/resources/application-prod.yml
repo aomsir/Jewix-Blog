@@ -18,7 +18,6 @@ spring:
     port: 6379
     database: 5
 
-s
 
 
 
