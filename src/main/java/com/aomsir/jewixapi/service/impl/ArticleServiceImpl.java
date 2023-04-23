@@ -185,7 +185,10 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDetailDTO queryArticleByUuid(String uuid, HttpServletRequest request) {
 
         ArticleDetailDTO detailDTO = (ArticleDetailDTO) this.redisTemplate.opsForValue().get("article:info:cache:"+uuid);
+
         if (detailDTO != null) {
+            // 封装浏览量
+            this.displayViews(request, detailDTO.getUuid(), detailDTO.getId(), detailDTO.getViews(), detailDTO);
             return detailDTO;
         }
 
@@ -219,23 +222,28 @@ public class ArticleServiceImpl implements ArticleService {
         articleDetailDTO.setTagIds(tagIdList);
         articleDetailDTO.setCategoryIds(categoryIdList);
 
-        String ip = this.netUtils.getRealIp(request);
-        Long isView = (Long) this.redisTemplate.opsForValue().get("article:views:ip:" + ip);
-        if (isView == null || isView == 0) {
-
-            // 同IP7天内刷新不算只算一条访问量
-            this.redisTemplate.opsForValue().set("article:views:ip:"+ip,1L,7, TimeUnit.DAYS);
-
-            // TODO：完善成自动任务
-            this.redisTemplate.opsForValue().increment("article:views:info:" + article.getId());
-            this.articleMapper.updateArticleViewCount(article.getId(),article.getViews()+1);
-        }
+        this.displayViews(request, article.getUuid(), article.getId(), article.getViews(), detailDTO);
 
         Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId());
         articleDetailDTO.setCommentCount(count);
 
         this.redisTemplate.opsForValue().set("article:info:cache:"+article.getUuid(),articleDetailDTO);
         return articleDetailDTO;
+    }
+
+    private void displayViews(HttpServletRequest request, String uuid2, Long id, Integer views, ArticleDetailDTO detailDTO) {
+        String ip = this.netUtils.getRealIp(request);
+        log.error("{}",ip);
+        Long isView = (Long) this.redisTemplate.opsForValue().get("article:views:ip:"+ip+":articleUuid:"+ uuid2);
+        if (isView == null || isView == 0) {
+
+            // 同IP7天内刷新不算只算一条访问量
+            this.redisTemplate.opsForValue().set("article:views:ip:"+ip+":articleUuid:"+ uuid2,1L,7, TimeUnit.DAYS);
+
+            // TODO：完善成自动任务
+            this.redisTemplate.opsForValue().increment("article:views:info:" + id);
+            this.articleMapper.updateArticleViewCount(id, views +1);
+        }
     }
 
 
