@@ -5,6 +5,7 @@ import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.utils.PageUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public interface ArticleService {
 
     int updateArticle(ArticleUpdateVo articleUpdateVo);
 
-    ArticleDetailDTO queryArticleByUuid(String uuid);
+    ArticleDetailDTO queryArticleByUuid(String uuid, HttpServletRequest request);
 
     int deleteArticleByArchive(List<Long> ids);
 

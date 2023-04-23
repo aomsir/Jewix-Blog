@@ -253,6 +253,7 @@
         </foreach>
     </update>
 
+
     <delete id="deleteArticlesByPhysics">
         DELETE FROM tb_article
         WHERE id IN
@@ -307,4 +308,9 @@
         WHERE ta.id = #{id}
     </select>
 
+    <update id="updateArticleViewCount">
+        UPDATE tb_article
+        SET views = #{count}
+        WHERE id = #{id}
+    </update>
 </mapper>

@@ -13,15 +13,19 @@ import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
 import com.aomsir.jewixapi.service.CommentService;
 import com.aomsir.jewixapi.utils.HostHolder;
+import com.aomsir.jewixapi.utils.NetUtils;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: Aomsir
@@ -49,6 +53,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private CommentMapper commentMapper;
+
+    @Resource
+    private NetUtils netUtils;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
 
     @Override
@@ -172,7 +182,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleDetailDTO queryArticleByUuid(String uuid) {
+    public ArticleDetailDTO queryArticleByUuid(String uuid, HttpServletRequest request) {
         Article article = this.articleMapper.queryArticleByUuid(uuid);
         if (article == null) {
             throw new CustomerException("文章不存在");
@@ -203,6 +213,15 @@ public class ArticleServiceImpl implements ArticleService {
         articleDetailDTO.setTagIds(tagIdList);
         articleDetailDTO.setCategoryIds(categoryIdList);
 
+        String ip = this.netUtils.getRealIp(request);
+        Long isView = (Long) this.redisTemplate.opsForValue().get("article:views:ip:" + ip);
+        if (isView == null || isView == 0) {
+            this.redisTemplate.opsForValue().set("article:views:ip:"+ip,1L,7, TimeUnit.DAYS);
+
+            // TODO：完善成自动任务
+            this.redisTemplate.opsForValue().increment("article:views:info:" + article.getId());
+            this.articleMapper.updateArticleViewCount(article.getId(),article.getViews()+1);
+        }
 
         Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId());
         articleDetailDTO.setCommentCount(count);

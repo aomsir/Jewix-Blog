@@ -65,4 +65,6 @@ public interface ArticleMapper {
     List<Long> queryArticleTagIdList(@Param("id") Long id);
 
     List<Long> queryArticleCategoryIdList(@Param("id") Long id);
+
+    void updateArticleViewCount(@Param("id") Long id, @Param("count") int i);
 }

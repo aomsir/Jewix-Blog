@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -111,8 +112,9 @@ public class ArticleController {
      */
     @ApiOperation(value = "文章详情", notes = "文章详情")
     @GetMapping("/articles/{uuid}")
-    public R getArticleByUuid(@PathVariable("uuid") String uuid) {
-        ArticleDetailDTO articleDetailDTO = this.articleService.queryArticleByUuid(uuid);
+    public R getArticleByUuid(@PathVariable("uuid") String uuid,
+                              HttpServletRequest httpServletRequest) {
+        ArticleDetailDTO articleDetailDTO = this.articleService.queryArticleByUuid(uuid,httpServletRequest);
         return R.ok()
                 .put("result",articleDetailDTO);
     }
