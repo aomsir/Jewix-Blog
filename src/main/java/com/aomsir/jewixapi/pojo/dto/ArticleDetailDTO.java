@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.pojo.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 
 @Data
-public class ArticleDetailDTO {
+public class ArticleDetailDTO implements Serializable {
     private Long id;
     private String uuid;
     private String title;

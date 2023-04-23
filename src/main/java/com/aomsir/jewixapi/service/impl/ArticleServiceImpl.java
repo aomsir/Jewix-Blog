@@ -183,6 +183,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleDetailDTO queryArticleByUuid(String uuid, HttpServletRequest request) {
+
+        ArticleDetailDTO detailDTO = (ArticleDetailDTO) this.redisTemplate.opsForValue().get("article:info:cache:"+uuid);
+        if (detailDTO != null) {
+            return detailDTO;
+        }
+
         Article article = this.articleMapper.queryArticleByUuid(uuid);
         if (article == null) {
             throw new CustomerException("文章不存在");
@@ -216,6 +222,8 @@ public class ArticleServiceImpl implements ArticleService {
         String ip = this.netUtils.getRealIp(request);
         Long isView = (Long) this.redisTemplate.opsForValue().get("article:views:ip:" + ip);
         if (isView == null || isView == 0) {
+
+            // 同IP7天内刷新不算只算一条访问量
             this.redisTemplate.opsForValue().set("article:views:ip:"+ip,1L,7, TimeUnit.DAYS);
 
             // TODO：完善成自动任务
@@ -225,6 +233,8 @@ public class ArticleServiceImpl implements ArticleService {
 
         Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId());
         articleDetailDTO.setCommentCount(count);
+
+        this.redisTemplate.opsForValue().set("article:info:cache:"+article.getUuid(),articleDetailDTO);
         return articleDetailDTO;
     }
 
