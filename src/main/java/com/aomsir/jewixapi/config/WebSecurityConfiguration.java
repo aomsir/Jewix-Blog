@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.config;
 
 import com.aomsir.jewixapi.handler.*;
+import com.aomsir.jewixapi.service.LogService;
 import com.aomsir.jewixapi.utils.HostHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Resource
     private UserDetailsService userDetailsService;
 
-
     @Resource
     private PerTokenVerifyFilter tokenVerifyFilter;
 
@@ -52,6 +52,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Resource
     private RedisTemplate<String,Object> redisTemplate;
+
+    @Resource
+    private LogService logService;
 
     @Value("${server.servlet.context-path}")
     private String prefix;
@@ -97,7 +100,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                                 .logoutSuccessHandler(this.simpleLogoutSuccessHandler);
 
         http.addFilterBefore(this.tokenVerifyFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAfter(new EmailPasswordAuthenticationFilter(authenticationManager(),redisTemplate),
+        http.addFilterAfter(new EmailPasswordAuthenticationFilter(authenticationManager(),redisTemplate,logService),
                 PerTokenVerifyFilter.class);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);   // 禁用Session
     }

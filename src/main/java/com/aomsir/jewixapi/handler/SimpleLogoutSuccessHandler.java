@@ -1,7 +1,9 @@
 package com.aomsir.jewixapi.handler;
 
 import com.aomsir.jewixapi.utils.HostHolder;
+import com.aomsir.jewixapi.utils.JwtUtils;
 import com.aomsir.jewixapi.utils.R;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,9 +27,6 @@ import java.io.IOException;
  */
 @Component
 public class SimpleLogoutSuccessHandler implements LogoutSuccessHandler {
-    @Resource
-    private HostHolder hostHolder;
-
 
     @Resource
     private RedisTemplate<String,Object> redisTemplate;
@@ -36,25 +35,35 @@ public class SimpleLogoutSuccessHandler implements LogoutSuccessHandler {
     public void onLogoutSuccess(HttpServletRequest httpServletRequest,
                                 HttpServletResponse httpServletResponse,
                                 Authentication authentication) throws IOException, ServletException {
-        // 此逻辑是在过滤链的末尾执行的,可以直接查询注销
+        // 此逻辑是在过滤链的末尾执行的,但不会走OncePerRequestFilter
         R r;
-        Long userId = this.hostHolder.getUserId();
-        // 避免接口被频繁使用
-        if (userId == null || userId < 10000) {
+        String token = httpServletRequest.getHeader("token");
+        if (token == null) {
             r = R.error("请先登录");
         } else {
-            Boolean deleted = this.redisTemplate.delete("user:token:" + userId);
-            this.redisTemplate.delete("user:info:" + userId);
-            r = R.ok("注销成功");
-            // if (deleted) {
-            //     r = R.ok("注销成功");
-            // } else {
-                // 小概率事件:Once过滤器后,Redis数据过期
-            //     r = R.error("已经注销,不要频繁注销嗷");
-            // }
+            try {
+                JwtUtils.verify(token);
+            } catch (Exception e) {
+                r = R.ok("注销成功");
+            }
 
+            // 解析token中的内容
+            DecodedJWT jwt = JwtUtils.getToken(token);
+            String userId = jwt.getClaim("userId").asString();
+            // 避免接口被频繁使用
+            if (userId == null || Long.parseLong(userId) < 10000) {
+                r = R.error("请先登录");
+            } else {
+                String tokenInRedis = (String) this.redisTemplate.opsForValue().get("user:token:" + userId);
+                if (tokenInRedis == null) {
+                    r = R.ok("注销成功");
+                } else {
+                    this.redisTemplate.delete("user:token:" + userId);
+                    this.redisTemplate.delete("user:info:" + userId);
+                    r = R.ok("注销成功");
+                }
+            }
         }
-
 
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
         httpServletResponse.setContentType("application/json;charset=UTF-8");

@@ -38,7 +38,7 @@ jasypt:
 
 jewix:
   basePath: ENC(um/IPJ8aGJn5OBNKfn6MJjC3nS5m71BAiBlK8Qd2HoqsZ+JkCkjMeIY16F2GrJHXkW2jb3BLGVY=)  # 相册本地存储位置
-  gaode-api-key: ENC(zYB1NE6nvqE2dQHuCokGxOF+EjTtTYB1rtdT6awkQD76KoobWIm8Ru0uU+exuQF5PgtcmEhoXls=)  # 高德地图密钥
+  tencent-location-api-key: ENC(nzlEq9wIleBwe/2tgrJN7QmG5BcwS8IBmwmgI3zsrrMXILANBtlsXA4wW18M09CSkQ09ro5VFoY=)  # 腾讯地图密钥
 
 cloud:
   upyun:

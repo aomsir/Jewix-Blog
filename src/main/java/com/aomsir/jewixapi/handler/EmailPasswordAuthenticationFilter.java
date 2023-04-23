@@ -4,6 +4,8 @@ package com.aomsir.jewixapi.handler;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
+import com.aomsir.jewixapi.service.LogService;
+import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.aomsir.jewixapi.utils.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,11 +38,16 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
 
     private RedisTemplate<String,Object> redisTemplate;
 
+    private LogService logService;
 
-    public EmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager,RedisTemplate<String,Object> redisTemplate) {
+
+    public EmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
+                                             RedisTemplate<String,Object> redisTemplate,
+                                             LogService logService) {
         this.setAuthenticationManager(authenticationManager);
         this.redisTemplate = redisTemplate;
         this.setPostOnly(false);
+        this.logService = logService;
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login","POST"));
     }
 
@@ -117,6 +124,9 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         resp.setStatus(HttpStatus.OK.value());
         resp.setContentType("application/json;charset=UTF-8");
         String s = new ObjectMapper().writeValueAsString(r);
+
+        this.logService.insertLoginLog(req,user.getId());
+
         resp.getWriter().println(s);
     }
 

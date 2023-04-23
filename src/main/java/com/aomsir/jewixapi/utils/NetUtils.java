@@ -32,7 +32,7 @@ public class NetUtils {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${jewix.gaode-api-key}")
+    @Value("${jewix.tencent-location-api-key}")
     private String gaodeApiKey;
 
 
@@ -60,26 +60,34 @@ public class NetUtils {
      * @throws JsonProcessingException
      */
     public Map<String, String > getLocationInfo(String ip) throws JsonProcessingException {
-        String url = "https://restapi.amap.com/v3/ip";
+        String url = "https://apis.map.qq.com/ws/location/v1/ip";
         String key = this.gaodeApiKey;
         url = String.format("%s?ip=%s&key=%s", url, ip,key);
-        String response =  restTemplate.getForObject(url, String.class);
+        String response =  this.restTemplate.getForObject(url, String.class);
 
         // TODO:解析json
-        JsonNode locationResponse = objectMapper.readTree(response);
-        String province = locationResponse.get("province").asText();
-        String city = locationResponse.get("city").asText();
+        JsonNode parentNode = this.objectMapper.readTree(response);
+        JsonNode sonNode = parentNode.get("result").get("ad_info");
+        String nation = sonNode.get("nation").asText();
+        String province = sonNode.get("province").asText();
+        String city = sonNode.get("city").asText();
 
-        if (StringUtils.isBlank(province)) {
+        if (StringUtils.isEmpty(nation) || StringUtils.isBlank(nation)) {
+            nation = "未知";
+        }
+
+        if (StringUtils.isEmpty(province) || StringUtils.isBlank(province)) {
             province = "未知";
         }
-        if (StringUtils.isBlank(city)) {
+        if (StringUtils.isEmpty(city)  || StringUtils.isBlank(city)) {
             city = "未知";
         }
 
         String finalProvince = province;
         String finalCity = city;
+        String finalNation = nation;
         Map<String, String> map = new HashMap<String, String>(){{
+            put("nation", finalNation);
             put("province", finalProvince);
             put("city", finalCity);
         }};;
