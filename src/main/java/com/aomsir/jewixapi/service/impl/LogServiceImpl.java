@@ -36,10 +36,9 @@ public class LogServiceImpl implements LogService {
         String ip = this.netUtils.getRealIp(req);
         String location;
         if (ip.equals("127.0.0.1")) {
-            location = "未知-未知-未知";
+            location = "未知";
         } else {
-            Map<String, String> locationInfo = this.netUtils.getLocationInfo(ip);
-            location = locationInfo.get("nation") + "-" + locationInfo.get("province") + "-" + locationInfo.get("city");
+            location = this.netUtils.getLocationInfo(ip);
         }
 
 

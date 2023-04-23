@@ -78,15 +78,16 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
             return;
             // throw new AuthenticationServiceException("登录凭证已过期,请重新登录");
-        } else if (!tokenInRedis.equals(token)) {
-            // 两次携带token不一致则将Redis中的删除
-            this.redisTemplate.delete("user:token:" + userId);
-            this.redisTemplate.delete("user:info:" + userId);
-            request.setAttribute("CustomerAuthenticationException","登录凭证已过期,请重新登录");
-            filterChain.doFilter(request,response);
-            return;
-            // throw new CustomerAuthenticationException("登录凭证已过期,请重新登录");
         }
+         else if (!tokenInRedis.equals(token)) {
+             // 两次携带token不一致则将让其重新登录
+             // this.redisTemplate.delete("user:token:" + userId);
+             // this.redisTemplate.delete("user:info:" + userId);
+             request.setAttribute("CustomerAuthenticationException","登录凭证已过期,请重新登录");
+             filterChain.doFilter(request,response);
+             return;
+             // throw new CustomerAuthenticationException("登录凭证已过期,请重新登录");
+         }
 
         this.hostHolder.setUserId(Long.valueOf(userId));
 

@@ -59,7 +59,7 @@ public class NetUtils {
      * @return
      * @throws JsonProcessingException
      */
-    public Map<String, String > getLocationInfo(String ip) throws JsonProcessingException {
+    public String getLocationInfo(String ip) throws JsonProcessingException {
         String url = "https://apis.map.qq.com/ws/location/v1/ip";
         String key = this.gaodeApiKey;
         url = String.format("%s?ip=%s&key=%s", url, ip,key);
@@ -68,30 +68,47 @@ public class NetUtils {
         // TODO:解析json
         JsonNode parentNode = this.objectMapper.readTree(response);
         JsonNode sonNode = parentNode.get("result").get("ad_info");
+
         String nation = sonNode.get("nation").asText();
         String province = sonNode.get("province").asText();
         String city = sonNode.get("city").asText();
+        String finalLocation = "";
 
+        // 处理内容
         if (StringUtils.isEmpty(nation) || StringUtils.isBlank(nation)) {
-            nation = "未知";
+            if (StringUtils.isEmpty(province) || StringUtils.isBlank(province)) {
+                if (StringUtils.isEmpty(city)  || StringUtils.isBlank(city)) {
+                    // 未知
+                    finalLocation = "未知";
+                }
+            } else {
+                finalLocation = province;
+                if (!StringUtils.isEmpty(city)  || !StringUtils.isBlank(city)) {
+                    if (!province.equals(city)) {
+                        // 湖北省-武汉市
+                        finalLocation = finalLocation + "-" + city;
+                    }
+                }
+            }
+        } else {
+            if (!StringUtils.isEmpty(province) || !StringUtils.isBlank(province)) {
+                finalLocation = province;
+                if (!StringUtils.isEmpty(city)  || !StringUtils.isBlank(city)) {
+                    // 以免出现 上海市-上海市
+                    if (!province.equals(city)) {
+                        // 湖北省-武汉市
+                        finalLocation = finalLocation + "-" + city;
+                    }
+                }
+            } else {
+                if (StringUtils.isEmpty(city)  || StringUtils.isBlank(city)) {
+                    // 新加坡
+                    finalLocation = nation;
+                }
+            }
         }
 
-        if (StringUtils.isEmpty(province) || StringUtils.isBlank(province)) {
-            province = "未知";
-        }
-        if (StringUtils.isEmpty(city)  || StringUtils.isBlank(city)) {
-            city = "未知";
-        }
-
-        String finalProvince = province;
-        String finalCity = city;
-        String finalNation = nation;
-        Map<String, String> map = new HashMap<String, String>(){{
-            put("nation", finalNation);
-            put("province", finalProvince);
-            put("city", finalCity);
-        }};;
-        return map;
+        return finalLocation;
     }
 
     public Map<String, String> parseUserAgent(String userAgent) {

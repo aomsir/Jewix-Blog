@@ -160,11 +160,11 @@ public class CommentServiceImpl implements CommentService {
         String userAgent = request.getHeader("User-Agent");
 
         Map<String, String> userAgentMap = this.netUtils.parseUserAgent(userAgent);
-        Map<String, String> locationMap = this.netUtils.getLocationInfo(realIp);
+        String locationString = this.netUtils.getLocationInfo(realIp);
 
         // 将userAgentMap转换为json
         String userAgentString = new ObjectMapper().writeValueAsString(userAgentMap);
-        String locationString = new ObjectMapper().writeValueAsString(locationMap);
+        // String locationString = new ObjectMapper().writeValueAsString(locationMap);
 
         param.put("ip",realIp);
         param.put("agent",userAgentString);
