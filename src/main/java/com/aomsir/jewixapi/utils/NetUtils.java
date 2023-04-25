@@ -12,9 +12,12 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @Author: Aomsir
@@ -77,6 +80,14 @@ public class NetUtils {
      * @throws JsonProcessingException
      */
     public String getLocationInfo(String ip) throws JsonProcessingException {
+        String finalLocation = "";
+        if (this.isLocalIp(ip)) {
+            finalLocation = "未知";
+            return finalLocation;
+        } else if ("".equals(ip)) {
+            finalLocation = "未知";
+            return finalLocation;
+        }
 
         String url = "https://apis.map.qq.com/ws/location/v1/ip";
         String key = this.gaodeApiKey;
@@ -90,7 +101,7 @@ public class NetUtils {
         String nation = sonNode.get("nation").asText();
         String province = sonNode.get("province").asText();
         String city = sonNode.get("city").asText();
-        String finalLocation = "";
+
 
         // 处理内容
         if (StringUtils.isEmpty(nation) || StringUtils.isBlank(nation)) {
@@ -129,12 +140,37 @@ public class NetUtils {
         return finalLocation;
     }
 
+    /**
+     * 解析用户浏览器代理
+     * @param userAgent
+     * @return
+     */
     public Map<String, String> parseUserAgent(String userAgent) {
         UserAgent agent = UserAgent.parseUserAgentString(userAgent);
         Map<String, String> map = new HashMap<>();
         map.put("browser", agent.getBrowser().getName());
         map.put("os", agent.getOperatingSystem().getName());
         return map;
+    }
+
+    /**
+     * 查询是否是本地IP
+     * @param ip 查询IP
+     * @return
+     */
+    private boolean isLocalIp(String ip) {
+        String localIpPattern = "^(10\\.|172\\.(1[6-9]|2[0-9]|3[0-1])\\.|192\\.168\\.).*";
+        if (ip == null || ip.isEmpty()) {
+            return false;
+        }
+        try {
+            InetAddress address = InetAddress.getByName(ip);
+            return address.isSiteLocalAddress() || address.isLoopbackAddress();
+        } catch (UnknownHostException e) {
+            // TODO
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

@@ -31,7 +31,7 @@ import java.util.*;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-
+// TODO：部分业务采用递归实现
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -69,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
         ArrayList<Comment> list = null;
         List<CommentDTO> commentDTOList = null;
         if (count > 0) {
-            list = this.commentMapper.queryCommentFrontPageList(param);     // 当前文章下所有的评论
+            list = this.commentMapper.queryCommentFrontPageList(param);     // 当前文章下所有的评论(已开放)
             commentDTOList = new ArrayList<>();
 
 
@@ -112,7 +112,7 @@ public class CommentServiceImpl implements CommentService {
 
 
         // 处理目标文章/页面
-        // 1:文章,2:页面
+        // 1:文章,21:页面
         // 说明是回复文章
         if (commentAddVo.getType() == 1) {
             Article article = this.articleMapper.queryArticleById(targetId);
@@ -157,15 +157,11 @@ public class CommentServiceImpl implements CommentService {
 
         Map<String, String> userAgentMap = this.netUtils.parseUserAgent(userAgent);
         String userAgentString = new ObjectMapper().writeValueAsString(userAgentMap);    // 将userAgentMap转换为json
-         if (realIp.equals("0:0:0:0:0:0:0:1")) {
-             param.put("location","未知");
-         } else {
-             String locationString = this.netUtils.getLocationInfo(realIp);
-             param.put("location",locationString);
-         }
+        String locationString = this.netUtils.getLocationInfo(realIp);
 
         param.put("ip",realIp);
         param.put("agent",userAgentString);
+        param.put("location",locationString);
 
         param.put("status",0);    // 0-待审核
         param.put("createTime",new Date());
@@ -232,4 +228,6 @@ public class CommentServiceImpl implements CommentService {
         param.put("updateTime",new Date());
         return this.commentMapper.updateCommentStatus(param);
     }
+
+
 }

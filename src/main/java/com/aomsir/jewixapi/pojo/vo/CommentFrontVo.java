@@ -19,7 +19,7 @@ public class CommentFrontVo {
     @NotNull(message = "目标id不能为空")
     private Long targetId;
 
-    @Range(min = 0,max = 3)
+    @Range(min = 0,max = 25)
     private Integer type;
 
     @NotNull(message = "page不能为空")

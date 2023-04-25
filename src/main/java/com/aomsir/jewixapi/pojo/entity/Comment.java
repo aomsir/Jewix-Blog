@@ -20,7 +20,7 @@ public class Comment extends BaseEntity {
     private String ip;          // 评论者ip
     private String location;    // 评论者地理位置
     private String agent;       // 评论者设备Agent
-    private Integer type;       // 评论类型 - 1-文章、2-页面
+    private Integer type;       // 评论类型 - 1-文章、21-时光机、22-友人账、23-留言板、24-关于
     private Long targetId;      // 文章id或者页面id
     private Long parentId;      // 父级id,0为根评论
     private Long permId;        // 一级评论id,0为根评论

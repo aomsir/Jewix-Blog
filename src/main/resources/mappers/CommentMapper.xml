@@ -59,10 +59,11 @@
 
 
     <select id="queryCommentFrontPageList" resultType="Comment">
-        SELECT id, author, content, email, url, ip, location, agent, type, target_id, parent_id, perm_id,status, create_time, update_time
+        SELECT id, author, content, email, url, location, agent, type, target_id, parent_id, perm_id,status, create_time, update_time
         FROM tb_comment
         WHERE target_id = #{param.targetId}
         AND type = #{param.type}
+        AND status = 1
         LIMIT #{param.start},#{param.length}
     </select>
 

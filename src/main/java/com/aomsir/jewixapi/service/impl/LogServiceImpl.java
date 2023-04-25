@@ -34,13 +34,7 @@ public class LogServiceImpl implements LogService {
     @Transactional
     public void insertLoginLog(HttpServletRequest req,Long userId) throws JsonProcessingException {
         String ip = this.netUtils.getRealIp(req);
-        String location;
-        if (ip.equals("127.0.0.1")) {
-            location = "未知";
-        } else {
-            location = this.netUtils.getLocationInfo(ip);
-        }
-
+        String location = this.netUtils.getLocationInfo(ip);
 
         LoginLog loginLog = new LoginLog();
         loginLog.setUserId(userId);
