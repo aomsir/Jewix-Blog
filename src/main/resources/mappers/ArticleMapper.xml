@@ -308,6 +308,15 @@
         WHERE ta.id = #{id}
     </select>
 
+    <select id="queryArticleCountByCategoryId" resultType="Long">
+        SELECT COUNT(a.id)
+        FROM tb_article AS a
+        LEFT JOIN tb_article_category ac on a.id = ac.article_id
+        WHERE a.status = 0
+        AND a.is_delete = 0
+        AND ac.category_id = #{categoryId}
+    </select>
+
     <update id="updateArticleViewCount">
         UPDATE tb_article
         SET views = #{count}

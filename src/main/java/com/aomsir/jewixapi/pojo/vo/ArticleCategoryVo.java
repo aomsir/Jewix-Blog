@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
+ *
  * @Author: Aomsir
  * @Date: 2023/2/26
  * @Description: 根据分类名分页获取文章VO实体类
@@ -17,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ArticleCategoryVo {
     @NotNull(message = "分类不允许为空")
-    private String parentCategoryName;
+    private Long categoryId;
 
     private String sonCategoryName;
 

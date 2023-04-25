@@ -116,33 +116,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public PageUtils searchArticlePageByCategoryName(Map<String, Object> param) {
-        if ((String) param.get("parentCategoryName") != null) {
-            // 查询父分类是否存在
-            Category temp_1 = this.categoryMapper.queryCategoryByNameAndParentId((String) param.get("parentCategoryName"),0L);
-            if (temp_1 == null) {
-                throw new CustomerException("分类不存在");
-            }
-
-            // 封装父分类与id(如果有子分类就进入if中封装逻辑中继续封装)
-            param.put("parentCategoryId",0L);
-            param.put("categoryName",temp_1.getCategoryName());
-
-            // 携带子分类的情况下,查看当前父分类下有无此子分类
-            if (!((String) param.get("sonCategoryName")).isEmpty()) {
-                param.put("parentCategoryId",temp_1.getId());
-                Category temp_2 = this.categoryMapper.queryCategoryByNameAndParentId((String) param.get("sonCategoryName"), (Long) param.get("parentCategoryId"));
-                if (temp_2 == null) {
-                    throw new CustomerException("分类不存在");
-                }
-                param.put("categoryName",temp_2.getCategoryName());
-            }
+        Long categoryId = (Long) param.get("categoryId");
+        if (categoryId != null || categoryId <= 0L) {
+            throw new CustomerException("分类不存在");
         }
 
-        // 根据父分类ID与分类名获取(分类名是有可能为空的,父分类ID是不会的)
-        Long count = this.articleMapper.queryArticleCountByCategoryName((String) param.get("categoryName"), (Long) param.get("parentCategoryId"));
+        Category category_1 = this.categoryMapper.queryCategoryId(categoryId);
+        if (category_1 == null) {
+            throw new CustomerException("分类不存在");
+        }
+
+        Long count = this.articleMapper.queryArticleCountByCategoryId(categoryId);
         List<ArticlePreviewDTO> list = null;
         if (count > 0) {
-            list = this.categoryMapper.queryArticleListPageByCategoryName(param);
+            list = this.categoryMapper.queryArticleListPageByCategoryId(param);
         } else {
             list = new ArrayList<>();
         }

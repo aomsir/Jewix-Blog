@@ -101,9 +101,9 @@ public class CategoryController {
      * @param articleCategoryVo 根据分类获取文章列表VO对象
      * @return 分类文章分页列表
      */
-    @ApiOperation(value = "根据分类名分页查询文章预览列表")
+    @ApiOperation(value = "根据分类ID分页查询文章预览列表")
     @GetMapping("/categories/articles")
-    public R getArticlesPageByCategoryName(@Validated ArticleCategoryVo articleCategoryVo) {
+    public R getArticlesPageByCategoryId(@Validated ArticleCategoryVo articleCategoryVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleCategoryVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");

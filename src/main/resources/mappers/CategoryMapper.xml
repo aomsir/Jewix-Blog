@@ -140,6 +140,24 @@
         WHERE category_id = #{id}
     </select>
 
+    <select id="queryArticleListPageByCategoryId" resultType="com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO">
+        SELECT a.id AS a_id,
+               a.title AS title,
+               a.cover AS cover,
+               a.description AS content,
+               a.views AS views,
+               a.is_top AS isTop,
+               a.create_time AS createTime,
+               a.update_time AS updateTime
+        FROM tb_article AS a
+        LEFT JOIN tb_article_category AS ac ON ac.article_id = a.id
+        WHERE a.status = 0
+        AND a.is_delete = 0
+        AND ac.category_id = #{param.categoryId}
+        ORDER BY a.create_time DESC
+        LIMIT #{param.start},#{param.length}
+    </select>
+
     <delete id="deleteCategories">
         DELETE FROM
         tb_category
