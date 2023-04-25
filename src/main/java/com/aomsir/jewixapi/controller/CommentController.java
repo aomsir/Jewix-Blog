@@ -54,7 +54,7 @@ public class CommentController {
      * @param commentFrontVo 前台获取评论VO对象
      * @return 评论列表
      */
-    @ApiOperation(value = "前台根据文章id与类型获取评论列表")
+    @ApiOperation(value = "前台根据目标id与类型获取评论列表")
     @GetMapping("/comments")
     public R getCommentsById(@Validated CommentFrontVo commentFrontVo) {
         Map<String, Object> param = BeanUtil.beanToMap(commentFrontVo);

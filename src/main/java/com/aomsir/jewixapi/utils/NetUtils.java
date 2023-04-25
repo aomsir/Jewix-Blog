@@ -77,6 +77,7 @@ public class NetUtils {
      * @throws JsonProcessingException
      */
     public String getLocationInfo(String ip) throws JsonProcessingException {
+
         String url = "https://apis.map.qq.com/ws/location/v1/ip";
         String key = this.gaodeApiKey;
         url = String.format("%s?ip=%s&key=%s", url, ip,key);

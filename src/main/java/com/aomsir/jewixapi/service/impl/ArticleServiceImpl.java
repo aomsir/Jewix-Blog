@@ -233,7 +233,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     private void displayViews(HttpServletRequest request, String uuid2, Long id, Integer views, ArticleDetailDTO detailDTO) {
         String ip = this.netUtils.getRealIp(request);
-        log.error("{}",ip);
+
         Long isView = (Long) this.redisTemplate.opsForValue().get("article:views:ip:"+ip+":articleUuid:"+ uuid2);
         if (isView == null || isView == 0) {
 

@@ -80,7 +80,6 @@ public class CommentServiceImpl implements CommentService {
                 }
             }
 
-            // TODO：封装x级评论
             // 封装所有的二级评论
             for (CommentDTO commentDTO : commentDTOList) {
                 ArrayList<Comment> comments = new ArrayList<>();
@@ -127,30 +126,27 @@ public class CommentServiceImpl implements CommentService {
             //     throw new CustomerException("页面不存在");
             // }
             param.put("type",2);
+        } else {
+            // 时光机评论
+            // TODO 完善
+            param.put("type",3);
         }
 
         // 校验父级评论是否存在
-        // TODO: 业务逻辑处理不到位
         if (parentId != 0) {
             // 说明是回复评论
             // 查询父级评论
-            Comment parentComment = this.commentMapper.queryCommentByParentId(parentId);
+            Comment parentComment = this.commentMapper.queryCommentById(parentId);
             if (Objects.isNull(parentComment)) {
-                // param.put("parentId",0);
                 throw new CustomerException("父评论不存在");
             }
         }
 
         // 校验一级评论是否存在
         if (permId != 0) {
-            Comment permComment = this.commentMapper.queryCommentByPermId(permId);
+            Comment permComment = this.commentMapper.queryCommentById(permId);
             if (Objects.isNull(permComment)) {
-                // param.put("permId",0);
                 throw new CustomerException("一级评论不存在");
-            }
-
-            if (parentId != 0) {
-                throw new CustomerException("评论异常");
             }
         }
 
@@ -160,16 +156,16 @@ public class CommentServiceImpl implements CommentService {
         String userAgent = request.getHeader("User-Agent");
 
         Map<String, String> userAgentMap = this.netUtils.parseUserAgent(userAgent);
-        String locationString = this.netUtils.getLocationInfo(realIp);
-
-        // 将userAgentMap转换为json
-        String userAgentString = new ObjectMapper().writeValueAsString(userAgentMap);
-        // String locationString = new ObjectMapper().writeValueAsString(locationMap);
+        String userAgentString = new ObjectMapper().writeValueAsString(userAgentMap);    // 将userAgentMap转换为json
+         if (realIp.equals("0:0:0:0:0:0:0:1")) {
+             param.put("location","未知");
+         } else {
+             String locationString = this.netUtils.getLocationInfo(realIp);
+             param.put("location",locationString);
+         }
 
         param.put("ip",realIp);
         param.put("agent",userAgentString);
-        param.put("location",locationString);
-
 
         param.put("status",0);    // 0-待审核
         param.put("createTime",new Date());
