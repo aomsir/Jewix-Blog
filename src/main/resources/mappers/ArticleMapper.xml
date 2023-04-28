@@ -350,4 +350,20 @@
         ORDER BY update_time
         LIMIT 1
     </select>
+
+    <select id="queryArticleCountByArchive" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article
+        WHERE status = 0
+        AND is_delete = 0
+    </select>
+
+    <select id="queryArticleByArchive" resultType="com.aomsir.jewixapi.pojo.dto.ArticleArchiveDTO">
+        SELECT title,create_time
+        FROM tb_article
+        WHERE status = 0
+        AND is_delete = 0
+        ORDER BY create_time DESC
+        LIMIT #{param.start},#{param.length}
+    </select>
 </mapper>

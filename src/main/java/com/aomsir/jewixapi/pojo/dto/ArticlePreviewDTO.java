@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 public class ArticlePreviewDTO extends BaseEntity {
     private Long id;
+    private String uuid;
     private String title;
     private String cover;
     private String description;

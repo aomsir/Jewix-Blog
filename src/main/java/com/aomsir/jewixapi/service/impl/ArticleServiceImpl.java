@@ -6,9 +6,11 @@ import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.CategoryMapper;
 import com.aomsir.jewixapi.mapper.CommentMapper;
 import com.aomsir.jewixapi.mapper.TagMapper;
+import com.aomsir.jewixapi.pojo.dto.ArticleArchiveDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
+import com.aomsir.jewixapi.pojo.entity.Page;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
@@ -315,14 +317,6 @@ public class ArticleServiceImpl implements ArticleService {
             randomList = articleIds;
         }
 
-        // List<ArticleRandomDTO> resultList = null;
-//        try {
-//            List<ArticleRandomDTO> resultList = this.articleMapper.queryArticlesByRandomIds(randomList);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("e.getMessage() = " + e.getMessage());
-//        }
-
 
         // TODO: 数据存储在Redis中
         List<ArticleRandomDTO> resultList = this.articleMapper.queryArticlesByRandomIds(randomList);
@@ -330,5 +324,20 @@ public class ArticleServiceImpl implements ArticleService {
             //
         }
         return resultList;
+    }
+
+    @Override
+    public PageUtils queryArticlesByArchive(Map<String, Object> param) {
+        Integer articleCount = this.articleMapper.queryArticleCountByArchive();
+        ArrayList<ArticleArchiveDTO> list = null;
+        if (articleCount > 0) {
+            list = this.articleMapper.queryArticleByArchive(param);
+        } else {
+            list = null;
+        }
+
+        int start = (Integer) param.get("start");
+        int length = (Integer) param.get("length");
+        return new PageUtils(list,articleCount,start,length);
     }
 }

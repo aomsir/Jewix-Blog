@@ -27,4 +27,5 @@ public interface ArticleService {
 
     List<ArticleRandomDTO> queryRandomArticle();
 
+    PageUtils queryArticlesByArchive(Map<String, Object> param);
 }

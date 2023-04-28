@@ -40,4 +40,5 @@ public interface CommentMapper {
 
     Integer queryCommentCount();
 
+    Integer queryCommentCountByArchive();
 }

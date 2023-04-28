@@ -1,9 +1,7 @@
 package com.aomsir.jewixapi.service.impl;
 
-import com.aomsir.jewixapi.mapper.ArticleMapper;
-import com.aomsir.jewixapi.mapper.CommentMapper;
-import com.aomsir.jewixapi.mapper.UserMapper;
-import com.aomsir.jewixapi.mapper.WebConfigMapper;
+import com.aomsir.jewixapi.mapper.*;
+import com.aomsir.jewixapi.pojo.dto.ArticleArchiveInfoDTO;
 import com.aomsir.jewixapi.pojo.dto.WebInfoDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.service.CommonService;
@@ -37,6 +35,12 @@ public class CommonServiceImpl implements CommonService {
 
     @Resource
     private WebConfigMapper webConfigMapper;
+
+    @Resource
+    private CategoryMapper categoryMapper;
+
+    @Resource
+    private TagMapper tagMapper;
 
     @Override
     public WebInfoDTO queryWebInfo() {
@@ -72,5 +76,20 @@ public class CommonServiceImpl implements CommonService {
         // TODO:封装runTime
         // TODO：存入Redis
         return webInfoDTO;
+    }
+
+    @Override
+    public ArticleArchiveInfoDTO queryArticleArchiveInfo() {
+        Integer articleCount = this.articleMapper.queryArticleCountByArchive();
+        Integer commentCount = this.commentMapper.queryCommentCountByArchive();
+        Integer categoryCount = this.categoryMapper.queryCategoryCount();
+        Integer tagCount = Math.toIntExact(this.tagMapper.queryTagCount());
+
+        ArticleArchiveInfoDTO articleArchiveInfoDTO = new ArticleArchiveInfoDTO();
+        articleArchiveInfoDTO.setArticleCount(articleCount);
+        articleArchiveInfoDTO.setCategoryCount(categoryCount);
+        articleArchiveInfoDTO.setCommentCount(commentCount);
+        articleArchiveInfoDTO.setTagCount(tagCount);
+        return articleArchiveInfoDTO;
     }
 }

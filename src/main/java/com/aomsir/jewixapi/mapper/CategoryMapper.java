@@ -46,4 +46,6 @@ public interface CategoryMapper {
     int deleteCategories(@Param("ids") List<Long> trueIds);
 
     List<ArticlePreviewDTO> queryArticleListPageByCategoryId(@Param("param") Map<String, Object> param);
+
+    Integer queryCategoryCount();
 }

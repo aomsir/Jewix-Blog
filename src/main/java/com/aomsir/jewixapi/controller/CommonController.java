@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.controller;
 
+import com.aomsir.jewixapi.pojo.dto.ArticleArchiveInfoDTO;
 import com.aomsir.jewixapi.pojo.dto.WebInfoDTO;
 import com.aomsir.jewixapi.service.CommonService;
 import com.aomsir.jewixapi.utils.R;
@@ -30,5 +31,17 @@ public class CommonController {
         WebInfoDTO webInfoDTO = this.commonService.queryWebInfo();
         return R.ok()
                 .put("result",webInfoDTO);
+    }
+
+    /**
+     *  归档全局信息
+     * @return 归档信息
+     */
+    @ApiOperation("获取归档全局信息")
+    @GetMapping("/commons/articles/archiveInfo")
+    public R getArticleArchiveInfo() {
+        ArticleArchiveInfoDTO articleArchiveInfoDTO = this.commonService.queryArticleArchiveInfo();
+        return R.ok()
+                .put("result",articleArchiveInfoDTO);
     }
 }

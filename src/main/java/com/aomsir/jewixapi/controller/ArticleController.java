@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -158,5 +159,26 @@ public class ArticleController {
         List<ArticleRandomDTO> list = this.articleService.queryRandomArticle();
         return R.ok()
                 .put("result",list);
+    }
+
+
+    /**
+     * 分页查询文章归档
+     * @return 归档数据
+     */
+    @ApiOperation(value = "分页查询文章归档信息",notes = "分页查询文章归档信息")
+    @GetMapping("/articles/archive")
+    public R getArticlesByArchive(Integer page,
+                                  Integer length) {
+        Integer start = (page - 1) * length;
+        Map<String, Object> param = new HashMap<String, Object>(){{
+            put("page",page);
+            put("length",length);
+            put("start", start);
+        }};
+
+        PageUtils pageUtils = this.articleService.queryArticlesByArchive(param);
+        return R.ok()
+                .put("result",pageUtils);
     }
 }

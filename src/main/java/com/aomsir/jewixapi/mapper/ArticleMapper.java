@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.mapper;
 
+import com.aomsir.jewixapi.pojo.dto.ArticleArchiveDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import org.apache.ibatis.annotations.Mapper;
@@ -78,4 +79,8 @@ public interface ArticleMapper {
     Integer queryArticleCount();
 
     Date queryLastActive();
+
+    Integer queryArticleCountByArchive();
+
+    ArrayList<ArticleArchiveDTO> queryArticleByArchive(@Param("param") Map<String, Object> param);
 }

@@ -209,4 +209,10 @@
         FROM tb_comment
         WHERE status = 1
     </select>
+
+    <select id="queryCommentCountByArchive" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_comment
+        WHERE status = 0
+    </select>
 </mapper>
