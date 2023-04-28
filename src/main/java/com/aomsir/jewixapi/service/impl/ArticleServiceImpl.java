@@ -7,6 +7,7 @@ import com.aomsir.jewixapi.mapper.CategoryMapper;
 import com.aomsir.jewixapi.mapper.CommentMapper;
 import com.aomsir.jewixapi.mapper.TagMapper;
 import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
+import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
@@ -296,5 +297,38 @@ public class ArticleServiceImpl implements ArticleService {
         this.articleMapper.deleteArticleOfUser(ids);
 
         return role;
+    }
+
+
+    @Override
+    public List<ArticleRandomDTO> queryRandomArticle() {
+        // TODO：Redis中查询
+
+        List<Long> articleIds = this.articleMapper.queryArticleId();
+        int size;
+        List<Long> randomList;
+        if (articleIds.size() >= 5) {
+            size = 5;
+            Collections.shuffle(articleIds);   // 对list进行随机化
+            randomList = articleIds.subList(0, size);
+        } else {
+            randomList = articleIds;
+        }
+
+        // List<ArticleRandomDTO> resultList = null;
+//        try {
+//            List<ArticleRandomDTO> resultList = this.articleMapper.queryArticlesByRandomIds(randomList);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("e.getMessage() = " + e.getMessage());
+//        }
+
+
+        // TODO: 数据存储在Redis中
+        List<ArticleRandomDTO> resultList = this.articleMapper.queryArticlesByRandomIds(randomList);
+        if (resultList != null) {
+            //
+        }
+        return resultList;
     }
 }

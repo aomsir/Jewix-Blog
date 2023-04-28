@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.service;
 
 import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
+import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.utils.PageUtils;
@@ -23,4 +24,7 @@ public interface ArticleService {
     int deleteArticleByArchive(List<Long> ids);
 
     int deleteArticleByPhysics(List<Long> ids);
+
+    List<ArticleRandomDTO> queryRandomArticle();
+
 }

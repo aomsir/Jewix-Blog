@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.mapper;
 
+import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -69,4 +70,8 @@ public interface ArticleMapper {
     void updateArticleViewCount(@Param("id") Long id, @Param("count") int i);
 
     Long queryArticleCountByCategoryId(@Param("categoryId") Long categoryId);
+
+    List<Long> queryArticleId();
+
+    List<ArticleRandomDTO> queryArticlesByRandomIds(@Param("list") List<Long> resultList);
 }

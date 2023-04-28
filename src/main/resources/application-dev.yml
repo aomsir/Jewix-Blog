@@ -27,7 +27,7 @@ mybatis:
   configuration:
     use-generated-keys: true
     map-underscore-to-camel-case: true
-    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 jasypt:

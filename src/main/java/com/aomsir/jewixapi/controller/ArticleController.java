@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
+import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleBackendPageVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleFrontPageVo;
@@ -144,5 +145,18 @@ public class ArticleController {
         int role = this.articleService.deleteArticleByPhysics(ids);
         return R.ok()
                 .put("role",role);
+    }
+
+
+    /**
+     * 获取推荐文章列表
+     * @return 预览数据
+     */
+    @ApiOperation(value = "获取推荐文章列表", notes = "获取推荐文章列表")
+    @GetMapping("/articles/random")
+    public R getArticlesRandom() {
+        List<ArticleRandomDTO> list = this.articleService.queryRandomArticle();
+        return R.ok()
+                .put("result",list);
     }
 }
