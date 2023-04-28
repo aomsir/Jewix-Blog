@@ -336,4 +336,18 @@
             #{id}
         </foreach>
     </select>
+
+    <select id="queryArticleCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article
+        WHERE is_delete = 0
+        AND status = 0
+    </select>
+
+    <select id="queryLastActive" resultType="Date">
+        SELECT update_time
+        FROM tb_article
+        ORDER BY update_time
+        LIMIT 1
+    </select>
 </mapper>

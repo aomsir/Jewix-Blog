@@ -177,6 +177,7 @@
         </where>
     </select>
 
+
     <delete id="deleteComment">
         DELETE FROM tb_comment
         WHERE id = #{id}
@@ -202,4 +203,10 @@
         WHERE target_id = #{pageId}
         AND type = #{type}
     </delete>
+
+    <select id="queryCommentCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_comment
+        WHERE status = 1
+    </select>
 </mapper>

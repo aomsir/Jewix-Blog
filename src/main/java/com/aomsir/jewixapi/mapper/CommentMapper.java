@@ -37,4 +37,7 @@ public interface CommentMapper {
     int updateCommentStatus(@Param("param") Map<String, Object> param);
 
     void deleteCommentByPageId(@Param("pageId") Integer pageId, @Param("type") Integer type);
+
+    Integer queryCommentCount();
+
 }

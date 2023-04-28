@@ -74,4 +74,8 @@ public interface ArticleMapper {
     List<Long> queryArticleId();
 
     List<ArticleRandomDTO> queryArticlesByRandomIds(@Param("list") List<Long> resultList);
+
+    Integer queryArticleCount();
+
+    Date queryLastActive();
 }
