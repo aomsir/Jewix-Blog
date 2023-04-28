@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.pojo.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +13,8 @@ import java.util.Date;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class LoginLog {
+public class LoginLog implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     private Long userId;
     private String ip;

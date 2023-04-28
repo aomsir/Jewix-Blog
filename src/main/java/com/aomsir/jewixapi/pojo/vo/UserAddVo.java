@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -14,7 +15,9 @@ import javax.validation.constraints.Size;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class UserAddVo {
+public class UserAddVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @NotNull(message = "昵称不允许位空")
     private String nickname;

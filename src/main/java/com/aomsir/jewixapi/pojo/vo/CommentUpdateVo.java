@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -14,7 +15,10 @@ import javax.validation.constraints.NotNull;
  */
 
 @Data
-public class CommentUpdateVo {
+public class CommentUpdateVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @NotNull(message = "评论ID不能为空")
     @Range(min = 1, message = "评论ID必须大于0")
     private Long id;

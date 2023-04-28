@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -15,7 +16,9 @@ import javax.validation.constraints.Size;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class UserUpdateVo {
+public class UserUpdateVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @NotNull(message = "id不允许为空")
     @Range(min = 10000,max = 99999)

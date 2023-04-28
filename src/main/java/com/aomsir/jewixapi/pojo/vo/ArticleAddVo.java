@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -15,7 +16,9 @@ import java.util.List;
  */
 
 @Data
-public class ArticleAddVo {
+public class ArticleAddVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @NotNull(message = "文章标题不允许为空")
     private String title;

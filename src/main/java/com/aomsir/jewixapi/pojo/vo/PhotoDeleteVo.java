@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -14,7 +15,9 @@ import javax.validation.constraints.NotNull;
  */
 
 @Data
-public class PhotoDeleteVo {
+public class PhotoDeleteVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @NotNull(message = "文件名不允许为空")
     private String fileName;

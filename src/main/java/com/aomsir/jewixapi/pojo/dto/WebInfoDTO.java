@@ -14,6 +14,7 @@ import java.util.Map;
  */
 @Data
 public class WebInfoDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String nickname;   //   站长昵称
     private String email;      //   站长邮箱
     private String description;

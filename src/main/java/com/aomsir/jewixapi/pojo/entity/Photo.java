@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.pojo.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,7 +14,8 @@ import java.util.Date;
  */
 
 @Data
-public class Photo {
+public class Photo implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Integer id;
     private Integer type;
     private String location;

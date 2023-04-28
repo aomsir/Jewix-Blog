@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.pojo.vo;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -14,7 +15,8 @@ import java.util.ArrayList;
  */
 
 @Data
-public class CommentDeleteVo {
+public class CommentDeleteVo implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @NotNull(message = "ids不允许为空")
     private ArrayList<Long> ids;

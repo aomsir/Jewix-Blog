@@ -64,7 +64,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public PageUtils searchFrontCommentListByPage(Map<String, Object> param) {
-        int count = this.commentMapper.queryCommentFrontParentCount(param);    // 查询的一级评论的数量
+        Integer count = this.commentMapper.queryCommentFrontParentCount(param);    // 查询的一级评论的数量
 
         ArrayList<Comment> list = null;
         List<CommentDTO> commentDTOList = null;

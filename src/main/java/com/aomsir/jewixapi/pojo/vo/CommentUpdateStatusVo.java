@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -13,7 +14,10 @@ import javax.validation.constraints.NotNull;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class CommentUpdateStatusVo {
+public class CommentUpdateStatusVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @NotNull(message = "评论id不能为空")
     private Long id;
 

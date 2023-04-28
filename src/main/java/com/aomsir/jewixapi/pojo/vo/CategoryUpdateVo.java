@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.pojo.vo;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -12,7 +13,9 @@ import javax.validation.constraints.NotNull;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class CategoryUpdateVo {
+public class CategoryUpdateVo implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @NotNull(message = "id不允许为空")
     private Long id;
 

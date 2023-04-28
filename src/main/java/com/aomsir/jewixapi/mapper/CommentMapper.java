@@ -14,7 +14,7 @@ public interface CommentMapper {
 
     ArrayList<Comment> queryCommentBackendPageList(@Param("param") Map<String, Object> param);
 
-    int queryCommentFrontParentCount(@Param("param") Map<String, Object> param);
+    Integer queryCommentFrontParentCount(@Param("param") Map<String, Object> param);
 
     ArrayList<Comment> queryCommentFrontPageList(@Param("param") Map<String, Object> param);
 

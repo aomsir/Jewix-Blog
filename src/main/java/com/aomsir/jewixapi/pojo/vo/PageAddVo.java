@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -13,7 +14,10 @@ import javax.validation.constraints.NotNull;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class PageAddVo {
+public class PageAddVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @NotNull(message = "页面名称不能为空")
     private String name;
 

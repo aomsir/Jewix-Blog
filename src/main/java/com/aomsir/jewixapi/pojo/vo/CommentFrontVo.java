@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -14,7 +15,10 @@ import javax.validation.constraints.NotNull;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class CommentFrontVo {
+public class CommentFrontVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Min(value = 1)
     @NotNull(message = "目标id不能为空")
     private Long targetId;

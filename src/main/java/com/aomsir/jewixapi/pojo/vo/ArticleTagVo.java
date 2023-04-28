@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotNull;
  */
 
 @Data
-public class ArticleTagVo {
+public class ArticleTagVo implements Serializable {
 
     @NotNull
     private String tagName;

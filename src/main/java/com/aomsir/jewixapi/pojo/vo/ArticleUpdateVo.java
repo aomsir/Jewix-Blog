@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.pojo.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -14,7 +15,8 @@ import java.util.List;
 
 // TODO:添加字段校验
 @Data
-public class ArticleUpdateVo {
+public class ArticleUpdateVo implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     private String uuid;
     private String title;

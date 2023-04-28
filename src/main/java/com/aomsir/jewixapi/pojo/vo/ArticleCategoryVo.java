@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  *
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
  */
 
 @Data
-public class ArticleCategoryVo {
+public class ArticleCategoryVo implements Serializable {
     @NotNull(message = "分类不允许为空")
     private Long categoryId;
 

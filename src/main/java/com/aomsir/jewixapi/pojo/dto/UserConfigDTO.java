@@ -2,6 +2,8 @@ package com.aomsir.jewixapi.pojo.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/3/6
@@ -11,7 +13,8 @@ import lombok.Data;
  */
 
 @Data
-public class UserConfigDTO {
+public class UserConfigDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     private String uuid;
     private String nickname;

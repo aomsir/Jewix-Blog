@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -15,7 +16,9 @@ import javax.validation.constraints.NotNull;
  */
 
 @Data
-public class PhotoPageVo {
+public class PhotoPageVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @NotNull(message = "page不能为空")
     @Min(value = 1, message = "page不能小于1")

@@ -2,6 +2,8 @@ package com.aomsir.jewixapi.pojo.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/2/21
@@ -11,7 +13,8 @@ import lombok.Data;
  */
 
 @Data
-public class Role {
+public class Role implements Serializable {
+    private static final long serialVersionUID = 1L;
     // TODO: 详细设计
     private String name;
 }

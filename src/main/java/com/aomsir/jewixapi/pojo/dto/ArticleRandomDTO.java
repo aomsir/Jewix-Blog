@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 @Data
 public class ArticleRandomDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     private String title;
     String cover;

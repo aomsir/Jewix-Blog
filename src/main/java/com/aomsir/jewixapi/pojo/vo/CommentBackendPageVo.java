@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -14,7 +15,8 @@ import javax.validation.constraints.NotNull;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class CommentBackendPageVo {
+public class CommentBackendPageVo implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     // 不作非空判断
     private String content;

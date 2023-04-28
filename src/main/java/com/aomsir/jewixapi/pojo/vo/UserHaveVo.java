@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.pojo.vo;
 import lombok.Data;
 
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
 /**
  * @Author: Aomsir
@@ -13,7 +14,9 @@ import javax.validation.constraints.Pattern;
  */
 
 @Data
-public class UserHaveVo {
+public class UserHaveVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String nickname;
 

@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.pojo.vo;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,9 @@ import java.util.List;
  */
 
 @Data
-public class InfoWebConfigAddVo {
+public class InfoWebConfigAddVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @NotNull(message = "标题不允许为空")
     private String title;

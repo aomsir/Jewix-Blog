@@ -14,6 +14,7 @@ import java.io.Serializable;
 
 @Data
 public class ArticleArchiveInfoDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Integer articleCount;
     private Integer commentCount;
     private Integer categoryCount;
