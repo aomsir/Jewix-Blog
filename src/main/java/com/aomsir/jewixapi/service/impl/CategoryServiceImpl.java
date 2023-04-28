@@ -117,7 +117,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public PageUtils searchArticlePageByCategoryName(Map<String, Object> param) {
         Long categoryId = (Long) param.get("categoryId");
-        if (categoryId != null || categoryId <= 0L) {
+        if (categoryId == null || categoryId <= 0L) {
             throw new CustomerException("分类不存在");
         }
 

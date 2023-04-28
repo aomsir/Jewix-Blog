@@ -20,7 +20,6 @@ public class ArticleCategoryVo {
     @NotNull(message = "分类不允许为空")
     private Long categoryId;
 
-    private String sonCategoryName;
 
     @NotNull(message = "page不能为空")
     @Min(value = 1, message = "page不能小于1")

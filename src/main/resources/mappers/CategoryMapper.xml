@@ -141,12 +141,13 @@
     </select>
 
     <select id="queryArticleListPageByCategoryId" resultType="com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO">
-        SELECT a.id AS a_id,
+        SELECT a.id AS id,
                a.title AS title,
                a.cover AS cover,
-               a.description AS content,
+               a.description AS description,
                a.views AS views,
                a.is_top AS isTop,
+               a.status AS status,
                a.create_time AS createTime,
                a.update_time AS updateTime
         FROM tb_article AS a

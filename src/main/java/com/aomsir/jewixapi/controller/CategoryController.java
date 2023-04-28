@@ -97,7 +97,7 @@ public class CategoryController {
 
 
     /**
-     * 根据分类名分页查询文章预览列表
+     * 根据分类ID分页查询文章预览列表
      * @param articleCategoryVo 根据分类获取文章列表VO对象
      * @return 分类文章分页列表
      */
