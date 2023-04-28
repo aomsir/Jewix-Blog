@@ -16,6 +16,8 @@ import com.aomsir.jewixapi.utils.NetUtils;
 import com.aomsir.jewixapi.utils.PageUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -35,6 +37,7 @@ import java.util.*;
 @Service
 public class CommentServiceImpl implements CommentService {
 
+    private static final Logger log = LoggerFactory.getLogger(CommentServiceImpl.class);
     @Resource
     private CommentMapper commentMapper;
 

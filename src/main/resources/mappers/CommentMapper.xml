@@ -53,7 +53,6 @@
         WHERE target_id = #{param.targetId}
         AND parent_id = 0
         AND type = #{param.type}
-        LIMIT #{param.start},#{param.length}
     </select>
 
 
