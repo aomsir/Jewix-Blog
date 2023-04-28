@@ -23,7 +23,6 @@
                 AND status = #{param.status}
             </if>
         </where>
-        LIMIT #{param.start},#{param.length}
     </select>
 
     <select id="queryCommentBackendPageList" resultType="Comment">

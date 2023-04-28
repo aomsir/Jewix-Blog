@@ -44,7 +44,12 @@ public class CommentController {
         int start = (page - 1) * length;
         param.put("start",start);
 
-        PageUtils pageUtils = this.commentService.searchBackendCommentListByPage(param);
+        PageUtils pageUtils = null;
+        try {
+            pageUtils = this.commentService.searchBackendCommentListByPage(param);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return R.ok()
                 .put("result", pageUtils);
     }

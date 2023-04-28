@@ -31,7 +31,7 @@ public class CommentAddVo implements Serializable {
     private String url;
 
     @NotNull(message = "类型不允许为空")
-    @Range(min = 1,max = 2)
+    @Range(min = 1,max = 50)
     private Integer type;
 
     @NotNull(message = "目标不允许为空")

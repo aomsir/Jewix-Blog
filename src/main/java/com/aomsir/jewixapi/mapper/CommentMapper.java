@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Mapper
 public interface CommentMapper {
-    int queryCommentBackendCount(@Param("param") Map<String, Object> param);
+    Integer queryCommentBackendCount(@Param("param") Map<String, Object> param);
 
     ArrayList<Comment> queryCommentBackendPageList(@Param("param") Map<String, Object> param);
 

@@ -46,7 +46,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public PageUtils searchBackendCommentListByPage(Map<String, Object> param) {
-        int count = this.commentMapper.queryCommentBackendCount(param);
+        Integer count = this.commentMapper.queryCommentBackendCount(param);
 
         ArrayList<Comment> list = null;
         if (count > 0) {
@@ -57,8 +57,7 @@ public class CommentServiceImpl implements CommentService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(list,count,start,length);
-        return pageUtils;
+        return new PageUtils(list,count,start,length);
     }
 
 
