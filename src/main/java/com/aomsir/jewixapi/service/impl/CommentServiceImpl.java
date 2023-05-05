@@ -114,24 +114,28 @@ public class CommentServiceImpl implements CommentService {
 
 
         // 处理目标文章/页面
-        // 1:文章,21:页面
-        // 说明是回复文章
+        // 1:文章,21:时光机,22-友人帐,23-留言板,24-关于
         if (commentAddVo.getType() == 1) {
             Article article = this.articleMapper.queryArticleById(targetId);
             if (Objects.isNull(article)) {
                 throw new CustomerException("文章不存在");
             }
             param.put("type",1);
-        } else if (commentAddVo.getType() == 2) {
-            // Page page = this.pageMapper.queryPageById(targetId);
-            // if (Objects.isNull(page)) {
-            //     throw new CustomerException("页面不存在");
-            // }
-            param.put("type",2);
+        } else if (commentAddVo.getType() == 21) {
+            // 时光机
+            // TODO：校验是否是管理员
+            param.put("type",21);
+        } else if (commentAddVo.getType() == 23) {
+            // 友人帐
+            param.put("type",23);
+        } else if (commentAddVo.getType() == 24) {
+            // 留言板
+            param.put("type",24);
+        } else if (commentAddVo.getType() == 25) {
+            // 通用
+            param.put("type",25);
         } else {
-            // 时光机评论
-            // TODO 完善
-            param.put("type",3);
+            throw new CustomerException("类型错误");
         }
 
         // 校验父级评论是否存在

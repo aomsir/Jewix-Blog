@@ -8,13 +8,5 @@ import com.aomsir.jewixapi.pojo.vo.PageUpdateVo;
 import java.util.List;
 
 public interface PageService {
-    List<Page> getPageList();
 
-    Page getPageByOmit(Integer omit);
-
-    int addPage(PageAddVo page);
-
-    int deletePage(PageDeleteVo page);
-
-    int updatePage(PageUpdateVo page);
 }
