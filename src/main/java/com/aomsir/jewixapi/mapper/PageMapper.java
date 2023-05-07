@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.mapper;
 
+import com.aomsir.jewixapi.pojo.dto.PageListDTO;
 import com.aomsir.jewixapi.pojo.entity.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -9,15 +10,19 @@ import java.util.Map;
 
 @Mapper
 public interface PageMapper {
-    List<Page> queryPageList();
+    List<PageListDTO> queryPageList();
 
-    Page queryPageByOmit(@Param("omit") Integer omit);
+    List<Long> queryPageUserIds();
 
-    int insertPage(@Param("param") Map<String, Object> param);
+    Page queryPageByUuid(@Param("uuid") String uuid);
 
-    int updatePage(@Param("param") Map<String, Object> param);
+    Page queryPageByTitle(@Param("title") String title);
 
-    Page queryPageById(@Param("id") Integer id);
+    int insertPage(@Param("param") Page newPage);
 
-    void deletePageByIdAndOmit(@Param("id") Integer id, @Param("omit") Integer omit);
+    Page queryPageByType(@Param("type") Integer type);
+
+    int updatePage(@Param("param") Page page2);
+
+    int deletePage(@Param("uuid") String uuid);
 }

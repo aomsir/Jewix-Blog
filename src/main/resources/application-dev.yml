@@ -17,6 +17,12 @@ spring:
     password: 123456
     port: 6379
     database: 5
+    lettuce:
+      pool:
+        max-active: 8  # 最大连接
+        max-idle: 8    # 最大空闲数量
+        min-idle: 0    # 最小空闲数量
+        max-wait: 100ms  # 连接等待时间
 
 
 

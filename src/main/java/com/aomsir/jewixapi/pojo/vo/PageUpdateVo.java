@@ -15,20 +15,20 @@ import java.io.Serializable;
  */
 
 @Data
-public class PageUpdateVo implements Serializable {
+public class PageUpdateVo implements Serializable  {
 
     private static final long serialVersionUID = 1L;
 
     @NotNull(message = "页面ID不能为空")
     @Range(min = 1, message = "页面ID不合法")
-    private Integer id;
-    private String name;
+    private Long id;
 
-    private Integer model;     // 模版类型 0-默认,1-友链,2-留言板,3-时光机,4-文章归档
+    @NotNull(message = "uuid不允许为空")
+    private String uuid;
 
-    private String author;
-
-    private Integer omit;
-
+    private String title;
     private String content;
+    private String description;
+    private Integer type;
+    private Long views;
 }

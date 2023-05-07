@@ -213,4 +213,20 @@
         FROM tb_comment
         WHERE status = 0
     </select>
+
+
+    <select id="queryCommentIdsByTypeAndTargetId" resultType="Long">
+        SELECT id
+        FROM tb_comment
+        WHERE target_id = #{id}
+        AND type = #{type}
+    </select>
+
+    <delete id="deleteCommentByIds">
+        DELETE FROM tb_comment
+        WHERE id IN
+        <foreach collection="ids" open="(" separator="," close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

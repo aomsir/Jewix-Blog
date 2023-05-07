@@ -41,4 +41,8 @@ public interface CommentMapper {
     Integer queryCommentCount();
 
     Integer queryCommentCountByArchive();
+
+    List<Long> queryCommentIdsByTypeAndTargetId(@Param("id") Long id, @Param("type") Integer type);
+
+    void deleteCommentByIds(@Param("ids") List<Long> commentIds);
 }

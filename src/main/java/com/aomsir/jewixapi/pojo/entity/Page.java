@@ -11,13 +11,13 @@ import lombok.Data;
  */
 @Data
 public class Page extends BaseEntity {
-    private Integer id;
-    private String name;
-
-    private Integer model;     // 模版类型 0-默认,1-友链,2-留言板,3-时光机,4-文章归档
-
-    private String author;
-
-    private Integer omit;
+    private Long id;
+    private String uuid;
+    private Long userId;
+    private String title;
     private String content;
+    private String description;
+    private Integer type;
+    private Long views;
+    private String userName;
 }
