@@ -29,6 +29,7 @@ public class PageUpdateVo implements Serializable  {
     private String title;
     private String content;
     private String description;
+    private String omit;
     private Integer type;
     private Long views;
 }

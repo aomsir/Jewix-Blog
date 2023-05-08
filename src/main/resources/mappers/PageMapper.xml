@@ -6,7 +6,7 @@
 <mapper namespace="com.aomsir.jewixapi.mapper.PageMapper">
 
     <select id="queryPageList" resultType="com.aomsir.jewixapi.pojo.dto.PageListDTO">
-        SELECT id,id, uuid, user_id, title, content, description, views, type, create_time, update_time
+        SELECT id,id, uuid, user_id, title, content, description, omit,views, type, create_time, update_time
         FROM tb_page
     </select>
 
@@ -34,12 +34,13 @@
     </select>
 
     <insert id="insertPage">
-        INSERT INTO tb_page(uuid, user_id, title, content, description, views, type, create_time, update_time)
+        INSERT INTO tb_page(uuid, user_id, title, content, description, omit, views, type, create_time, update_time)
         VALUES (#{param.uuid},
                 #{param.userId},
                 #{param.title},
                 #{param.content},
                 #{param.description},
+                #{param.omit},
                 #{param.views},
                 #{param.type},
                 #{param.createTime},
@@ -58,6 +59,9 @@
             <if test="param.description != null">
                 description = #{param.description}
             </if>
+            <if test="param.omit != null">
+                omit = #{param.omit}
+            </if>
             <if test="param.updateTime != null">
                 update_time = #{param.updateTime}
             </if>
@@ -70,4 +74,10 @@
         DELETE FROM tb_page
         WHERE uuid = #{uuid}
     </delete>
+
+    <select id="queryPageByOmit" resultType="Page">
+        SELECT id,id, uuid, user_id, title, content, description, omit, views, type, create_time, update_time
+        FROM tb_page
+        WHERE omit = #{omit}
+    </select>
 </mapper>

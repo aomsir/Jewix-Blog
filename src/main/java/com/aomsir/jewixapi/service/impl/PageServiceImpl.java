@@ -46,7 +46,6 @@ public class PageServiceImpl implements PageService {
     public List<PageListDTO> searchPageList() {
         List< PageListDTO> pageList = this.pageMapper.queryPageList();
 
-
         // 封装用户名(尽量减少查询次数)
         List<Long> userIds = this.pageMapper.queryPageUserIds();
         Map<Long,String> idAndNameMap = new HashMap<>();
@@ -101,6 +100,9 @@ public class PageServiceImpl implements PageService {
             }
         }
 
+        if (this.pageMapper.queryPageByOmit(pageAddVo.getOmit()) != null) {
+            throw new CustomerException("页面已经存在");
+        }
 
         Page page = this.pageMapper.queryPageByTitle(pageAddVo.getTitle());
         if (page != null) {
@@ -126,6 +128,11 @@ public class PageServiceImpl implements PageService {
         Page page = this.pageMapper.queryPageByTitle(title);
         if (!Objects.equals(page.getId(), pageUpdateVo.getId())) {
             throw new CustomerException("页面标题已存在");
+        }
+
+        Page page1 = this.pageMapper.queryPageByOmit(pageUpdateVo.getOmit());
+        if (!Objects.equals(page.getOmit(), pageUpdateVo.getOmit())) {
+            throw new CustomerException("路径名已经存在");
         }
 
         // 超级管理员和创建者可以管理

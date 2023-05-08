@@ -27,6 +27,9 @@ public class PageAddVo implements Serializable {
     @NotNull(message = "页面描述不允许为空")
     private String description;
 
+    @NotNull(message = "路径名不允许为空")
+    private String omit;
+
     @NotNull(message = "类型不允许为空")
     @Range(min = 1,max = 5)
     private Integer type;
