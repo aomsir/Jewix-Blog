@@ -51,22 +51,22 @@
         UPDATE tb_page
         <set>
             <if test="param.title != null">
-                title = #{param.title}
+                title = #{param.title},
             </if>
             <if test="param.content != null">
-                content = #{param.content}
+                content = #{param.content},
             </if>
             <if test="param.description != null">
-                description = #{param.description}
+                description = #{param.description},
             </if>
             <if test="param.omit != null">
-                omit = #{param.omit}
+                omit = #{param.omit},
             </if>
             <if test="param.updateTime != null">
-                update_time = #{param.updateTime}
+                update_time = #{param.updateTime},
             </if>
         </set>
-        WHERE id = {param.id}
+        WHERE id = #{param.id}
         AND uuid = #{param.uuid}
     </update>
 

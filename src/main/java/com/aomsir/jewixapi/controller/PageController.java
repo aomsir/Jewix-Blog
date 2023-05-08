@@ -64,7 +64,7 @@ public class PageController {
      */
     @ApiOperation(value = "新增页面")
     @PostMapping("/admin/pages")
-    public R addPage(@Validated PageAddVo pageAddVo) {
+    public R addPage(@RequestBody @Validated PageAddVo pageAddVo) {
         int role = this.pageService.addPage(pageAddVo);
         return R.ok()
                 .put("role",role);
@@ -78,7 +78,7 @@ public class PageController {
      */
     @ApiOperation(value = "更新页面")
     @PutMapping("/admin/pages")
-    public R updatePage(@Validated PageUpdateVo pageUpdateVo) {
+    public R updatePage(@RequestBody @Validated PageUpdateVo pageUpdateVo) {
         int role = this.pageService.updatePage(pageUpdateVo);
         return R.ok()
                 .put("role",role);

@@ -126,18 +126,18 @@ public class PageServiceImpl implements PageService {
     public int updatePage(PageUpdateVo pageUpdateVo) {
         String title = pageUpdateVo.getTitle();
         Page page = this.pageMapper.queryPageByTitle(title);
-        if (!Objects.equals(page.getId(), pageUpdateVo.getId())) {
+        if (page != null && !Objects.equals(page.getId(), pageUpdateVo.getId())) {
             throw new CustomerException("页面标题已存在");
         }
 
         Page page1 = this.pageMapper.queryPageByOmit(pageUpdateVo.getOmit());
-        if (!Objects.equals(page.getOmit(), pageUpdateVo.getOmit())) {
+        if (page1 != null && !Objects.equals(page1.getOmit(), pageUpdateVo.getOmit())) {
             throw new CustomerException("路径名已经存在");
         }
 
         // 超级管理员和创建者可以管理
         Page page_1 = this.pageMapper.queryPageByUuid(pageUpdateVo.getUuid());
-        if (!Objects.equals(page_1.getUserId(), this.hostHolder.getUserId()) || this.hostHolder.getUserId() != 10000L) {
+        if (page_1 != null && !Objects.equals(page_1.getUserId(), this.hostHolder.getUserId()) || this.hostHolder.getUserId() != 10000L) {
             throw new CustomerException("非当前用户创建,无法修改");
         }
 
@@ -164,7 +164,9 @@ public class PageServiceImpl implements PageService {
         if (role > 0) {
             // 删除评论
             List<Long> commentIds = this.commentMapper.queryCommentIdsByTypeAndTargetId(page.getId(),20+page.getType());
-            this.commentMapper.deleteCommentByIds(commentIds);
+            if (commentIds != null && commentIds.size() > 0) {
+                this.commentMapper.deleteCommentByIds(commentIds);
+            }
         }
         return role;
     }
