@@ -39,9 +39,10 @@ public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         R r;
         if (req.getAttribute("CustomerAuthenticationException") != null) {
-            r = R.error(500,TICKET_ERROR);
+            r = R.error(401,TICKET_ERROR);
         } else {
-            r = R.error(500,"访问被拒绝,原因:"+e.getMessage());
+            e.printStackTrace();
+            r = R.error(500,"访问被拒绝");
         }
 
 

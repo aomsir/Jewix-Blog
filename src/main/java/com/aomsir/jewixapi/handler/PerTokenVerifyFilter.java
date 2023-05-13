@@ -55,7 +55,7 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
         // 没有携带token则进入后续的Filter,后续的Filter会验证当前程序能否正常行走
         if (token == null) {
-            securityContext.setAuthentication(null);
+            request.setAttribute("CustomerAuthenticationException",TICKET_ERROR);
             filterChain.doFilter(request,response);
             return;
         }
