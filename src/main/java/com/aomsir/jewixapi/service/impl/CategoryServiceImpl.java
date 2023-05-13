@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
         // 查询数据库
         PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue()
                 .get(CATEGORY_FRONT_LIST_KEY);
-        if (pageUtils != null) {
+        if (pageUtils != null && (int) param.get("start") == 0) {
             return pageUtils;
         }
 
@@ -76,7 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
     public PageUtils searchCategorySonListPageByPatentId(Map<String, Object> param) {
         PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue()
                 .get(CATEGORY_SON_KEY);
-        if (pageUtils != null) {
+        if (pageUtils != null && (int) param.get("start") == 0) {
             return pageUtils;
         }
 

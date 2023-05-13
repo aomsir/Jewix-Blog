@@ -86,7 +86,7 @@ public class ArticleServiceImpl implements ArticleService {
     public PageUtils searchFrontArticleListByPage(Map<String, Object> param) {
         PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue()
                 .get(ARTICLE_FRONT_LIST_KEY);
-        if (pageUtils != null) {
+        if (pageUtils != null && (int) param.get("start") == 0) {
             return pageUtils;
         }
 
