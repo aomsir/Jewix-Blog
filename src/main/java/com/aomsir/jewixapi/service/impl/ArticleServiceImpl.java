@@ -227,7 +227,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         this.displayViews(request, article.getUuid(), article.getId(), article.getViews(), detailDTO);
 
-        Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId());
+        Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId(),1);
         articleDetailDTO.setCommentCount(count);
 
         this.redisTemplate.opsForValue().set("article:info:cache:"+article.getUuid(),articleDetailDTO);

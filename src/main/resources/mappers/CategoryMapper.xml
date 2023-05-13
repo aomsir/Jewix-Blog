@@ -106,6 +106,9 @@
         FROM tb_comment
         WHERE target_id = #{articleId}
         AND type = 1
+        <if test="status != null">
+            AND status = #{status}
+        </if>
     </select>
 
     <select id="queryCategoryListByParentId" resultType="Category">
