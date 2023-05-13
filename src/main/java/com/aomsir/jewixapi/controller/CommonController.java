@@ -28,7 +28,7 @@ public class CommonController {
     @ApiOperation("获取站点全局信息")
     @GetMapping("/commons/webInfo")
     public R getCommonWebInfo() {
-        WebInfoDTO webInfoDTO = this.commonService.queryWebInfo();
+        WebInfoDTO webInfoDTO = this.commonService.searchWebInfo();
         return R.ok()
                 .put("result",webInfoDTO);
     }
@@ -40,7 +40,7 @@ public class CommonController {
     @ApiOperation("获取归档全局信息")
     @GetMapping("/commons/articles/archiveInfo")
     public R getArticleArchiveInfo() {
-        ArticleArchiveInfoDTO articleArchiveInfoDTO = this.commonService.queryArticleArchiveInfo();
+        ArticleArchiveInfoDTO articleArchiveInfoDTO = this.commonService.searchArticleArchiveInfo();
         return R.ok()
                 .put("result",articleArchiveInfoDTO);
     }

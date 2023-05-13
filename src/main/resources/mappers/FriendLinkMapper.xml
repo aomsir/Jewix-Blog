@@ -53,6 +53,12 @@
         WHERE id = #{id}
     </select>
 
+    <select id="queryFriendLinkByLink" resultType="FriendLink">
+        SELECT id, title, link, photo, description, location, create_time, update_time
+        FROM tb_friend_link
+        WHERE link = #{link}
+    </select>
+
 
     <delete id="deleteFriendLinks">
         DELETE FROM tb_friend_link

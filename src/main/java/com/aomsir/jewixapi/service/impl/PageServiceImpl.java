@@ -9,15 +9,16 @@ import com.aomsir.jewixapi.pojo.dto.PageListDTO;
 import com.aomsir.jewixapi.pojo.entity.Page;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.PageAddVo;
-import com.aomsir.jewixapi.pojo.vo.PageDeleteVo;
 import com.aomsir.jewixapi.pojo.vo.PageUpdateVo;
 import com.aomsir.jewixapi.service.PageService;
-import com.aomsir.jewixapi.utils.HostHolder;
+import com.aomsir.jewixapi.utils.UserHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+
+import static com.aomsir.jewixapi.constants.PageConstants.*;
 
 /**
  * @Author: Aomsir
@@ -40,7 +41,7 @@ public class PageServiceImpl implements PageService {
     private UserMapper userMapper;
 
     @Resource
-    private HostHolder hostHolder;
+    private UserHolder userHolder;
 
     @Override
     public List<PageListDTO> searchPageList() {
@@ -73,7 +74,7 @@ public class PageServiceImpl implements PageService {
     public Page searchPageByUuid(String uuid) {
         Page page = this.pageMapper.queryPageByUuid(uuid);
         if (page == null) {
-            throw new CustomerException("页面不存在");
+            throw new CustomerException(PAGE_IS_NULL);
         }
 
         User user = this.userMapper.queryUserById(page.getUserId());
@@ -96,23 +97,23 @@ public class PageServiceImpl implements PageService {
         if (containKey.contains(type)) {
             Page page = this.pageMapper.queryPageByType(type);
             if (page != null) {
-                throw new CustomerException("页面已存在");
+                throw new CustomerException(PAGE_HAS_EXISTED);
             }
         }
 
         if (this.pageMapper.queryPageByOmit(pageAddVo.getOmit()) != null) {
-            throw new CustomerException("页面已经存在");
+            throw new CustomerException(PAGE_HAS_EXISTED);
         }
 
         Page page = this.pageMapper.queryPageByTitle(pageAddVo.getTitle());
         if (page != null) {
-            throw new CustomerException("页面已存在");
+            throw new CustomerException(PAGE_HAS_EXISTED);
         }
 
         Page newPage = new Page();
         BeanUtil.copyProperties(pageAddVo,newPage);
         newPage.setUuid(UUID.randomUUID().toString());
-        newPage.setUserId(this.hostHolder.getUserId());
+        newPage.setUserId(this.userHolder.getUserId());
         newPage.setViews(0L);
         newPage.setCreateTime(new Date());
         newPage.setUpdateTime(new Date());
@@ -127,18 +128,18 @@ public class PageServiceImpl implements PageService {
         String title = pageUpdateVo.getTitle();
         Page page = this.pageMapper.queryPageByTitle(title);
         if (page != null && !Objects.equals(page.getId(), pageUpdateVo.getId())) {
-            throw new CustomerException("页面标题已存在");
+            throw new CustomerException(PAGE_TITLE_HAS_EXISTED);
         }
 
         Page page1 = this.pageMapper.queryPageByOmit(pageUpdateVo.getOmit());
         if (page1 != null && !Objects.equals(page1.getOmit(), pageUpdateVo.getOmit())) {
-            throw new CustomerException("路径名已经存在");
+            throw new CustomerException(PAGE_OMIT_HAS_EXISTED);
         }
 
         // 超级管理员和创建者可以管理
         Page page_1 = this.pageMapper.queryPageByUuid(pageUpdateVo.getUuid());
-        if (page_1 != null && !Objects.equals(page_1.getUserId(), this.hostHolder.getUserId()) || this.hostHolder.getUserId() != 10000L) {
-            throw new CustomerException("非当前用户创建,无法修改");
+        if (page_1 != null && !Objects.equals(page_1.getUserId(), this.userHolder.getUserId()) || this.userHolder.getUserId() != 10000L) {
+            throw new CustomerException(PAGE_IS_NOT_MINE);
         }
 
         Page page_2 = new Page();
@@ -157,7 +158,7 @@ public class PageServiceImpl implements PageService {
 
         Page page = this.pageMapper.queryPageByUuid(uuid);
         if (page == null) {
-            throw new CustomerException("页面不存在,无法删除");
+            throw new CustomerException(PAGE_IS_NULL);
         }
 
         int role = this.pageMapper.deletePage(uuid);

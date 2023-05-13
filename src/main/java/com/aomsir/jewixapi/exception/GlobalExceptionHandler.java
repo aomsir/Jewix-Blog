@@ -3,12 +3,9 @@ package com.aomsir.jewixapi.exception;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.aomsir.jewixapi.utils.R;
-import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.exceptions.IbatisException;
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,6 +20,8 @@ import javax.validation.Path;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
+
+import static com.aomsir.jewixapi.constants.ExceptionConstants.DATABASE_EXCEPTION;
 
 /**
  * @Author: Aomsir
@@ -40,14 +39,30 @@ public class GlobalExceptionHandler {
 
     /**
      * 全局异常处理器
-     * @param e
-     * @return
+     * @param e 异常对象
+     * @return 响应数据
      */
     @ExceptionHandler(Exception.class)
     public R exceptionHandler(Exception e) {
         return R.error(e.getMessage());
     }
 
+    /**
+     * 自定义业务异常捕获
+     * @param ex 异常对象
+     * @return 响应数据
+     */
+    @ExceptionHandler(CustomerException.class)
+    public R exceptionHandler(CustomerException ex) {
+        return R.error(ex.getMessage());
+    }
+
+
+    /**
+     * 授权异常处理器(已作废)
+     * @param e 异常对象
+     * @return 响应数据
+     */
     @ExceptionHandler(CustomerAuthenticationException.class)
     public R authenticationException(CustomerAuthenticationException e) {
         return R.error(e.getMessage());
@@ -55,14 +70,17 @@ public class GlobalExceptionHandler {
 
 
     /**
-     * 处理 json 请求体调用接口对象参数校验失败抛出的异常
-     * @param e
-     * @return
+     * JSON参数校验异常处理器
+     * @param e 异常对象
+     * @return 响应数据
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public R jsonParamsException(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
-        List errorList = CollectionUtil.newArrayList();
+        List<Object> errorList = CollectionUtil.newArrayList();
+
+        log.error("jsonParamsException is invoke...");
+        e.printStackTrace();
 
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             String msg = String.format("%s%s；", fieldError.getField(), fieldError.getDefaultMessage());
@@ -73,14 +91,16 @@ public class GlobalExceptionHandler {
 
 
     /**
-     * 处理单个参数校验失败抛出的异常
-     * @param e
-     * @return
+     * 单个参数异常处理器
+     * @param e 异常对象
+     * @return 响应数据
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public R ParamsException(ConstraintViolationException e) {
+        log.error("ParamsException is invoke...");
+        e.printStackTrace();
 
-        List errorList = CollectionUtil.newArrayList();
+        List<Object> errorList = CollectionUtil.newArrayList();
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
         for (ConstraintViolation<?> violation : violations) {
             StringBuilder message = new StringBuilder();
@@ -93,32 +113,16 @@ public class GlobalExceptionHandler {
     }
 
 
-
-    /**
-     * 自定义业务异常捕获
-     * @param ex
-     * @return
-     */
-    @ExceptionHandler(CustomerException.class)
-    public R exceptionHandler(CustomerException ex) {
-        return R.error(ex.getMessage());
-    }
-
-
     /**
      * 数据库类型异常
-     * @param ex
-     * @return
+     * @param e 异常对象
+     * @return 响应数据
      */
-    @ExceptionHandler(SQLException.class)
-    public R SQLException(SQLException ex) {
-        log.error("{}", ex.getMessage());
-        return R.error("数据库SQL异常,请联系网站负责人");
+    @ExceptionHandler({SQLException.class,
+            IbatisException.class,})
+    public R SQLException(Exception e) {
+        log.error("{}", e.getMessage());
+        return R.error(DATABASE_EXCEPTION);
     }
 
-    @ExceptionHandler({IbatisException.class})
-    public R IbatisException(IbatisException ex) {
-        log.error("{}", ex.getMessage());
-        return R.error("数据库异常,请联系网站负责人");
-    }
 }

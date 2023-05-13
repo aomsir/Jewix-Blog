@@ -91,7 +91,7 @@ public class FriendLinkController {
     @ApiOperation(value = "根据id获取友情链接详情")
     @GetMapping("/admin/friend-links/{id}")
     public R getFriendLinkInfo(@PathVariable("id") Integer id) {
-        FriendLink friendLink = this.friendLinkService.findFriendLinkInfoById(id);
+        FriendLink friendLink = this.friendLinkService.searchFriendLinkInfoById(id);
         return R.ok()
                 .put("result",friendLink);
     }

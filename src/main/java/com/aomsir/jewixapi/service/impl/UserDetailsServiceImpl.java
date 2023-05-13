@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
+import static com.aomsir.jewixapi.constants.UserConstants.USER_IS_NULL;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/2/19
@@ -32,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = this.userMapper.queryUserByEmail(username);
 
         if (user == null) {
-            throw new UsernameNotFoundException("用户不存在");
+            throw new UsernameNotFoundException(USER_IS_NULL);
         }
 
         // TODO: 查询用户权限进行封装

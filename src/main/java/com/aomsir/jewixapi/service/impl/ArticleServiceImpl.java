@@ -10,12 +10,10 @@ import com.aomsir.jewixapi.pojo.dto.ArticleArchiveDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
-import com.aomsir.jewixapi.pojo.entity.Page;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
-import com.aomsir.jewixapi.service.CommentService;
-import com.aomsir.jewixapi.utils.HostHolder;
+import com.aomsir.jewixapi.utils.UserHolder;
 import com.aomsir.jewixapi.utils.NetUtils;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
@@ -29,6 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static com.aomsir.jewixapi.constants.ArticleConstants.*;
+import static com.aomsir.jewixapi.constants.CategoryConstants.CATEGORY_IS_NULL;
 
 /**
  * @Author: Aomsir
@@ -52,7 +53,7 @@ public class ArticleServiceImpl implements ArticleService {
     private TagMapper tagMapper;
 
     @Resource
-    private HostHolder hostHolder;
+    private UserHolder userHolder;
 
     @Resource
     private CommentMapper commentMapper;
@@ -76,8 +77,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(list,count,start,length);
-        return pageUtils;
+        return new PageUtils(list,count,start,length);
     }
 
     @Override
@@ -93,8 +93,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(list,count,start,length);
-        return pageUtils;
+        return new PageUtils(list,count,start,length);
     }
 
 
@@ -102,7 +101,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public int addArticle(ArticleAddVo articleAddVo) {
         if (articleAddVo.getType() == 2 && articleAddVo.getOriginUrl() == null) {
-            throw new CustomerException("未填写原文链接");
+            throw new CustomerException(ORIGIN_ADDRESS_IS_NULL);
         }
 
         // 查询分类id和标签id是否都存在
@@ -139,9 +138,9 @@ public class ArticleServiceImpl implements ArticleService {
             }
 
             // 插入article_user表
-            this.articleMapper.insertArticleAndUser(articleId,this.hostHolder.getUserId());
+            this.articleMapper.insertArticleAndUser(articleId,this.userHolder.getUserId());
         } else {
-            throw new CustomerException("标签或分类不存在!");
+            throw new CustomerException(CATEGORY_TAG_IS_NULL);
         }
         return articleId > 0 ? 1 : 0;
     }
@@ -156,7 +155,7 @@ public class ArticleServiceImpl implements ArticleService {
         Article article_2 = this.articleMapper.queryArticleById(id);
 
         if (article_1 == null || article_2 == null ) {
-            throw new CustomerException("文章不存在");
+            throw new CustomerException(ARTICLE_IS_NULL);
         }
 
         this.articleMapper.deleteArticleOfCategories(Collections.singletonList(articleUpdateVo.getId()));
@@ -167,7 +166,7 @@ public class ArticleServiceImpl implements ArticleService {
             if (this.categoryMapper.queryCategoryId(categoryId) != null) {
                 this.articleMapper.insertArticleAndCategory(articleId,categoryId);
             } else {
-                throw new CustomerException("提交有不存在分类,请重新提交");
+                throw new CustomerException();
             }
         }
 
@@ -175,7 +174,7 @@ public class ArticleServiceImpl implements ArticleService {
             if (this.tagMapper.queryTagById(tagId) != null) {
                 this.articleMapper.insertArticleAndTag(articleId,tagId);
             } else {
-                throw new CustomerException("提交有不存在标签,请重新提交");
+                throw new CustomerException(CATEGORY_IS_NULL);
             }
         }
 
@@ -197,7 +196,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         Article article = this.articleMapper.queryArticleByUuid(uuid);
         if (article == null) {
-            throw new CustomerException("文章不存在");
+            throw new CustomerException(ARTICLE_IS_NULL);
         }
 
         // 数据复制
@@ -225,7 +224,10 @@ public class ArticleServiceImpl implements ArticleService {
         articleDetailDTO.setTagIds(tagIdList);
         articleDetailDTO.setCategoryIds(categoryIdList);
 
-        this.displayViews(request, article.getUuid(), article.getId(), article.getViews(), detailDTO);
+        if (article.getViews() == null) {
+            article.setViews(0);
+        }
+        this.displayViews(request, article.getUuid(), article.getId(), article.getViews(), articleDetailDTO);
 
         Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId(),1);
         articleDetailDTO.setCommentCount(count);
@@ -254,17 +256,17 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public int deleteArticleByArchive(List<Long> ids) {
         if (Objects.isNull(ids) || ids.size()==0) {
-            throw new CustomerException("请选择要删除的文章");
+            throw new CustomerException(ARTICLE_CHECKED);
         }
 
         int articleCounts = this.articleMapper.queryArticleCountById(ids);
         if (articleCounts != ids.size()) {
-            throw new CustomerException("选择文章列表异常,请刷新重试");
+            throw new CustomerException(ARTICLE_LIST_ERROR);
         }
 
         int role = this.articleMapper.deleteArticlesByArchive(ids);
         if (role != ids.size()) {
-            throw new CustomerException("删除异常,请刷新重试");
+            throw new CustomerException(ARTICLE_DELETE_ERROR);
         }
         return role;
     }
@@ -273,20 +275,20 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public int deleteArticleByPhysics(List<Long> ids) {
         if (Objects.isNull(ids) || ids.size()==0) {
-            throw new CustomerException("请选择要删除的文章");
+            throw new CustomerException(ARTICLE_CHECKED);
         }
 
         // 确保选择的文章没有被别人删除(比如页面长时间没刷新)
         int articleCounts = this.articleMapper.queryArticleCountById(ids);
         if (articleCounts != ids.size()) {
-            throw new CustomerException("选择文章列表异常,请刷新重新选择");
+            throw new CustomerException(ARTICLE_LIST_ERROR);
         }
 
 
         // 1、删除文章表中的数据(is_delete置1即可)
         int role = this.articleMapper.deleteArticlesByPhysics(ids);
         if (role != ids.size()) {
-            throw new CustomerException("删除异常,请刷新重试");
+            throw new CustomerException(ARTICLE_DELETE_ERROR);
         }
 
         // 2、删除文章-分类表中的数据
@@ -303,7 +305,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    public List<ArticleRandomDTO> queryRandomArticle() {
+    public List<ArticleRandomDTO> searchRandomArticle() {
         // TODO：Redis中查询
 
         List<Long> articleIds = this.articleMapper.queryArticleId();
@@ -327,7 +329,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public PageUtils queryArticlesByArchive(Map<String, Object> param) {
+    public PageUtils searchArticlesByArchive(Map<String, Object> param) {
         Integer articleCount = this.articleMapper.queryArticleCountByArchive();
         ArrayList<ArticleArchiveDTO> list = null;
         if (articleCount > 0) {

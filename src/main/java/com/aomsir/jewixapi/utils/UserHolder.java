@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class HostHolder {
+public class UserHolder {
     private static final ThreadLocal<Long> users = new ThreadLocal<>();
 
     public void setUserId(Long id) {

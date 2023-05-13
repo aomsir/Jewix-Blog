@@ -13,7 +13,7 @@ public interface FriendLinkService {
 
     int updateFriendLink(Map<String, Object> param);
 
-    FriendLink findFriendLinkInfoById(Integer id);
+    FriendLink searchFriendLinkInfoById(Integer id);
 
     int deleteFriendLinks(List<Integer> ids);
 }

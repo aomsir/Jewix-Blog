@@ -43,7 +43,7 @@ public class CommonServiceImpl implements CommonService {
     private TagMapper tagMapper;
 
     @Override
-    public WebInfoDTO queryWebInfo() {
+    public WebInfoDTO searchWebInfo() {
         // TODO：查询Redis
 
         User user = this.userMapper.queryUserById(10000L);
@@ -79,7 +79,7 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
-    public ArticleArchiveInfoDTO queryArticleArchiveInfo() {
+    public ArticleArchiveInfoDTO searchArticleArchiveInfo() {
         Integer articleCount = this.articleMapper.queryArticleCountByArchive();
         Integer commentCount = this.commentMapper.queryCommentCountByArchive();
         Integer categoryCount = this.categoryMapper.queryCategoryCount();

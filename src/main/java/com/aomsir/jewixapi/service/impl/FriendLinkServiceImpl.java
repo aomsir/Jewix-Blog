@@ -14,6 +14,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
+import static com.aomsir.jewixapi.constants.FriendLinkConstants.*;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/2/26
@@ -41,29 +44,34 @@ public class FriendLinkServiceImpl implements FriendLinkService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(list, count, start,length);
-        return pageUtils;
+        return new PageUtils(list, count, start,length);
     }
 
     @Override
+    @Transactional
     public int addFriendLink(Map<String, Object> param) {
-        FriendLink friendLink = this.friendLinkMapper.queryFriendLinkByTitle((String) param.get("title"));
+        FriendLink friendLink_1 = this.friendLinkMapper.queryFriendLinkByTitle((String) param.get("title"));
+        FriendLink friendLink_2 = this.friendLinkMapper.queryFriendLinkByLink((String) param.get("link"));
 
-        if (friendLink != null) {
-            throw new CustomerException("当前友情链接已经存在了嗷!");
+        if (friendLink_1 != null) {
+            throw new CustomerException(FRIEND_LINK_NAME_HAS_EXISTED);
+        }
+
+        if (friendLink_2 != null) {
+            throw new CustomerException(FRIEND_LINK_LINK_HAS_EXISTED);
         }
 
         param.put("createTime",new Date());
         param.put("updateTime", new Date());
-        int role = this.friendLinkMapper.insertFriendLink(param);
-        return role;
+        return this.friendLinkMapper.insertFriendLink(param);
     }
 
     @Override
+    @Transactional
     public int updateFriendLink(Map<String, Object> param) {
         FriendLink friendLink = this.friendLinkMapper.queryFriendLinkById((Integer) param.get("id"));
         if (friendLink == null) {
-            throw new CustomerException("待修改的友情链接不存在嗷!");
+            throw new CustomerException(FRIEND_LINK_IS_NULL);
         }
 
         param.put("updateTime", new Date());
@@ -73,20 +81,19 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     }
 
     @Override
-    public FriendLink findFriendLinkInfoById(Integer id) {
+    public FriendLink searchFriendLinkInfoById(Integer id) {
         if (id == null || id < 1) {
-            throw new CustomerException("友情链接不存在嗷");
+            throw new CustomerException(FRIEND_LINK_IS_NULL);
         }
 
-        FriendLink friendLink = this.friendLinkMapper.queryFriendLinkById(id);
-        return friendLink;
+        return this.friendLinkMapper.queryFriendLinkById(id);
     }
 
     @Override
     @Transactional
     public int deleteFriendLinks(List<Integer> ids) {
         if (ids == null || ids.size() == 0) {
-            throw new CustomerException("参数异常");
+            throw new CustomerException(PARAMETER_ERROR);
         }
 
         return this.friendLinkMapper.deleteFriendLinks(ids);

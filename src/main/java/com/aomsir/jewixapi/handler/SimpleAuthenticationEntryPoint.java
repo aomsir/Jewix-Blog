@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.aomsir.jewixapi.constants.CommonConstants.TICKET_ERROR;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/2/21
@@ -37,7 +39,7 @@ public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         R r;
         if (req.getAttribute("CustomerAuthenticationException") != null) {
-            r = R.error(500,"登录凭证已过期,请重新登录");;
+            r = R.error(500,TICKET_ERROR);
         } else {
             r = R.error(500,"访问被拒绝,原因:"+e.getMessage());
         }

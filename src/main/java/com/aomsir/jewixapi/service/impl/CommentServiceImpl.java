@@ -26,6 +26,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static com.aomsir.jewixapi.constants.ArticleConstants.ARTICLE_IS_NULL;
+import static com.aomsir.jewixapi.constants.CommentConstants.*;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/3/16
@@ -118,7 +121,7 @@ public class CommentServiceImpl implements CommentService {
         if (commentAddVo.getType() == 1) {
             Article article = this.articleMapper.queryArticleById(targetId);
             if (Objects.isNull(article)) {
-                throw new CustomerException("文章不存在");
+                throw new CustomerException(ARTICLE_IS_NULL);
             }
             param.put("type",1);
         } else if (commentAddVo.getType() == 21) {
@@ -135,7 +138,7 @@ public class CommentServiceImpl implements CommentService {
             // 通用
             param.put("type",25);
         } else {
-            throw new CustomerException("类型错误");
+            throw new CustomerException(COMMENT_TYPE_ERROR);
         }
 
         // 校验父级评论是否存在
@@ -144,7 +147,7 @@ public class CommentServiceImpl implements CommentService {
             // 查询父级评论
             Comment parentComment = this.commentMapper.queryCommentById(parentId);
             if (Objects.isNull(parentComment)) {
-                throw new CustomerException("父评论不存在");
+                throw new CustomerException(PARENT_COMMENT_IS_NULL);
             }
         }
 
@@ -152,7 +155,7 @@ public class CommentServiceImpl implements CommentService {
         if (permId != 0) {
             Comment permComment = this.commentMapper.queryCommentById(permId);
             if (Objects.isNull(permComment)) {
-                throw new CustomerException("一级评论不存在");
+                throw new CustomerException(FIRST_COMMENT_IS_NULL);
             }
         }
 
@@ -180,7 +183,7 @@ public class CommentServiceImpl implements CommentService {
     public int updateComment(CommentUpdateVo commentUpdateVo) {
         Comment comment = this.commentMapper.queryCommentById(commentUpdateVo.getId());
         if (Objects.isNull(comment)) {
-            throw new CustomerException("评论不存在");
+            throw new CustomerException(COMMENT_IS_NULL);
         }
 
         Map<String, Object> param = BeanUtil.beanToMap(commentUpdateVo);
@@ -194,24 +197,24 @@ public class CommentServiceImpl implements CommentService {
     public int deleteComment(List<Long> ids) {
 
         if (Objects.isNull(ids) || ids.size() == 0) {
-            throw new CustomerException("删除列表不许为空");
+            throw new CustomerException(COMMENT_DELETE_LIST_IS_NULL);
         }
         int role = 0;
         for (Long id : ids) {
             Comment comment = this.commentMapper.queryCommentById(id);
             if (Objects.isNull(comment)) {
-                throw new CustomerException("评论不存在");
+                throw new CustomerException(COMMENT_IS_NULL);
             }
 
             // 查询是否有子评论
             // parentId与permId同为0则为一级评论
             List<Comment> childList_1 = this.commentMapper.queryCommentsByPermId(id);
             if (childList_1.size() > 0) {
-                throw new CustomerException("请先删除子评论");
+                throw new CustomerException(COMMENT_HAS_SON);
             }
             List<Comment> childList_2 = this.commentMapper.queryCommentsByParentId(id);
             if (childList_2.size() > 0) {
-                throw new CustomerException("请先删除子评论");
+                throw new CustomerException(COMMENT_HAS_SON);
             }
 
             role = this.commentMapper.deleteComment(id);
@@ -220,12 +223,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public int updateCommentStatus(CommentUpdateStatusVo commentUpdateStatusVo) {
         Long id = commentUpdateStatusVo.getId();
         Integer status = commentUpdateStatusVo.getStatus();
         Comment comment = this.commentMapper.queryCommentById(id);
         if (Objects.isNull(comment)) {
-            throw new CustomerException("评论不存在");
+            throw new CustomerException(COMMENT_IS_NULL);
         }
 
         Map<String, Object> param = new HashMap<>();

@@ -30,13 +30,13 @@ public class JwtUtils {
         Calendar instance = Calendar.getInstance();
         instance.add(Calendar.DAY_OF_YEAR,7);
         builder.withExpiresAt(instance.getTime());
-        return builder.sign(Algorithm.HMAC256(TOKEN)).toString();
+        return builder.sign(Algorithm.HMAC256(TOKEN))
+                .toString();
     }
 
     /**
      * 验证token
-     * @param token
-     * @return
+     * @param token token
      */
     public static void verify(String token){
         JWT.require(Algorithm.HMAC256(TOKEN)).build().verify(token);
@@ -48,7 +48,9 @@ public class JwtUtils {
      * @return
      */
     public static DecodedJWT getToken(String token){
-        return JWT.require(Algorithm.HMAC256(TOKEN)).build().verify(token);
+        return JWT.require(Algorithm.HMAC256(TOKEN))
+                .build()
+                .verify(token);
     }
 
 }

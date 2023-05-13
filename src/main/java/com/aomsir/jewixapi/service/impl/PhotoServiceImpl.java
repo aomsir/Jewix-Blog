@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
+import static com.aomsir.jewixapi.constants.PhotoConstants.PHOTO_DELETE_FAILED;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/2/28
@@ -141,7 +144,7 @@ public class PhotoServiceImpl implements PhotoService {
     @Transactional
     public int deletePhoto(PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
         if (Objects.isNull(photoDeleteVo.getFileName()) || Objects.isNull(photoDeleteVo.getType())) {
-            throw new CustomerException("参数传递异常");
+            throw new CustomerException(PARAMETER_ERROR);
         }
 
         String voFileName = photoDeleteVo.getFileName();
@@ -163,12 +166,12 @@ public class PhotoServiceImpl implements PhotoService {
                 // 删除本地文件
                 File file = new File(this.basePath + location + fileName);
                 if (!file.delete()) {
-                    throw new CustomerException("删除失败");
+                    throw new CustomerException(PHOTO_DELETE_FAILED);
                 }
             } else if (type == 1) {
                 try (Response response = this.restManager.deleteFile(location + fileName, null)) {
                     if (!response.isSuccessful()) {
-                        throw new CustomerException("删除失败");
+                        throw new CustomerException(PHOTO_DELETE_FAILED);
                     }
                 }
             } else if (type == 2) {

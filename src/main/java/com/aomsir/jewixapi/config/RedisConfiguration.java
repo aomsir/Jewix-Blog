@@ -23,6 +23,7 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 
         // 将Redis的key和value的序列化器设置为String
         redisTemplate.setKeySerializer(new StringRedisSerializer());
+
         // redisTemplate.setDefaultSerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         // redisTemplate.setHashValueSerializer(new StringRedisSerializer());

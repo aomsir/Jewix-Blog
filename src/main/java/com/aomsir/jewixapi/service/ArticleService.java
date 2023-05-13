@@ -25,7 +25,7 @@ public interface ArticleService {
 
     int deleteArticleByPhysics(List<Long> ids);
 
-    List<ArticleRandomDTO> queryRandomArticle();
+    List<ArticleRandomDTO> searchRandomArticle();
 
-    PageUtils queryArticlesByArchive(Map<String, Object> param);
+    PageUtils searchArticlesByArchive(Map<String, Object> param);
 }

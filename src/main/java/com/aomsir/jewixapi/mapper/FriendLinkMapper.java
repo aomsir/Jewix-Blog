@@ -24,4 +24,6 @@ public interface FriendLinkMapper {
     int updateFriendLink(@Param("param") Map<String, Object> param);
 
     int deleteFriendLinks(@Param("ids") List<Integer> ids);
+
+    FriendLink queryFriendLinkByLink(@Param("link") String link);
 }

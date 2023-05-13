@@ -5,6 +5,8 @@ import org.apache.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.aomsir.jewixapi.constants.CommonConstants.NONE_EXCEPTION;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/2/19
@@ -53,7 +55,7 @@ public class R extends HashMap<String, Object> {
     }
 
     public static R error() {
-        return error(HttpStatus.SC_INTERNAL_SERVER_ERROR, "未知异常，请联系管理员");
+        return error(HttpStatus.SC_INTERNAL_SERVER_ERROR, NONE_EXCEPTION);
     }
 
 }

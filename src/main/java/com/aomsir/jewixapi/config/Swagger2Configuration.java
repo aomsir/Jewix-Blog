@@ -28,7 +28,7 @@ public class Swagger2Configuration {
     public Docket webApiConfig(){
 
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("webApi")
+                .groupName("WebAPI")
                 .apiInfo(webApiInfo())
                 .select()
                 .paths(Predicates.and(PathSelectors.regex("/.*")))

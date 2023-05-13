@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.*;
 
+import static com.aomsir.jewixapi.constants.TagConstants.TAG_HAS_EXISTED;
+import static com.aomsir.jewixapi.constants.TagConstants.TAG_IS_NULL;
+
 
 /**
  * @Author: Aomsir
@@ -47,8 +50,7 @@ public class TagServiceImpl implements TagService {
         }
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(list,count,start,length);
-        return pageUtils;
+        return new PageUtils(list,count,start,length);
     }
 
     @Override
@@ -56,28 +58,28 @@ public class TagServiceImpl implements TagService {
     public int addTagByName(String tagName) {
         Tag respTag = this.tagMapper.queryTagByName(tagName);
         if (respTag != null) {
-            throw new CustomerException("标签已存在");
+            throw new CustomerException(TAG_HAS_EXISTED);
         }
 
         Tag tag = new Tag();
         tag.setTagName(tagName);
         tag.setCreateTime(new Date());
         tag.setUpdateTime(new Date());
-        int role = this.tagMapper.insertTag(tag);
-        return role;
+        return this.tagMapper.insertTag(tag);
     }
 
 
     @Override
+    @Transactional
     public int updateTagById(TagUpdateVo updateVo) {
         Tag tag = this.tagMapper.queryTagById(updateVo.getId());
         if (tag == null) {
-            throw new CustomerException("暂无此标签");
+            throw new CustomerException(TAG_IS_NULL);
         }
 
         Tag tag_1 = this.tagMapper.queryTagByName(updateVo.getTagName());
         if (tag_1 != null) {
-            throw new CustomerException("修改的标签名已存在");
+            throw new CustomerException(TAG_HAS_EXISTED);
         }
 
         tag.setTagName(updateVo.getTagName());
@@ -91,7 +93,7 @@ public class TagServiceImpl implements TagService {
     public Tag searchTagById(Long tagId) {
         Tag tag = this.tagMapper.queryTagById(tagId);
         if (tag == null) {
-            throw new CustomerException("标签不存在");
+            throw new CustomerException(TAG_IS_NULL);
         }
         return tag;
     }
@@ -100,7 +102,7 @@ public class TagServiceImpl implements TagService {
     public PageUtils searchArticleListByTagName(Map<String, Object> param) {
         Tag tag = this.tagMapper.queryTagByName((String) param.get("tagName"));
         if (tag == null) {
-            throw new CustomerException("标签不存在");
+            throw new CustomerException(TAG_IS_NULL);
         }
 
         // 根据标签名查询有无可以返回的文章数
@@ -115,7 +117,6 @@ public class TagServiceImpl implements TagService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils resultList = new PageUtils(list,count,start,length);
-        return resultList;
+        return new PageUtils(list,count,start,length);
     }
 }

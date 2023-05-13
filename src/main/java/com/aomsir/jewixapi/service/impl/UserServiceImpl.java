@@ -7,12 +7,10 @@ import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.UserMapper;
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
-import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.UserService;
-import com.aomsir.jewixapi.utils.HostHolder;
-import com.aomsir.jewixapi.utils.JwtUtils;
+import com.aomsir.jewixapi.utils.UserHolder;
 import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+
+import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
+import static com.aomsir.jewixapi.constants.CommonConstants.TICKET_ERROR;
+import static com.aomsir.jewixapi.constants.UserConstants.*;
 
 /**
  * @Author: Aomsir
@@ -50,13 +51,13 @@ public class UserServiceImpl implements UserService {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
-    private HostHolder hostHolder;
+    private UserHolder userHolder;
 
 
     @Override
     public User searchUserByUUID(String uuid) {
         if (uuid == null) {
-            throw new CustomerException("uuid为空!");
+            throw new CustomerException(PARAMETER_ERROR);
         }
 
         User user = this.userMapper.queryUserByUUID(uuid);
@@ -68,14 +69,15 @@ public class UserServiceImpl implements UserService {
     public UserConfigDTO searchConfigUser() {
         UserConfigDTO userConfigDTO = this.userMapper.queryConfigUser();
         if (userConfigDTO == null) {
-            throw new CustomerException("用户不存在");
+            throw new CustomerException(USER_IS_NULL);
         }
         return userConfigDTO;
     }
 
     @Override
     public PageUtils searchUserByPage(Map<String, Object> param) {
-        Long count = this.userMapper.queryUserCount((Integer)param.get("status"),(String)param.get("email"));
+        Long count = this.userMapper.queryUserCount((Integer)param.get("status"),
+                (String)param.get("email"));
         ArrayList<User> list = null;
         if (count > 0) {
             list = this.userMapper.queryUserListByPage(param);
@@ -84,8 +86,7 @@ public class UserServiceImpl implements UserService {
         }
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(list,count,start,length);
-        return pageUtils;
+        return new PageUtils(list,count,start,length);
     }
 
 
@@ -96,11 +97,11 @@ public class UserServiceImpl implements UserService {
         User user_2 = this.userMapper.queryUserByNickname(userAddVo.getNickname());
 
         if (user_1 != null) {
-            throw new CustomerException("邮箱已存在,请重新注册");
+            throw new CustomerException(USER_EMAIL_HAS_EXISTED);
         }
 
         if (user_2 != null) {
-            throw new CustomerException("用户名已存在,请重新注册");
+            throw new CustomerException(USER_NAME_HAS_EXISTED);
         }
 
 
@@ -124,14 +125,14 @@ public class UserServiceImpl implements UserService {
         User user_1 = this.userMapper.queryUserByUUID(userUpdateVo.getUuid());
 
         if (user_1 == null) {
-            throw new CustomerException("用户不存在");
+            throw new CustomerException(USER_IS_NULL);
         }
 
         // 邮箱已被使用(提交邮箱与库中该用户不一致才可)
         if (!Objects.equals(user_1.getEmail(), userUpdateVo.getEmail())) {
             User user = this.userMapper.queryUserByEmail(userUpdateVo.getEmail());
             if (user != null) {
-                throw new CustomerException("邮箱已存在嗷");
+                throw new CustomerException(USER_EMAIL_HAS_EXISTED);
             }
         }
 
@@ -139,7 +140,7 @@ public class UserServiceImpl implements UserService {
         if (!Objects.equals(user_1.getNickname(),userUpdateVo.getNickname())) {
             User user = this.userMapper.queryUserByNickname(userUpdateVo.getNickname());
             if (user != null) {
-                throw new CustomerException("用户名已经存在嗷");
+                throw new CustomerException(USER_NAME_HAS_EXISTED);
             }
         }
 
@@ -156,7 +157,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public int hasUser(UserHaveVo userHaveVo) {
         if (userHaveVo.getEmail() == null && userHaveVo.getNickname() == null) {
-            throw new CustomerException("用户名/邮箱参数未携带");
+            throw new CustomerException(PARAMETER_ERROR);
         }
 
         return this.userMapper.queryUserByEmailOrNickname(userHaveVo);
@@ -167,7 +168,7 @@ public class UserServiceImpl implements UserService {
     public int updateStatus(UserStatusVo userStatusVo) {
         User user = this.userMapper.queryUserByUUID(userStatusVo.getUuid());
         if (user == null) {
-            throw new CustomerException("用户不存在");
+            throw new CustomerException(USER_IS_NULL);
         }
 
         return this.userMapper.updateUserStatus(userStatusVo);
@@ -176,14 +177,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User searchCurrentUser() {
 
-        Long userId = this.hostHolder.getUserId();
+        Long userId = this.userHolder.getUserId();
         if (userId == null) {
-            throw new CustomerException("登录凭证失效,请重新登录");
+            throw new CustomerException(TICKET_ERROR);
         }
         User user = (User) this.redisTemplate.opsForValue().get("user:info:" + userId);
         if (user == null) {
             this.redisTemplate.delete("user:token:" + userId);
-            throw new CustomerException("登录凭证失效,请重新登录");
+            throw new CustomerException(TICKET_ERROR);
         }
 
         return user;
@@ -193,14 +194,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public int deleteUserByArchive(List<Long> ids) {
         if (ids == null || ids.size() == 0) {
-             throw new CustomerException("参数异常");
+             throw new CustomerException(PARAMETER_ERROR);
         }
 
 
         List<Long> trueIds = new ArrayList<>();
         for (Long id : ids) {
-            if (Objects.equals(this.hostHolder.getUserId(), id)) {
-                throw new CustomerException("不允许删除自己");
+            if (Objects.equals(this.userHolder.getUserId(), id)) {
+                throw new CustomerException(USER_DELETE_MYSELF_IS_NOT_ALLOWED);
             }
 
             // 查看有无文章引用
@@ -218,7 +219,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public int deleteUserByPhysics(List<Long> ids) {
         if (ids == null || ids.size() == 0) {
-            throw new CustomerException("参数异常");
+            throw new CustomerException(PARAMETER_ERROR);
         }
 
         List<Long> trueIds = new ArrayList<>();
@@ -239,18 +240,18 @@ public class UserServiceImpl implements UserService {
     public int updateUserByMyself(UserUpdateVo userUpdateVo) {
         User user_1 = this.userMapper.queryUserByUUID(userUpdateVo.getUuid());
         if (user_1 == null) {
-            throw new CustomerException("用户不存在");
+            throw new CustomerException(USER_IS_NULL);
         }
 
-        if (!Objects.equals(user_1.getId(), this.hostHolder.getUserId())) {
-            throw new CustomerException("非当前登录用户");
+        if (!Objects.equals(user_1.getId(), this.userHolder.getUserId())) {
+            throw new CustomerException(USER_IS_NOT_CURRENT);
         }
 
         // 邮箱已被使用(提交邮箱与库中该用户不一致才可)
         if (!Objects.equals(user_1.getEmail(), userUpdateVo.getEmail())) {
             User user = this.userMapper.queryUserByEmail(userUpdateVo.getEmail());
             if (user != null) {
-                throw new CustomerException("邮箱已存在嗷");
+                throw new CustomerException(USER_EMAIL_HAS_EXISTED);
             }
         }
 
@@ -258,7 +259,7 @@ public class UserServiceImpl implements UserService {
         if (!Objects.equals(user_1.getNickname(),userUpdateVo.getNickname())) {
             User user = this.userMapper.queryUserByNickname(userUpdateVo.getNickname());
             if (user != null) {
-                throw new CustomerException("用户名已经存在嗷");
+                throw new CustomerException(USER_NAME_HAS_EXISTED);
             }
         }
 

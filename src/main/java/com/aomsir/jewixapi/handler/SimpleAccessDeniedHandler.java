@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.aomsir.jewixapi.constants.SecurityConstants.PERMISSION_DENIED;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/2/21
@@ -23,7 +25,7 @@ public class SimpleAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest req,
                        HttpServletResponse resp,
                        AccessDeniedException e) throws IOException, ServletException {
-        R r = R.error(500,"权限不足,无法访问");
+        R r = R.error(500,PERMISSION_DENIED);
         resp.setStatus(HttpStatus.OK.value());
 
         resp.setContentType("application/json;charset=UTF-8");

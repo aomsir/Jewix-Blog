@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.*;
 
+import static com.aomsir.jewixapi.constants.CategoryConstants.*;
+import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/2/25
@@ -66,8 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(list,count,start,length);
-        return pageUtils;
+        return new PageUtils(list,count,start,length);
     }
 
 
@@ -79,7 +81,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         // 存在则无法进行添加(一级分类与二级分类均适用)
         if (category != null) {
-            throw new CustomerException("分类已存在嗷!");
+            throw new CustomerException(CATEGORY_HAS_EXISTED);
         }
 
         // 非一级分类的情况
@@ -87,11 +89,11 @@ public class CategoryServiceImpl implements CategoryService {
             Category category_1 = this.categoryMapper.queryCategoryByParentId(categoryAddVo.getParentId());
 
             if (category_1 == null) {
-                throw new CustomerException("一级分类不存在嗷,请重新选择!");
+                throw new CustomerException(FIRST_CATEGORY_HAS_EXISTED);
             }
 
             if (category_1.getParentId() != 0) {
-                throw new CustomerException("选择的分类不是一级分类嗷!");
+                throw new CustomerException(CATEGORY_IS_NOT_FIRST);
             }
 
             // 再次保证a子分类可以出现在多个父分类下
@@ -118,12 +120,12 @@ public class CategoryServiceImpl implements CategoryService {
     public PageUtils searchArticlePageByCategoryName(Map<String, Object> param) {
         Long categoryId = (Long) param.get("categoryId");
         if (categoryId == null || categoryId <= 0L) {
-            throw new CustomerException("分类不存在");
+            throw new CustomerException(CATEGORY_IS_NULL);
         }
 
         Category category_1 = this.categoryMapper.queryCategoryId(categoryId);
         if (category_1 == null) {
-            throw new CustomerException("分类不存在");
+            throw new CustomerException(CATEGORY_IS_NULL);
         }
 
         Long count = this.articleMapper.queryArticleCountByCategoryId(categoryId);
@@ -136,8 +138,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(list,count,start,length);
-        return pageUtils;
+        return new PageUtils(list,count,start,length);
     }
 
     @Override
@@ -164,12 +165,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public int updateCategory(CategoryUpdateVo categoryUpdateVo) {
         if (this.categoryMapper.queryCategoryId(categoryUpdateVo.getId()) == null) {
-            throw new CustomerException("分类不存在");
+            throw new CustomerException(CATEGORY_IS_NULL);
         }
 
         Category category = this.categoryMapper.queryCategoryByNameAndParentId(categoryUpdateVo.getCategoryName(), categoryUpdateVo.getParentId());
         if (category != null) {
-            throw new CustomerException("分类名已存在");
+            throw new CustomerException(CATEGORY_HAS_EXISTED);
         }
 
         return this.categoryMapper.updateCategory(categoryUpdateVo);
@@ -180,7 +181,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public int deleteCategories(List<Long> ids) {
         if (ids == null || ids.size() == 0) {
-            throw new CustomerException("参数携带异常");
+            throw new CustomerException(PARAMETER_ERROR);
         }
 
         List<Long> trueIds = new ArrayList<>();

@@ -5,7 +5,6 @@ import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
 import com.aomsir.jewixapi.service.LogService;
-import com.aomsir.jewixapi.utils.HostHolder;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.aomsir.jewixapi.utils.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+
+import static com.aomsir.jewixapi.constants.SecurityConstants.*;
 
 /**
  * @Author: Aomsir
@@ -60,7 +61,7 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
         if (!request.getMethod().equals("POST")) {
-            throw new AuthenticationServiceException("请求方式不受支持");
+            throw new AuthenticationServiceException(REQUEST_METHOD_IS_NOT_ALLOWED);
         }
         if (request.getContentType().equalsIgnoreCase(MediaType.APPLICATION_JSON_VALUE)) {
             try {
@@ -74,7 +75,7 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
                 if (!EmailValidator.validate(username)) {
                     // 抛出的异常,会被下面的失败回调处理
                     try {
-                        throw new CustomerException("邮箱格式有误");
+                        throw new CustomerException(EMAIL_REGEX_ERROR);
                     } catch (CustomerException e) {
                         throw new AuthenticationServiceException(e.getMessage());
                     }
@@ -142,21 +143,21 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
                                               AuthenticationException e) throws IOException, ServletException {
         R r;
         if (e instanceof BadCredentialsException) {
-            r = R.error(500,"凭证无效，拒绝访问");
+            r = R.error(500,BAD_CREDENTIALS_EXCEPTION);
         } else if (e instanceof CredentialsExpiredException) {
-            r = R.error(500,"凭证已过期，拒绝访问");
+            r = R.error(500,CREDENTIALS_EXPIRED_EXCEPTION);
         } else if (e instanceof DisabledException) {
-            r = R.error(500,"帐户被禁用，拒绝访问");
+            r = R.error(500,DISABLED_EXCEPTION);
         } else if (e instanceof LockedException) {
-            r = R.error(500,"帐户被锁定，拒绝访问");
+            r = R.error(500,LOCKED_EXCEPTION);
         } else if (e instanceof ProviderNotFoundException) {
-            r = R.error(500,"找不到提供程序，拒绝访问");
+            r = R.error(500,PROVIDER_NOT_FOUND_EXCEPTION);
         } else if (e instanceof UsernameNotFoundException) {
-            r = R.error(500,"找不到用户名，拒绝访问");
+            r = R.error(500,USERNAME_NOT_FOUND_EXCEPTION);
         } else if (e instanceof AuthenticationServiceException) {
             r = R.error(500,e.getMessage());   // 邮箱格式有误(自己对SpringSecurity进行一层封装)
         } else {
-            r = R.error(500,"登录失败");
+            r = R.error(500,LOGIN_FAILED);
         }
 
         resp.setStatus(HttpStatus.OK.value());

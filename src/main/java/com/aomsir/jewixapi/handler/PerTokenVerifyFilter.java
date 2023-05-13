@@ -1,6 +1,6 @@
 package com.aomsir.jewixapi.handler;
 
-import com.aomsir.jewixapi.utils.HostHolder;
+import com.aomsir.jewixapi.utils.UserHolder;
 import com.aomsir.jewixapi.utils.JwtUtils;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
+import static com.aomsir.jewixapi.constants.CommonConstants.TICKET_ERROR;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/2/21
@@ -30,7 +32,7 @@ import java.util.Objects;
 public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
     @Resource
-    private HostHolder hostHolder;
+    private UserHolder userHolder;
 
     @Resource
     private RedisTemplate<String,Object> redisTemplate;
@@ -62,7 +64,7 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
         try {
             JwtUtils.verify(token);
         } catch (Exception e) {
-            request.setAttribute("CustomerAuthenticationException","登录凭证已过期,请重新登录");
+            request.setAttribute("CustomerAuthenticationException",TICKET_ERROR);
             filterChain.doFilter(request,response);
             return;
              // throw new CustomerAuthenticationException("登录凭证已过期,请重新登录");
@@ -74,7 +76,7 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
         String tokenInRedis = (String) this.redisTemplate.opsForValue().get("user:token:" + userId);
         if (Objects.isNull(tokenInRedis) || tokenInRedis.isEmpty()) {
-            request.setAttribute("CustomerAuthenticationException","登录凭证已过期,请重新登录");
+            request.setAttribute("CustomerAuthenticationException",TICKET_ERROR);
             filterChain.doFilter(request,response);
             return;
             // throw new AuthenticationServiceException("登录凭证已过期,请重新登录");
@@ -83,13 +85,13 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
              // 两次携带token不一致则将让其重新登录
              // this.redisTemplate.delete("user:token:" + userId);
              // this.redisTemplate.delete("user:info:" + userId);
-             request.setAttribute("CustomerAuthenticationException","登录凭证已过期,请重新登录");
+             request.setAttribute("CustomerAuthenticationException",TICKET_ERROR);
              filterChain.doFilter(request,response);
              return;
              // throw new CustomerAuthenticationException("登录凭证已过期,请重新登录");
          }
 
-        this.hostHolder.setUserId(Long.valueOf(userId));
+        this.userHolder.setUserId(Long.valueOf(userId));
 
         // TODO:通过Redis查询封装的用户信息等
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("info@say521.cn",null,null));

@@ -156,7 +156,7 @@ public class ArticleController {
     @ApiOperation(value = "获取推荐文章列表", notes = "获取推荐文章列表")
     @GetMapping("/articles/random")
     public R getArticlesRandom() {
-        List<ArticleRandomDTO> list = this.articleService.queryRandomArticle();
+        List<ArticleRandomDTO> list = this.articleService.searchRandomArticle();
         return R.ok()
                 .put("result",list);
     }
@@ -177,7 +177,7 @@ public class ArticleController {
             put("start", start);
         }};
 
-        PageUtils pageUtils = this.articleService.queryArticlesByArchive(param);
+        PageUtils pageUtils = this.articleService.searchArticlesByArchive(param);
         return R.ok()
                 .put("result",pageUtils);
     }
