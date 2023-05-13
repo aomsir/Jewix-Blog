@@ -44,6 +44,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public R exceptionHandler(Exception e) {
+        e.printStackTrace();
         return R.error(e.getMessage());
     }
 

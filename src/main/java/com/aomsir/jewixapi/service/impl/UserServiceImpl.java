@@ -24,6 +24,8 @@ import java.util.*;
 
 import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
 import static com.aomsir.jewixapi.constants.CommonConstants.TICKET_ERROR;
+import static com.aomsir.jewixapi.constants.RedisConstants.USER_INFO_KEY;
+import static com.aomsir.jewixapi.constants.RedisConstants.USER_TOKEN_KEY;
 import static com.aomsir.jewixapi.constants.UserConstants.*;
 
 /**
@@ -181,13 +183,15 @@ public class UserServiceImpl implements UserService {
         if (userId == null) {
             throw new CustomerException(TICKET_ERROR);
         }
-        User user = (User) this.redisTemplate.opsForValue().get("user:info:" + userId);
-        if (user == null) {
-            this.redisTemplate.delete("user:token:" + userId);
+        Map<Object, Object> userMap = this.redisTemplate.opsForHash()
+                .entries(USER_INFO_KEY + userId);
+
+        if (userMap == null || userMap.isEmpty()) {
+            this.redisTemplate.delete(USER_TOKEN_KEY + userId);
             throw new CustomerException(TICKET_ERROR);
         }
 
-        return user;
+        return BeanUtil.toBean(userMap, User.class);
     }
 
     @Override

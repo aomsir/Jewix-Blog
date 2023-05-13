@@ -10,6 +10,7 @@ import com.aomsir.jewixapi.pojo.dto.ArticleArchiveDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
+import com.aomsir.jewixapi.pojo.entity.Page;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.aomsir.jewixapi.constants.ArticleConstants.*;
 import static com.aomsir.jewixapi.constants.CategoryConstants.CATEGORY_IS_NULL;
+import static com.aomsir.jewixapi.constants.RedisConstants.*;
 
 /**
  * @Author: Aomsir
@@ -82,6 +84,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public PageUtils searchFrontArticleListByPage(Map<String, Object> param) {
+        PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue()
+                .get(ARTICLE_FRONT_LIST_KEY);
+        if (pageUtils != null) {
+            return pageUtils;
+        }
+
         int count = this.articleMapper.queryArticleFrontCount(param);
         ArrayList<Article> list = null;
         if (count > 0) {
@@ -93,7 +101,10 @@ public class ArticleServiceImpl implements ArticleService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        return new PageUtils(list,count,start,length);
+        pageUtils = new PageUtils(list,count,start,length);
+        this.redisTemplate.opsForValue()
+                .set(ARTICLE_FRONT_LIST_KEY, pageUtils,ARTICLE_FRONT_LIST_EXPIRE,TimeUnit.DAYS);
+        return pageUtils;
     }
 
 
@@ -180,13 +191,21 @@ public class ArticleServiceImpl implements ArticleService {
 
         Map<String, Object> param = BeanUtil.beanToMap(articleUpdateVo);
         param.put("updateTime", new Date());
+
+        // 删除当篇文章的Redis缓存
+        ArrayList<String> keys = new ArrayList<>();
+        keys.add(ARTICLE_DETAIL_KEY + uuid);
+        keys.add(ARTICLE_FRONT_LIST_KEY);
+        this.redisTemplate.delete(keys);
+
         return this.articleMapper.updateArticle(param);
     }
 
     @Override
     public ArticleDetailDTO queryArticleByUuid(String uuid, HttpServletRequest request) {
 
-        ArticleDetailDTO detailDTO = (ArticleDetailDTO) this.redisTemplate.opsForValue().get("article:info:cache:"+uuid);
+        ArticleDetailDTO detailDTO = (ArticleDetailDTO) this.redisTemplate.opsForValue()
+                .get(ARTICLE_DETAIL_KEY + uuid);
 
         if (detailDTO != null) {
             // 封装浏览量
@@ -232,22 +251,35 @@ public class ArticleServiceImpl implements ArticleService {
         Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId(),1);
         articleDetailDTO.setCommentCount(count);
 
-        this.redisTemplate.opsForValue().set("article:info:cache:"+article.getUuid(),articleDetailDTO);
+
+        // 存储至数据库
+        this.redisTemplate.opsForValue()
+                .set(ARTICLE_DETAIL_KEY + article.getUuid(), articleDetailDTO, ARTICLE_DETAIL_EXPIRE,TimeUnit.DAYS);
         return articleDetailDTO;
     }
 
     private void displayViews(HttpServletRequest request, String uuid2, Long id, Integer views, ArticleDetailDTO detailDTO) {
         String ip = this.netUtils.getRealIp(request);
 
-        Long isView = (Long) this.redisTemplate.opsForValue().get("article:views:ip:"+ip+":articleUuid:"+ uuid2);
+        String viewIpKey = ARTICLE_VIEW_IP_KEY + ip + ":articleUuid:" + uuid2;
+        String viewInfoKey = ARTICLE_VIEW_INFO_KEY + id;
+
+        // 查询Redis,当前ip有无访问过当前文章
+        Long isView = (Long) this.redisTemplate.opsForValue()
+                .get(viewIpKey);
         if (isView == null || isView == 0) {
 
-            // 同IP7天内刷新不算只算一条访问量
-            this.redisTemplate.opsForValue().set("article:views:ip:"+ip+":articleUuid:"+ uuid2,1L,7, TimeUnit.DAYS);
+            // 未访问过,记录,值+1
+            // 同IP 1天内刷新只算一条访问量
+            this.redisTemplate.opsForValue()
+                    .set(viewIpKey,1L,7, TimeUnit.DAYS);
 
-            // TODO：完善成自动任务
-            this.redisTemplate.opsForValue().increment("article:views:info:" + id);
-            this.articleMapper.updateArticleViewCount(id, views +1);
+
+            this.redisTemplate.opsForValue()
+                    .increment(viewInfoKey + id);
+
+            // TODO：完善成自动任务(下面代码)
+            // this.articleMapper.updateArticleViewCount(id, views + 1);
         }
     }
 
@@ -268,6 +300,15 @@ public class ArticleServiceImpl implements ArticleService {
         if (role != ids.size()) {
             throw new CustomerException(ARTICLE_DELETE_ERROR);
         }
+
+        // TODO:删除Redis中的缓存
+        this.redisTemplate.delete(ARTICLE_FRONT_LIST_KEY);
+        // List<String> keys = new ArrayList<>(ids.size());
+        // for (Long id : ids) {
+        //     keys.add(ARTICLE_DETAIL_KEY + id);
+        // }
+        // this.redisTemplate.delete(keys);
+
         return role;
     }
 
@@ -300,13 +341,24 @@ public class ArticleServiceImpl implements ArticleService {
         // 4、删除文章-用户表中的数据
         this.articleMapper.deleteArticleOfUser(ids);
 
+        // 删除Redis中的缓存
+        this.redisTemplate.delete(ARTICLE_FRONT_LIST_KEY);
+        // List<String> keys = new ArrayList<>(ids.size());
+        // for (Long id : ids) {
+        //     keys.add(ARTICLE_DETAIL_KEY + id);
+        // }
+        // this.redisTemplate.delete(keys);
         return role;
     }
 
 
     @Override
     public List<ArticleRandomDTO> searchRandomArticle() {
-        // TODO：Redis中查询
+        List<ArticleRandomDTO> resultList = (List<ArticleRandomDTO>)this.redisTemplate.opsForValue()
+                .get(ARTICLE_RANDOM_KEY);
+        if (resultList != null && resultList.size() > 0) {
+            return resultList;
+        }
 
         List<Long> articleIds = this.articleMapper.queryArticleId();
         int size;
@@ -320,12 +372,15 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
 
-        // TODO: 数据存储在Redis中
-        List<ArticleRandomDTO> resultList = this.articleMapper.queryArticlesByRandomIds(randomList);
+        resultList = this.articleMapper.queryArticlesByRandomIds(randomList);
         if (resultList != null) {
-            //
+            // 存储至Redis
+            this.redisTemplate.opsForValue()
+                    .set(ARTICLE_RANDOM_KEY, resultList, ARTICLE_RANDOM_EXPIRE, TimeUnit.DAYS);
+            return resultList;
         }
-        return resultList;
+
+        return new ArrayList<>(0);
     }
 
     @Override

@@ -13,14 +13,17 @@ import com.aomsir.jewixapi.utils.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static com.aomsir.jewixapi.constants.CategoryConstants.*;
 import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
+import static com.aomsir.jewixapi.constants.RedisConstants.*;
 
 /**
  * @Author: Aomsir
@@ -39,10 +42,19 @@ public class CategoryServiceImpl implements CategoryService {
     @Resource
     private ArticleMapper articleMapper;
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public PageUtils searchCategoryParentListByPage(Map<String, Object> param) {
-        int count = this.categoryMapper.queryCategoryCountByParentId(0L);
+        // 查询数据库
+        PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue()
+                .get(CATEGORY_FRONT_LIST_KEY);
+        if (pageUtils != null) {
+            return pageUtils;
+        }
 
+        int count = this.categoryMapper.queryCategoryCountByParentId(0L);
         ArrayList<Category> list = null;
         if (count > 0) {
             list = this.categoryMapper.queryCategoryListPageByParentId(param);
@@ -52,14 +64,23 @@ public class CategoryServiceImpl implements CategoryService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(list,count,start,length);
+        pageUtils = new PageUtils(list,count,start,length);
+
+        // 存储至Redis
+        this.redisTemplate.opsForValue()
+                .set(CATEGORY_FRONT_LIST_KEY, pageUtils, CATEGORY_FRONT_LIST_EXPIRE, TimeUnit.DAYS);
         return pageUtils;
     }
 
     @Override
     public PageUtils searchCategorySonListPageByPatentId(Map<String, Object> param) {
-        int count = this.categoryMapper.queryCategoryCountByParentId((Long) param.get("parentId"));
+        PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue()
+                .get(CATEGORY_SON_KEY);
+        if (pageUtils != null) {
+            return pageUtils;
+        }
 
+        int count = this.categoryMapper.queryCategoryCountByParentId((Long) param.get("parentId"));
         ArrayList<Category> list = null;
         if (count > 0) {
             list = this.categoryMapper.queryCategoryListPageByParentId(param);
@@ -69,7 +90,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        return new PageUtils(list,count,start,length);
+        pageUtils = new PageUtils(list,count,start,length);
+
+        // 存储至Redis
+        this.redisTemplate.opsForValue()
+                .set(CATEGORY_SON_KEY, pageUtils, CATEGORY_SON_EXPIRE, TimeUnit.DAYS);
+        return pageUtils;
     }
 
 
@@ -111,6 +137,7 @@ public class CategoryServiceImpl implements CategoryService {
         category_2.setCreateTime(new Date());
         category_2.setUpdateTime(new Date());
 
+        this.deleteCache();
         return this.categoryMapper.insertCategory(category_2);
     }
 
@@ -138,11 +165,16 @@ public class CategoryServiceImpl implements CategoryService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        return new PageUtils(list,count,start,length);
+        return new PageUtils(list, count, start, length);
     }
 
     @Override
     public List<CategoryListDTO> searchCategoryList() {
+        List<CategoryListDTO> categoryListDTOS1 = (List<CategoryListDTO>) this.redisTemplate.opsForValue()
+                .get(CATEGORY_LIST_KEY);
+        if (categoryListDTOS1 != null) {
+            return categoryListDTOS1;
+        }
 
         // 查询
         List<Category> categories = this.categoryMapper.queryCategoryListByParentId(0L);
@@ -157,6 +189,10 @@ public class CategoryServiceImpl implements CategoryService {
             categoryListDTO.setSonList(categories_sonList);
             categoryListDTOS.add(categoryListDTO);
         }
+
+        // 存储至Redis
+        this.redisTemplate.opsForValue()
+                .set(CATEGORY_LIST_KEY, categoryListDTOS, CATEGORY_LIST_EXPIRE, TimeUnit.DAYS);
 
         return categoryListDTOS;
     }
@@ -173,6 +209,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new CustomerException(CATEGORY_HAS_EXISTED);
         }
 
+        this.deleteCache();
         return this.categoryMapper.updateCategory(categoryUpdateVo);
     }
 
@@ -212,6 +249,16 @@ public class CategoryServiceImpl implements CategoryService {
             }
         }
 
+        this.deleteCache();
         return this.categoryMapper.deleteCategories(trueIds);
+    }
+
+
+    private void deleteCache() {
+        ArrayList<String> keys = new ArrayList<>();
+        keys.add(CATEGORY_LIST_KEY);
+        keys.add(CATEGORY_FRONT_LIST_KEY);
+        keys.add(CATEGORY_SON_KEY);
+        this.redisTemplate.delete(keys);
     }
 }

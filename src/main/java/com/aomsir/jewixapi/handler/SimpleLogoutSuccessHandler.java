@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.aomsir.jewixapi.constants.RedisConstants.USER_INFO_KEY;
+import static com.aomsir.jewixapi.constants.RedisConstants.USER_TOKEN_KEY;
 import static com.aomsir.jewixapi.constants.SecurityConstants.LOGOUT_SUCCESS;
 import static com.aomsir.jewixapi.constants.SecurityConstants.PLEASE_LOGIN_FIRST;
 
@@ -54,12 +56,13 @@ public class SimpleLogoutSuccessHandler implements LogoutSuccessHandler {
             if (userId == null || Long.parseLong(userId) < 10000) {
                 r = R.error(PLEASE_LOGIN_FIRST);
             } else {
-                String tokenInRedis = (String) this.redisTemplate.opsForValue().get("user:token:" + userId);
+                String tokenInRedis = (String) this.redisTemplate.opsForValue()
+                        .get(USER_TOKEN_KEY + userId);
                 if (tokenInRedis == null) {
                     r = R.ok(LOGOUT_SUCCESS);
                 } else {
-                    this.redisTemplate.delete("user:token:" + userId);
-                    this.redisTemplate.delete("user:info:" + userId);
+                    this.redisTemplate.delete(USER_TOKEN_KEY + userId);
+                    this.redisTemplate.delete(USER_INFO_KEY + userId);
                     r = R.ok(LOGOUT_SUCCESS);
                 }
             }

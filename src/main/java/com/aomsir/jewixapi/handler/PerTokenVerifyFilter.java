@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static com.aomsir.jewixapi.constants.CommonConstants.TICKET_ERROR;
+import static com.aomsir.jewixapi.constants.RedisConstants.USER_TOKEN_KEY;
 
 /**
  * @Author: Aomsir
@@ -67,28 +68,24 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
             request.setAttribute("CustomerAuthenticationException",TICKET_ERROR);
             filterChain.doFilter(request,response);
             return;
-             // throw new CustomerAuthenticationException("登录凭证已过期,请重新登录");
         }
 
         // 解析token中的内容
         DecodedJWT jwt = JwtUtils.getToken(token);
         String userId = jwt.getClaim("userId").asString();
 
-        String tokenInRedis = (String) this.redisTemplate.opsForValue().get("user:token:" + userId);
+        String tokenInRedis = (String) this.redisTemplate.opsForValue()
+                .get(USER_TOKEN_KEY + userId);
+
         if (Objects.isNull(tokenInRedis) || tokenInRedis.isEmpty()) {
             request.setAttribute("CustomerAuthenticationException",TICKET_ERROR);
             filterChain.doFilter(request,response);
             return;
-            // throw new AuthenticationServiceException("登录凭证已过期,请重新登录");
         }
          else if (!tokenInRedis.equals(token)) {
-             // 两次携带token不一致则将让其重新登录
-             // this.redisTemplate.delete("user:token:" + userId);
-             // this.redisTemplate.delete("user:info:" + userId);
              request.setAttribute("CustomerAuthenticationException",TICKET_ERROR);
              filterChain.doFilter(request,response);
              return;
-             // throw new CustomerAuthenticationException("登录凭证已过期,请重新登录");
          }
 
         this.userHolder.setUserId(Long.valueOf(userId));

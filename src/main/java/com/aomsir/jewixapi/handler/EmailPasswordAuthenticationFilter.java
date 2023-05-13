@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.handler;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import static com.aomsir.jewixapi.constants.RedisConstants.*;
 import static com.aomsir.jewixapi.constants.SecurityConstants.*;
 
 /**
@@ -116,8 +118,14 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
 
         String token = JwtUtils.getToken(temp);
 
-        this.redisTemplate.opsForValue().set("user:token:"+user.getId().toString(),token,7, TimeUnit.DAYS);
-        this.redisTemplate.opsForValue().set("user:info:"+user.getId().toString(),user,7,TimeUnit.DAYS);
+        // 将信息存入Redis
+        String userIdStr = user.getId().toString();
+        this.redisTemplate.opsForValue()
+                .set(USER_TOKEN_KEY + userIdStr, token,USER_EXPIRED, TimeUnit.DAYS);
+        this.redisTemplate.opsForHash()
+                .putAll(USER_INFO_KEY + userIdStr, BeanUtil.beanToMap(user));
+        this.redisTemplate.expire(USER_INFO_KEY + userIdStr,USER_EXPIRED,TimeUnit.DAYS);
+
         // TODO:用户权限信息封装进Redis
         R r = R.ok()
                 .put("token",token);

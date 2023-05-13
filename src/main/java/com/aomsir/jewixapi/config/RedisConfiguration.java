@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
@@ -21,12 +22,13 @@ public class RedisConfiguration extends CachingConfigurerSupport {
     public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
 
-        // 将Redis的key和value的序列化器设置为String
+        // 序列化配置
         redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
-        // redisTemplate.setDefaultSerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        // redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
