@@ -29,4 +29,6 @@ public interface UserService {
     int deleteUserByArchive(List<Long> ids);
 
     int deleteUserByPhysics(List<Long> ids);
+
+    int updateUserByMyself(UserUpdateVo userUpdateVo);
 }

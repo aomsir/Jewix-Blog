@@ -106,8 +106,6 @@ public class UserController {
                 .put("role",role);
     }
 
-    // TODO：用户自己修改账户密码
-
 
     /**
      * 查询邮箱与用户名是否已存在接口
@@ -155,7 +153,7 @@ public class UserController {
      */
     @ApiOperation(value = "理论删除用户")
     @DeleteMapping("/admin/users/archive")
-    public R deleteUserByArchive(List<Long> ids) {
+    public R deleteUserByArchive(@RequestParam List<Long> ids) {
         int role = this.userService.deleteUserByArchive(ids);
         return R.ok()
                 .put("role",role);
@@ -168,8 +166,21 @@ public class UserController {
      */
     @ApiOperation(value = "物理删除用户")
     @DeleteMapping("/admin/users/physics")
-    public R deleteUserByPhysics(List<Long> ids) {
+    public R deleteUserByPhysics(@RequestParam List<Long> ids) {
         int role = this.userService.deleteUserByPhysics(ids);
+        return R.ok()
+                .put("role",role);
+    }
+
+    /**
+     * 用户更新个人信息
+     * @param userUpdateVo 用户更新信息VO对象
+     * @return 更新影响的行数
+     */
+    @ApiOperation(value = "用户更新个人信息")
+    @PutMapping("/admin/users/my")
+    public R updateMyUserInfo(@RequestBody @Validated UserUpdateVo userUpdateVo) {
+        int role = this.userService.updateUserByMyself(userUpdateVo);
         return R.ok()
                 .put("role",role);
     }

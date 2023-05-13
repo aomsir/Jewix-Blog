@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.StrUtil;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.UserMapper;
@@ -120,34 +121,34 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int updateUser(UserUpdateVo userUpdateVo) {
-
         User user_1 = this.userMapper.queryUserByUUID(userUpdateVo.getUuid());
-        if (user_1 != null) {
-            // 校验修改后的邮箱是否已存在
-            User user_2 = this.userMapper.queryUserByEmail(userUpdateVo.getEmail());
-            // 对象中==判断的是两个对象的地址,不是内容,所以使用equals方法
-            if (user_2 != null && !Objects.equals(user_2.getUuid(), user_1.getUuid())) {
-                throw new CustomerException("邮箱已存在");
-            }
 
-            // 校验修改后的用户名是否已存在
-            User user_3 = this.userMapper.queryUserByNickname(userUpdateVo.getNickname());
-            if (user_3 != null && !Objects.equals(user_3.getUuid(), user_1.getUuid())) {
-                throw new CustomerException("用户名已存在");
-            }
-        } else {
-            throw new CustomerException("待修改用户不存在");
+        if (user_1 == null) {
+            throw new CustomerException("用户不存在");
         }
 
-        String password = null;
-        if (userUpdateVo.getPassword() != null) {
-            password = this.passwordEncoder.encode(userUpdateVo.getPassword());
+        // 邮箱已被使用(提交邮箱与库中该用户不一致才可)
+        if (!Objects.equals(user_1.getEmail(), userUpdateVo.getEmail())) {
+            User user = this.userMapper.queryUserByEmail(userUpdateVo.getEmail());
+            if (user != null) {
+                throw new CustomerException("邮箱已存在嗷");
+            }
+        }
+
+        // 用户名已被使用
+        if (!Objects.equals(user_1.getNickname(),userUpdateVo.getNickname())) {
+            User user = this.userMapper.queryUserByNickname(userUpdateVo.getNickname());
+            if (user != null) {
+                throw new CustomerException("用户名已经存在嗷");
+            }
+        }
+
+        if (StrUtil.isNotEmpty(userUpdateVo.getPassword())) {
+            userUpdateVo.setPassword(this.passwordEncoder.encode(userUpdateVo.getPassword()));
         }
 
         Map<String, Object> param = BeanUtil.beanToMap(userUpdateVo);
-        param.put("password",password);
-        param.put("updateTime", new Date());
-
+        param.put("updateTime",new Date());
         return this.userMapper.updateUser(param);
     }
 
@@ -195,8 +196,13 @@ public class UserServiceImpl implements UserService {
              throw new CustomerException("参数异常");
         }
 
+
         List<Long> trueIds = new ArrayList<>();
         for (Long id : ids) {
+            if (Objects.equals(this.hostHolder.getUserId(), id)) {
+                throw new CustomerException("不允许删除自己");
+            }
+
             // 查看有无文章引用
             if (this.articleMapper.queryArticleCountByUserId(id) == 0) {
                 trueIds.add(id);
@@ -226,5 +232,42 @@ public class UserServiceImpl implements UserService {
         }
 
         return this.userMapper.deleteUserByPhysics(ids);
+    }
+
+    @Override
+    @Transactional
+    public int updateUserByMyself(UserUpdateVo userUpdateVo) {
+        User user_1 = this.userMapper.queryUserByUUID(userUpdateVo.getUuid());
+        if (user_1 == null) {
+            throw new CustomerException("用户不存在");
+        }
+
+        if (!Objects.equals(user_1.getId(), this.hostHolder.getUserId())) {
+            throw new CustomerException("非当前登录用户");
+        }
+
+        // 邮箱已被使用(提交邮箱与库中该用户不一致才可)
+        if (!Objects.equals(user_1.getEmail(), userUpdateVo.getEmail())) {
+            User user = this.userMapper.queryUserByEmail(userUpdateVo.getEmail());
+            if (user != null) {
+                throw new CustomerException("邮箱已存在嗷");
+            }
+        }
+
+        // 用户名已被使用
+        if (!Objects.equals(user_1.getNickname(),userUpdateVo.getNickname())) {
+            User user = this.userMapper.queryUserByNickname(userUpdateVo.getNickname());
+            if (user != null) {
+                throw new CustomerException("用户名已经存在嗷");
+            }
+        }
+
+        if (StrUtil.isNotEmpty(userUpdateVo.getPassword())) {
+            userUpdateVo.setPassword(this.passwordEncoder.encode(userUpdateVo.getPassword()));
+        }
+
+        Map<String, Object> param = BeanUtil.beanToMap(userUpdateVo);
+        param.put("updateTime",new Date());
+        return this.userMapper.updateUser(param);
     }
 }

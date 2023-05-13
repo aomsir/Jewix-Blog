@@ -42,7 +42,7 @@
                 AND status = #{param.status}
             </if>
         </where>
-        ORDER BY update_time ASC
+        ORDER BY update_time DESC
         LIMIT #{param.start},#{param.length}
     </select>
 
