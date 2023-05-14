@@ -1,10 +1,12 @@
 package com.aomsir.jewixapi.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.mapper.*;
 import com.aomsir.jewixapi.pojo.dto.ArticleArchiveInfoDTO;
 import com.aomsir.jewixapi.pojo.dto.WebInfoDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.service.CommonService;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -13,6 +15,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static com.aomsir.jewixapi.constants.RedisConstants.WEB_CONFIG_EXPIRE;
+import static com.aomsir.jewixapi.constants.RedisConstants.WEB_CONFIG_KEY;
 
 /**
  * @Author: Aomsir
@@ -42,12 +48,20 @@ public class CommonServiceImpl implements CommonService {
     @Resource
     private TagMapper tagMapper;
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public WebInfoDTO searchWebInfo() {
-        // TODO：查询Redis
+        // 缓存命中
+        // TODO：相关信息更新时得删缓存
+        Map<Object, Object> configMap = this.redisTemplate.opsForHash()
+                .entries(WEB_CONFIG_KEY);
+        if (configMap.size() > 0) {
+            return BeanUtil.toBean(configMap, WebInfoDTO.class);
+        }
 
         User user = this.userMapper.queryUserById(10000L);
-        Map<String, Object> param = new HashMap<String, Object>();
         String nickname = user.getNickname();
         String email = user.getEmail();
         String description = user.getDescription();
@@ -63,7 +77,7 @@ public class CommonServiceImpl implements CommonService {
         LocalDate today = LocalDate.now();
 
         // 计算差值
-        Long daysBetween = ChronoUnit.DAYS.between(date, today);
+        long daysBetween = ChronoUnit.DAYS.between(date, today);
         WebInfoDTO webInfoDTO = new WebInfoDTO();
         webInfoDTO.setNickname(nickname);
         webInfoDTO.setEmail(email);
@@ -72,9 +86,10 @@ public class CommonServiceImpl implements CommonService {
         webInfoDTO.setCommentCount(commentCount);
         webInfoDTO.setLastActive(Math.toIntExact(daysBetween));
 
-
-        // TODO:封装runTime
-        // TODO：存入Redis
+        // 存入Redis
+        this.redisTemplate.opsForHash()
+                .putAll(WEB_CONFIG_KEY, BeanUtil.beanToMap(webInfoDTO));
+        this.redisTemplate.expire(WEB_CONFIG_KEY, WEB_CONFIG_EXPIRE, TimeUnit.DAYS);
         return webInfoDTO;
     }
 

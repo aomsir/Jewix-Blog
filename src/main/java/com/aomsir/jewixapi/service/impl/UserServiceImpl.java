@@ -24,8 +24,7 @@ import java.util.*;
 
 import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
 import static com.aomsir.jewixapi.constants.CommonConstants.TICKET_ERROR;
-import static com.aomsir.jewixapi.constants.RedisConstants.USER_INFO_KEY;
-import static com.aomsir.jewixapi.constants.RedisConstants.USER_TOKEN_KEY;
+import static com.aomsir.jewixapi.constants.RedisConstants.*;
 import static com.aomsir.jewixapi.constants.UserConstants.*;
 
 /**
@@ -152,6 +151,11 @@ public class UserServiceImpl implements UserService {
 
         Map<String, Object> param = BeanUtil.beanToMap(userUpdateVo);
         param.put("updateTime",new Date());
+
+        // 删除缓存
+        if (user_1.getId() == 10000L) {
+            this.redisTemplate.delete(WEB_CONFIG_KEY);
+        }
         return this.userMapper.updateUser(param);
     }
 
@@ -273,6 +277,11 @@ public class UserServiceImpl implements UserService {
 
         Map<String, Object> param = BeanUtil.beanToMap(userUpdateVo);
         param.put("updateTime",new Date());
+
+        // 删除缓存
+        if (user_1.getId() == 10000L) {
+            this.redisTemplate.delete(WEB_CONFIG_KEY);
+        }
         return this.userMapper.updateUser(param);
     }
 }

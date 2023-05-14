@@ -12,13 +12,17 @@ import com.aomsir.jewixapi.pojo.vo.PageAddVo;
 import com.aomsir.jewixapi.pojo.vo.PageUpdateVo;
 import com.aomsir.jewixapi.service.PageService;
 import com.aomsir.jewixapi.utils.UserHolder;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static com.aomsir.jewixapi.constants.PageConstants.*;
+import static com.aomsir.jewixapi.constants.RedisConstants.PAGE_LIST_EXPIRE;
+import static com.aomsir.jewixapi.constants.RedisConstants.PAGE_LIST_KEY;
 
 /**
  * @Author: Aomsir
@@ -43,10 +47,18 @@ public class PageServiceImpl implements PageService {
     @Resource
     private UserHolder userHolder;
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public List<PageListDTO> searchPageList() {
-        List< PageListDTO> pageList = this.pageMapper.queryPageList();
+        // 缓存命中
+        List<PageListDTO> pageListDTOS = (List<PageListDTO>) this.redisTemplate.opsForValue().get(PAGE_LIST_KEY);
+        if (pageListDTOS != null) {
+            return pageListDTOS;
+        }
 
+        List<PageListDTO> pageList = this.pageMapper.queryPageList();
         // 封装用户名(尽量减少查询次数)
         List<Long> userIds = this.pageMapper.queryPageUserIds();
         Map<Long,String> idAndNameMap = new HashMap<>();
@@ -66,7 +78,9 @@ public class PageServiceImpl implements PageService {
             }
         }
 
-        // TODO:封装进Redis
+        // 封装数据进Redis
+        this.redisTemplate.opsForValue()
+                .set(PAGE_LIST_KEY, pageList, PAGE_LIST_EXPIRE, TimeUnit.DAYS);
         return pageList;
     }
 
@@ -84,7 +98,6 @@ public class PageServiceImpl implements PageService {
             page.setUserName(user.getNickname());
         }
 
-        // TODO: 存入Redis
         return page;
     }
 
@@ -118,6 +131,8 @@ public class PageServiceImpl implements PageService {
         newPage.setCreateTime(new Date());
         newPage.setUpdateTime(new Date());
 
+        // 删除缓存
+        this.redisTemplate.delete(PAGE_LIST_KEY);
         return this.pageMapper.insertPage(newPage);
     }
 
@@ -146,6 +161,8 @@ public class PageServiceImpl implements PageService {
         BeanUtil.copyProperties(pageUpdateVo,page_2);
         page_2.setUpdateTime(new Date());
 
+        // 删除缓存
+        this.redisTemplate.delete(PAGE_LIST_KEY);
         return this.pageMapper.updatePage(page_2);
     }
 
@@ -169,6 +186,9 @@ public class PageServiceImpl implements PageService {
                 this.commentMapper.deleteCommentByIds(commentIds);
             }
         }
+
+        // 缓存
+        this.redisTemplate.delete(PAGE_LIST_KEY);
         return role;
     }
 }

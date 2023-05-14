@@ -22,4 +22,5 @@ public class Article extends BaseEntity{
     private Integer isTop;
     private Integer isDelete;
     private String description;
+
 }

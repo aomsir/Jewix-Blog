@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public PageUtils searchCategoryParentListByPage(Map<String, Object> param) {
-        // 查询数据库
+        // 查询缓存
         PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue()
                 .get(CATEGORY_FRONT_LIST_KEY);
         if (pageUtils != null && (int) param.get("start") == 0) {
@@ -64,7 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        pageUtils = new PageUtils(list,count,start,length);
+        pageUtils = new PageUtils(list, count, start, length);
 
         // 存储至Redis
         this.redisTemplate.opsForValue()

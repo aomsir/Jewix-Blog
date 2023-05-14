@@ -10,7 +10,6 @@ import com.aomsir.jewixapi.pojo.dto.ArticleArchiveDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
-import com.aomsir.jewixapi.pojo.entity.Page;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
@@ -98,12 +97,14 @@ public class ArticleServiceImpl implements ArticleService {
             list = new ArrayList<>();
         }
 
-
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        pageUtils = new PageUtils(list,count,start,length);
-        this.redisTemplate.opsForValue()
-                .set(ARTICLE_FRONT_LIST_KEY, pageUtils,ARTICLE_FRONT_LIST_EXPIRE,TimeUnit.DAYS);
+        pageUtils = new PageUtils(list, count, start, length);
+
+        if ((int) param.get("start") == 0) {
+            this.redisTemplate.opsForValue()
+                    .set(ARTICLE_FRONT_LIST_KEY, pageUtils,ARTICLE_FRONT_LIST_EXPIRE,TimeUnit.DAYS);
+        }
         return pageUtils;
     }
 
@@ -153,6 +154,11 @@ public class ArticleServiceImpl implements ArticleService {
         } else {
             throw new CustomerException(CATEGORY_TAG_IS_NULL);
         }
+
+
+        // 添加文章将list列表删除
+        this.redisTemplate.delete(ARTICLE_FRONT_LIST_KEY);
+        this.redisTemplate.delete(WEB_CONFIG_KEY);
         return articleId > 0 ? 1 : 0;
     }
 
@@ -192,10 +198,12 @@ public class ArticleServiceImpl implements ArticleService {
         Map<String, Object> param = BeanUtil.beanToMap(articleUpdateVo);
         param.put("updateTime", new Date());
 
-        // 删除当篇文章的Redis缓存
+        // 删除当篇文章的Redis缓存以及List的缓存
         ArrayList<String> keys = new ArrayList<>();
         keys.add(ARTICLE_DETAIL_KEY + uuid);
         keys.add(ARTICLE_FRONT_LIST_KEY);
+        keys.add(ARTICLE_RANDOM_KEY);
+        keys.add(WEB_CONFIG_KEY);
         this.redisTemplate.delete(keys);
 
         return this.articleMapper.updateArticle(param);
@@ -203,7 +211,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleDetailDTO queryArticleByUuid(String uuid, HttpServletRequest request) {
-
         ArticleDetailDTO detailDTO = (ArticleDetailDTO) this.redisTemplate.opsForValue()
                 .get(ARTICLE_DETAIL_KEY + uuid);
 
@@ -265,7 +272,7 @@ public class ArticleServiceImpl implements ArticleService {
         String viewInfoKey = ARTICLE_VIEW_INFO_KEY + id;
 
         // 查询Redis,当前ip有无访问过当前文章
-        Long isView = (Long) this.redisTemplate.opsForValue()
+        Integer isView = (Integer) this.redisTemplate.opsForValue()
                 .get(viewIpKey);
         if (isView == null || isView == 0) {
 
@@ -301,13 +308,12 @@ public class ArticleServiceImpl implements ArticleService {
             throw new CustomerException(ARTICLE_DELETE_ERROR);
         }
 
-        // TODO:删除Redis中的缓存
-        this.redisTemplate.delete(ARTICLE_FRONT_LIST_KEY);
-        // List<String> keys = new ArrayList<>(ids.size());
-        // for (Long id : ids) {
-        //     keys.add(ARTICLE_DETAIL_KEY + id);
-        // }
-        // this.redisTemplate.delete(keys);
+        ArrayList<String> keys = new ArrayList<>();
+        keys.add(ARTICLE_FRONT_LIST_KEY);
+        keys.add(ARTICLE_RANDOM_KEY);
+        keys.add(WEB_CONFIG_KEY);
+        this.redisTemplate.delete(keys);
+        this.redisTemplate.delete(Objects.requireNonNull(this.redisTemplate.keys("article:detail:*")));
 
         return role;
     }
@@ -342,12 +348,12 @@ public class ArticleServiceImpl implements ArticleService {
         this.articleMapper.deleteArticleOfUser(ids);
 
         // 删除Redis中的缓存
-        this.redisTemplate.delete(ARTICLE_FRONT_LIST_KEY);
-        // List<String> keys = new ArrayList<>(ids.size());
-        // for (Long id : ids) {
-        //     keys.add(ARTICLE_DETAIL_KEY + id);
-        // }
-        // this.redisTemplate.delete(keys);
+        ArrayList<String> keys = new ArrayList<>();
+        keys.add(ARTICLE_FRONT_LIST_KEY);
+        keys.add(ARTICLE_RANDOM_KEY);
+        keys.add(WEB_CONFIG_KEY);
+        this.redisTemplate.delete(keys);
+        this.redisTemplate.delete(Objects.requireNonNull(this.redisTemplate.keys("article:detail:*")));
         return role;
     }
 

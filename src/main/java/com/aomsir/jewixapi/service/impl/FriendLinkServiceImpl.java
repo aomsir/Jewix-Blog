@@ -5,6 +5,7 @@ import com.aomsir.jewixapi.mapper.FriendLinkMapper;
 import com.aomsir.jewixapi.pojo.entity.FriendLink;
 import com.aomsir.jewixapi.service.FriendLinkService;
 import com.aomsir.jewixapi.utils.PageUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +14,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
 import static com.aomsir.jewixapi.constants.FriendLinkConstants.*;
+import static com.aomsir.jewixapi.constants.RedisConstants.FRIEND_LINK_LIST_EXPIRE;
+import static com.aomsir.jewixapi.constants.RedisConstants.FRIEND_LINK_LIST_KEY;
 
 /**
  * @Author: Aomsir
@@ -31,10 +35,24 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     @Resource
     private FriendLinkMapper friendLinkMapper;
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public PageUtils searchFriendLinkListByPage(Map<String, Object> param) {
-        int count = this.friendLinkMapper.queryFriendLinkCount((Integer) param.get("location"));
+        // 缓存命中则直接返回
+        int start_1 = (int) param.get("start");
+        int type_1 = (int) param.get("location");
 
+
+        if (start_1 == 0 && type_1 == 1) {
+            PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue().get(FRIEND_LINK_LIST_KEY);
+            if (pageUtils != null) {
+                return pageUtils;
+            }
+        }
+
+        int count = this.friendLinkMapper.queryFriendLinkCount((Integer) param.get("location"));
         ArrayList<FriendLink> list = null;
         if (count > 0) {
             list = this.friendLinkMapper.queryFriendLinkByPage(param);
@@ -44,7 +62,15 @@ public class FriendLinkServiceImpl implements FriendLinkService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        return new PageUtils(list, count, start,length);
+
+        PageUtils pageUtils = new PageUtils(list, count, start, length);
+
+        // 封装进Redis
+        if (start_1 == 0 && type_1 == 1) {
+            this.redisTemplate.opsForValue()
+                    .set(FRIEND_LINK_LIST_KEY, pageUtils, FRIEND_LINK_LIST_EXPIRE, TimeUnit.DAYS);
+        }
+        return pageUtils;
     }
 
     @Override
@@ -63,6 +89,9 @@ public class FriendLinkServiceImpl implements FriendLinkService {
 
         param.put("createTime",new Date());
         param.put("updateTime", new Date());
+
+        // 删除首页缓存
+        this.redisTemplate.delete(FRIEND_LINK_LIST_KEY);
         return this.friendLinkMapper.insertFriendLink(param);
     }
 
@@ -77,6 +106,7 @@ public class FriendLinkServiceImpl implements FriendLinkService {
         param.put("updateTime", new Date());
 
         int role = this.friendLinkMapper.updateFriendLink(param);
+        this.redisTemplate.delete(FRIEND_LINK_LIST_KEY);
         return role;
     }
 
@@ -96,6 +126,10 @@ public class FriendLinkServiceImpl implements FriendLinkService {
             throw new CustomerException(PARAMETER_ERROR);
         }
 
-        return this.friendLinkMapper.deleteFriendLinks(ids);
+        int role = this.friendLinkMapper.deleteFriendLinks(ids);
+
+        // 删除缓存
+        this.redisTemplate.delete(FRIEND_LINK_LIST_KEY);
+        return role;
     }
 }

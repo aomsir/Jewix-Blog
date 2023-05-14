@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -28,6 +29,7 @@ import java.util.*;
 
 import static com.aomsir.jewixapi.constants.ArticleConstants.ARTICLE_IS_NULL;
 import static com.aomsir.jewixapi.constants.CommentConstants.*;
+import static com.aomsir.jewixapi.constants.RedisConstants.WEB_CONFIG_KEY;
 
 /**
  * @Author: Aomsir
@@ -49,6 +51,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Resource
     private NetUtils netUtils;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public PageUtils searchBackendCommentListByPage(Map<String, Object> param) {
@@ -175,6 +180,7 @@ public class CommentServiceImpl implements CommentService {
         param.put("status",0);    // 0-待审核
         param.put("createTime",new Date());
         param.put("updateTime",new Date());
+
         return this.commentMapper.insertComment(param);
     }
 
@@ -188,6 +194,9 @@ public class CommentServiceImpl implements CommentService {
 
         Map<String, Object> param = BeanUtil.beanToMap(commentUpdateVo);
         param.put("updateTime",new Date());
+
+        // 删除缓存
+        this.redisTemplate.delete(WEB_CONFIG_KEY);
         return this.commentMapper.updateComment(param);
     }
 
@@ -219,6 +228,9 @@ public class CommentServiceImpl implements CommentService {
 
             role = this.commentMapper.deleteComment(id);
         }
+
+        // 删除缓存
+        this.redisTemplate.delete(WEB_CONFIG_KEY);
         return role;
     }
 
@@ -236,8 +248,12 @@ public class CommentServiceImpl implements CommentService {
         param.put("id",id);
         param.put("status",status);
         param.put("updateTime",new Date());
+
+
+        if (status == 1) {
+            // 删除缓存
+            this.redisTemplate.delete(WEB_CONFIG_KEY);
+        }
         return this.commentMapper.updateCommentStatus(param);
     }
-
-
 }
