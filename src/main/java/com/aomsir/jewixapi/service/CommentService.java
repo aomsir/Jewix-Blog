@@ -1,10 +1,9 @@
 package com.aomsir.jewixapi.service;
 
 import com.aomsir.jewixapi.pojo.vo.CommentAddVo;
-import com.aomsir.jewixapi.pojo.vo.CommentDeleteVo;
 import com.aomsir.jewixapi.pojo.vo.CommentUpdateStatusVo;
 import com.aomsir.jewixapi.pojo.vo.CommentUpdateVo;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.servlet.http.HttpServletRequest;

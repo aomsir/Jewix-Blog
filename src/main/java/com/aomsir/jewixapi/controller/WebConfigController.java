@@ -5,7 +5,7 @@ import com.aomsir.jewixapi.pojo.entity.WebConfig;
 import com.aomsir.jewixapi.pojo.vo.InfoWebConfigAddVo;
 import com.aomsir.jewixapi.pojo.vo.InfoWebConfigUpdateVo;
 import com.aomsir.jewixapi.service.WebConfigService;
-import com.aomsir.jewixapi.utils.R;
+import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;

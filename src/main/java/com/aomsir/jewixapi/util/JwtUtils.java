@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.utils;
+package com.aomsir.jewixapi.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;

@@ -9,7 +9,7 @@ import com.aomsir.jewixapi.pojo.entity.Category;
 import com.aomsir.jewixapi.pojo.vo.CategoryAddVo;
 import com.aomsir.jewixapi.pojo.vo.CategoryUpdateVo;
 import com.aomsir.jewixapi.service.CategoryService;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -21,9 +21,9 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.aomsir.jewixapi.constants.CategoryConstants.*;
-import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
-import static com.aomsir.jewixapi.constants.RedisConstants.*;
+import static com.aomsir.jewixapi.constant.CategoryConstants.*;
+import static com.aomsir.jewixapi.constant.CommonConstants.PARAMETER_ERROR;
+import static com.aomsir.jewixapi.constant.RedisConstants.*;
 
 /**
  * @Author: Aomsir

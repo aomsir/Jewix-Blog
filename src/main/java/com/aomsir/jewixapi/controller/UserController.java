@@ -5,15 +5,14 @@ import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.UserService;
-import com.aomsir.jewixapi.utils.PageUtils;
-import com.aomsir.jewixapi.utils.R;
+import com.aomsir.jewixapi.util.PageUtils;
+import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 

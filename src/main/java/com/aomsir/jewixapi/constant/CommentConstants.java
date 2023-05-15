@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface CommentConstants {
     public static final String COMMENT_TYPE_ERROR = "评论类型异常";

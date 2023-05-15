@@ -3,7 +3,7 @@ package com.aomsir.jewixapi.controller;
 import com.aomsir.jewixapi.pojo.dto.ArticleArchiveInfoDTO;
 import com.aomsir.jewixapi.pojo.dto.WebInfoDTO;
 import com.aomsir.jewixapi.service.CommonService;
-import com.aomsir.jewixapi.utils.R;
+import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;

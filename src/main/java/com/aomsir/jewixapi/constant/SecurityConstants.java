@@ -1,6 +1,4 @@
-package com.aomsir.jewixapi.constants;
-
-import org.springframework.security.authentication.DisabledException;
+package com.aomsir.jewixapi.constant;
 
 public interface SecurityConstants {
     public static final String REQUEST_METHOD_IS_NOT_ALLOWED = "请求方式不受支持";

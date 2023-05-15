@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface FriendLinkConstants {
     public static final String FRIEND_LINK_NAME_HAS_EXISTED = "友链标题已存在";

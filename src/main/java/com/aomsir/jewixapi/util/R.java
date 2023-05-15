@@ -1,11 +1,11 @@
-package com.aomsir.jewixapi.utils;
+package com.aomsir.jewixapi.util;
 
 
 import org.apache.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.aomsir.jewixapi.constants.CommonConstants.NONE_EXCEPTION;
+import static com.aomsir.jewixapi.constant.CommonConstants.NONE_EXCEPTION;
 
 /**
  * @Author: Aomsir

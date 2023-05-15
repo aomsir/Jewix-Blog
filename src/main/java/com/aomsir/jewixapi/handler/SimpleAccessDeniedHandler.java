@@ -1,6 +1,6 @@
 package com.aomsir.jewixapi.handler;
 
-import com.aomsir.jewixapi.utils.R;
+import com.aomsir.jewixapi.util.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.aomsir.jewixapi.constants.SecurityConstants.PERMISSION_DENIED;
+import static com.aomsir.jewixapi.constant.SecurityConstants.PERMISSION_DENIED;
 
 /**
  * @Author: Aomsir

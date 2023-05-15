@@ -1,7 +1,7 @@
 package com.aomsir.jewixapi.handler;
 
 
-import com.aomsir.jewixapi.utils.R;
+import com.aomsir.jewixapi.util.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.aomsir.jewixapi.constants.CommonConstants.TICKET_ERROR;
+import static com.aomsir.jewixapi.constant.CommonConstants.TICKET_ERROR;
 
 /**
  * @Author: Aomsir

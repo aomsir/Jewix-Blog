@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface TagConstants {
     public static final String TAG_HAS_EXISTED = "标签已存在";

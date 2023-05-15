@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.utils;
+package com.aomsir.jewixapi.util;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;

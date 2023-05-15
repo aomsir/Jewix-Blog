@@ -15,8 +15,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.aomsir.jewixapi.constants.WebConfigConstants.CONFIG_INFO_IS_NULL;
-import static com.aomsir.jewixapi.constants.WebConfigConstants.CONFIG_TYPE_HAS_EXISTED;
+import static com.aomsir.jewixapi.constant.WebConfigConstants.CONFIG_INFO_IS_NULL;
+import static com.aomsir.jewixapi.constant.WebConfigConstants.CONFIG_TYPE_HAS_EXISTED;
 
 /**
  * @Author: Aomsir

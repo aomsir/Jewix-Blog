@@ -5,7 +5,7 @@
 
 <mapper namespace="com.aomsir.jewixapi.mapper.TagMapper">
     
-    <insert id="insertTag" parameterType="Tag">
+    <insert id="insertTag" parameterType="Tag" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_tag(tag_name, create_time, update_time)
         VALUES(#{tag.tagName}, #{tag.createTime}, #{tag.updateTime})
     </insert>

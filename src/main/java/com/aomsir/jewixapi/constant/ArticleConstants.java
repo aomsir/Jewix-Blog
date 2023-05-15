@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface ArticleConstants {
     public static final String ORIGIN_ADDRESS_IS_NULL = "未填写原文链接";

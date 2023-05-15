@@ -4,7 +4,7 @@ import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.FriendLinkMapper;
 import com.aomsir.jewixapi.pojo.entity.FriendLink;
 import com.aomsir.jewixapi.service.FriendLinkService;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
-import static com.aomsir.jewixapi.constants.FriendLinkConstants.*;
-import static com.aomsir.jewixapi.constants.RedisConstants.FRIEND_LINK_LIST_EXPIRE;
-import static com.aomsir.jewixapi.constants.RedisConstants.FRIEND_LINK_LIST_KEY;
+import static com.aomsir.jewixapi.constant.CommonConstants.PARAMETER_ERROR;
+import static com.aomsir.jewixapi.constant.FriendLinkConstants.*;
+import static com.aomsir.jewixapi.constant.RedisConstants.FRIEND_LINK_LIST_EXPIRE;
+import static com.aomsir.jewixapi.constant.RedisConstants.FRIEND_LINK_LIST_KEY;
 
 /**
  * @Author: Aomsir

@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface PageConstants {
     public static final String PAGE_IS_NULL = "页面不存在";

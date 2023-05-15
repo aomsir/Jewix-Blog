@@ -6,8 +6,8 @@ import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
 import com.aomsir.jewixapi.service.LogService;
-import com.aomsir.jewixapi.utils.JwtUtils;
-import com.aomsir.jewixapi.utils.R;
+import com.aomsir.jewixapi.util.JwtUtils;
+import com.aomsir.jewixapi.util.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import static com.aomsir.jewixapi.constants.RedisConstants.*;
-import static com.aomsir.jewixapi.constants.SecurityConstants.*;
+import static com.aomsir.jewixapi.constant.RedisConstants.*;
+import static com.aomsir.jewixapi.constant.SecurityConstants.*;
 
 /**
  * @Author: Aomsir

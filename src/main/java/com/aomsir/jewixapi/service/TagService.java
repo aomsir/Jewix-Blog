@@ -3,7 +3,7 @@ package com.aomsir.jewixapi.service;
 
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 
 import java.util.Map;
 

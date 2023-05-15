@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface WebConfigConstants {
     public static final String CONFIG_TYPE_HAS_EXISTED = "该类配置信息已存在";

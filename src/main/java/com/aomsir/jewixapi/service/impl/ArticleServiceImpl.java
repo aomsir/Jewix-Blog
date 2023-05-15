@@ -13,9 +13,9 @@ import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
-import com.aomsir.jewixapi.utils.UserHolder;
-import com.aomsir.jewixapi.utils.NetUtils;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.UserHolder;
+import com.aomsir.jewixapi.util.NetUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -28,9 +28,9 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.aomsir.jewixapi.constants.ArticleConstants.*;
-import static com.aomsir.jewixapi.constants.CategoryConstants.CATEGORY_IS_NULL;
-import static com.aomsir.jewixapi.constants.RedisConstants.*;
+import static com.aomsir.jewixapi.constant.ArticleConstants.*;
+import static com.aomsir.jewixapi.constant.CategoryConstants.CATEGORY_IS_NULL;
+import static com.aomsir.jewixapi.constant.RedisConstants.*;
 
 /**
  * @Author: Aomsir

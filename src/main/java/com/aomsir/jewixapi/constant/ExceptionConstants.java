@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface ExceptionConstants {
     public static final String DATABASE_EXCEPTION = "数据库异常,请联系管理员";

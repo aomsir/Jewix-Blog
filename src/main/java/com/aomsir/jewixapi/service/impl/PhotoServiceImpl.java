@@ -5,11 +5,10 @@ import com.aomsir.jewixapi.mapper.PhotoMapper;
 import com.aomsir.jewixapi.pojo.entity.Photo;
 import com.aomsir.jewixapi.pojo.vo.PhotoDeleteVo;
 import com.aomsir.jewixapi.service.PhotoService;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 import com.upyun.RestManager;
 import com.upyun.UpException;
 import okhttp3.Response;
-import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,8 +22,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
-import static com.aomsir.jewixapi.constants.PhotoConstants.PHOTO_DELETE_FAILED;
+import static com.aomsir.jewixapi.constant.CommonConstants.PARAMETER_ERROR;
+import static com.aomsir.jewixapi.constant.PhotoConstants.PHOTO_DELETE_FAILED;
 
 /**
  * @Author: Aomsir

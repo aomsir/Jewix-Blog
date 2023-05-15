@@ -8,11 +8,10 @@ import com.aomsir.jewixapi.pojo.vo.ArticleBackendPageVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleFrontPageVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
-import com.aomsir.jewixapi.utils.PageUtils;
-import com.aomsir.jewixapi.utils.R;
+import com.aomsir.jewixapi.util.PageUtils;
+import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

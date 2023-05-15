@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface CategoryConstants {
     public static final String CATEGORY_IS_NULL = "分类不存在";

@@ -13,12 +13,11 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.aomsir.jewixapi.constants.RedisConstants.WEB_CONFIG_EXPIRE;
-import static com.aomsir.jewixapi.constants.RedisConstants.WEB_CONFIG_KEY;
+import static com.aomsir.jewixapi.constant.RedisConstants.WEB_CONFIG_EXPIRE;
+import static com.aomsir.jewixapi.constant.RedisConstants.WEB_CONFIG_KEY;
 
 /**
  * @Author: Aomsir

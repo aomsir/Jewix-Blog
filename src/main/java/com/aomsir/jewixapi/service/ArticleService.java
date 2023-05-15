@@ -4,7 +4,7 @@ import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
 import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

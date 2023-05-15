@@ -3,7 +3,7 @@ package com.aomsir.jewixapi.service;
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.*;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 
 import java.util.List;
 import java.util.Map;

@@ -11,7 +11,7 @@ import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.PageAddVo;
 import com.aomsir.jewixapi.pojo.vo.PageUpdateVo;
 import com.aomsir.jewixapi.service.PageService;
-import com.aomsir.jewixapi.utils.UserHolder;
+import com.aomsir.jewixapi.util.UserHolder;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +20,9 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.aomsir.jewixapi.constants.PageConstants.*;
-import static com.aomsir.jewixapi.constants.RedisConstants.PAGE_LIST_EXPIRE;
-import static com.aomsir.jewixapi.constants.RedisConstants.PAGE_LIST_KEY;
+import static com.aomsir.jewixapi.constant.PageConstants.*;
+import static com.aomsir.jewixapi.constant.RedisConstants.PAGE_LIST_EXPIRE;
+import static com.aomsir.jewixapi.constant.RedisConstants.PAGE_LIST_KEY;
 
 /**
  * @Author: Aomsir

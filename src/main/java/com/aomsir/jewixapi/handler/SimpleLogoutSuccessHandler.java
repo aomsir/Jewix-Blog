@@ -1,7 +1,7 @@
 package com.aomsir.jewixapi.handler;
 
-import com.aomsir.jewixapi.utils.JwtUtils;
-import com.aomsir.jewixapi.utils.R;
+import com.aomsir.jewixapi.util.JwtUtils;
+import com.aomsir.jewixapi.util.R;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,10 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.aomsir.jewixapi.constants.RedisConstants.USER_INFO_KEY;
-import static com.aomsir.jewixapi.constants.RedisConstants.USER_TOKEN_KEY;
-import static com.aomsir.jewixapi.constants.SecurityConstants.LOGOUT_SUCCESS;
-import static com.aomsir.jewixapi.constants.SecurityConstants.PLEASE_LOGIN_FIRST;
+import static com.aomsir.jewixapi.constant.RedisConstants.USER_INFO_KEY;
+import static com.aomsir.jewixapi.constant.RedisConstants.USER_TOKEN_KEY;
+import static com.aomsir.jewixapi.constant.SecurityConstants.LOGOUT_SUCCESS;
+import static com.aomsir.jewixapi.constant.SecurityConstants.PLEASE_LOGIN_FIRST;
 
 /**
  * @Author: Aomsir

@@ -1,9 +1,8 @@
 package com.aomsir.jewixapi.handler;
 
-import com.aomsir.jewixapi.utils.NetUtils;
+import com.aomsir.jewixapi.util.NetUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Resource;

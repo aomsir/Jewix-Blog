@@ -10,8 +10,8 @@ import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.UserService;
-import com.aomsir.jewixapi.utils.UserHolder;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.UserHolder;
+import com.aomsir.jewixapi.util.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,10 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.*;
 
-import static com.aomsir.jewixapi.constants.CommonConstants.PARAMETER_ERROR;
-import static com.aomsir.jewixapi.constants.CommonConstants.TICKET_ERROR;
-import static com.aomsir.jewixapi.constants.RedisConstants.*;
-import static com.aomsir.jewixapi.constants.UserConstants.*;
+import static com.aomsir.jewixapi.constant.CommonConstants.PARAMETER_ERROR;
+import static com.aomsir.jewixapi.constant.CommonConstants.TICKET_ERROR;
+import static com.aomsir.jewixapi.constant.RedisConstants.*;
+import static com.aomsir.jewixapi.constant.UserConstants.*;
 
 /**
  * @Author: Aomsir

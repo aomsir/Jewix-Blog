@@ -8,12 +8,11 @@ import com.aomsir.jewixapi.pojo.dto.CommentDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.entity.Comment;
 import com.aomsir.jewixapi.pojo.vo.CommentAddVo;
-import com.aomsir.jewixapi.pojo.vo.CommentDeleteVo;
 import com.aomsir.jewixapi.pojo.vo.CommentUpdateStatusVo;
 import com.aomsir.jewixapi.pojo.vo.CommentUpdateVo;
 import com.aomsir.jewixapi.service.CommentService;
-import com.aomsir.jewixapi.utils.NetUtils;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.NetUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -21,15 +20,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-import static com.aomsir.jewixapi.constants.ArticleConstants.ARTICLE_IS_NULL;
-import static com.aomsir.jewixapi.constants.CommentConstants.*;
-import static com.aomsir.jewixapi.constants.RedisConstants.WEB_CONFIG_KEY;
+import static com.aomsir.jewixapi.constant.ArticleConstants.ARTICLE_IS_NULL;
+import static com.aomsir.jewixapi.constant.CommentConstants.*;
+import static com.aomsir.jewixapi.constant.RedisConstants.WEB_CONFIG_KEY;
 
 /**
  * @Author: Aomsir

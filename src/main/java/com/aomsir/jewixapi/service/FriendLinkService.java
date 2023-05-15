@@ -1,7 +1,7 @@
 package com.aomsir.jewixapi.service;
 
 import com.aomsir.jewixapi.pojo.entity.FriendLink;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 
 import java.util.List;
 import java.util.Map;

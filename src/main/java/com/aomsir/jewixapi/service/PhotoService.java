@@ -1,7 +1,7 @@
 package com.aomsir.jewixapi.service;
 
 import com.aomsir.jewixapi.pojo.vo.PhotoDeleteVo;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 import com.upyun.UpException;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface RedisConstants {
     public static final String USER_TOKEN_KEY = "user:token:";

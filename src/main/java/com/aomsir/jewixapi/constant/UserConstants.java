@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface UserConstants {
     public static final String USER_IS_NULL = "用户不存在";

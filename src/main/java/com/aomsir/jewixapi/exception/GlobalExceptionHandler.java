@@ -2,7 +2,7 @@ package com.aomsir.jewixapi.exception;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.aomsir.jewixapi.utils.R;
+import com.aomsir.jewixapi.util.R;
 import org.apache.ibatis.exceptions.IbatisException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
-import static com.aomsir.jewixapi.constants.ExceptionConstants.DATABASE_EXCEPTION;
+import static com.aomsir.jewixapi.constant.ExceptionConstants.DATABASE_EXCEPTION;
 
 /**
  * @Author: Aomsir

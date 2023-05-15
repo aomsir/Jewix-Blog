@@ -8,8 +8,8 @@ import com.aomsir.jewixapi.pojo.vo.TagAddVo;
 import com.aomsir.jewixapi.pojo.vo.TagPageVo;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.service.TagService;
-import com.aomsir.jewixapi.utils.PageUtils;
-import com.aomsir.jewixapi.utils.R;
+import com.aomsir.jewixapi.util.PageUtils;
+import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
@@ -61,7 +61,7 @@ public class TagController {
     public R addTag(@RequestBody @Validated TagAddVo tagAddVo) {
          int role = this.tagService.addTagByName(tagAddVo.getTagName());
          return R.ok()
-                 .put("role",role);
+                 .put("result",role);
     }
 
     /**

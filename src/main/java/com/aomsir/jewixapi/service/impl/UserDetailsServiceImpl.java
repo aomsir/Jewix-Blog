@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
-import static com.aomsir.jewixapi.constants.UserConstants.USER_IS_NULL;
+import static com.aomsir.jewixapi.constant.UserConstants.USER_IS_NULL;
 
 /**
  * @Author: Aomsir

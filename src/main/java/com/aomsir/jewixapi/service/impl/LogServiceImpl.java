@@ -3,7 +3,7 @@ package com.aomsir.jewixapi.service.impl;
 import com.aomsir.jewixapi.mapper.LogMapper;
 import com.aomsir.jewixapi.pojo.entity.LoginLog;
 import com.aomsir.jewixapi.service.LogService;
-import com.aomsir.jewixapi.utils.NetUtils;
+import com.aomsir.jewixapi.util.NetUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

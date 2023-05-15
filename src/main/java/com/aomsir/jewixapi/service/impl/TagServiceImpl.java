@@ -7,7 +7,7 @@ import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.service.TagService;
-import com.aomsir.jewixapi.utils.PageUtils;
+import com.aomsir.jewixapi.util.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.*;
 
-import static com.aomsir.jewixapi.constants.TagConstants.TAG_HAS_EXISTED;
-import static com.aomsir.jewixapi.constants.TagConstants.TAG_IS_NULL;
+import static com.aomsir.jewixapi.constant.TagConstants.TAG_HAS_EXISTED;
+import static com.aomsir.jewixapi.constant.TagConstants.TAG_IS_NULL;
 
 
 /**

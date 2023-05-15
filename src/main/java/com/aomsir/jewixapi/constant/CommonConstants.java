@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.constants;
+package com.aomsir.jewixapi.constant;
 
 public interface CommonConstants {
     public static final String PARAMETER_ERROR = "参数携带异常";
