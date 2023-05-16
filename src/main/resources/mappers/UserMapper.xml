@@ -27,19 +27,27 @@
     <select id="queryUserCount" resultType="Long">
         SELECT COUNT(id)
         FROM tb_user
-        WHERE status = #{status}
-        <if test="email != null">
-            AND email = #{email}
-        </if>
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="email != null">
+                email = #{email}
+            </if>
+        </where>
     </select>
 
     <select id="queryUserListByPage" resultType="User">
         SELECT id, uuid, nickname, email, description, web_site, create_time, update_time, status
         FROM tb_user
-        WHERE status = #{param.status}
-        <if test="param.email != null">
-            AND email = #{param.email}
-        </if>
+        <where>
+            <if test="param.status != null">
+                status = #{param.status}
+            </if>
+            <if test="param.email != null">
+                email = #{param.email}
+            </if>
+        </where>
         ORDER BY id DESC
         LIMIT #{param.start},#{param.length}
     </select>

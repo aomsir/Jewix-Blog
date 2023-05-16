@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageUtils searchUserByPage(Map<String, Object> param) {
-        Long count = this.userMapper.queryUserCount((Integer)param.get("status"),
+        Long count = this.userMapper.queryUserCount((Integer) param.get("status"),
                 (String)param.get("email"));
         ArrayList<User> list = null;
         if (count > 0) {

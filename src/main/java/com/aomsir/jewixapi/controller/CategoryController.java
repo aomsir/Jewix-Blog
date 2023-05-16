@@ -38,7 +38,7 @@ public class CategoryController {
      */
     @ApiOperation(value = "分页查询一级分类列表")
     @GetMapping("/categories/parent")
-    public R getCategoryParentListByPage(@Validated CategoryParentPageVo categoryParentPageVo) {
+    public R getCategoryParentListByPage(CategoryParentPageVo categoryParentPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(categoryParentPageVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");
@@ -57,7 +57,7 @@ public class CategoryController {
      */
     @ApiOperation(value = "根据id分页查询二级分类")
     @GetMapping("/categories/son")
-    public R getCategoryListPageByParentId(@Validated CategorySonListById categorySonListById) {
+    public R getCategoryListPageByParentId(CategorySonListById categorySonListById) {
         Map<String, Object> param = BeanUtil.beanToMap(categorySonListById);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");
@@ -103,7 +103,7 @@ public class CategoryController {
      */
     @ApiOperation(value = "根据分类ID分页查询文章预览列表")
     @GetMapping("/categories/articles")
-    public R getArticlesPageByCategoryId(@Validated ArticleCategoryVo articleCategoryVo) {
+    public R getArticlesPageByCategoryId(ArticleCategoryVo articleCategoryVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleCategoryVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");

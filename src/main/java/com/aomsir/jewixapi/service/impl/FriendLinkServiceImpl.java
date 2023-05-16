@@ -42,7 +42,11 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     public PageUtils searchFriendLinkListByPage(Map<String, Object> param) {
         // 缓存命中则直接返回
         int start_1 = (int) param.get("start");
-        int type_1 = (int) param.get("location");
+
+        int type_1 = 0;
+        if (param.get("location") != null) {
+            type_1 = (int) param.get("location");
+        }
 
 
         if (start_1 == 0 && type_1 == 1) {

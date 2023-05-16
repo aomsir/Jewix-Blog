@@ -27,4 +27,6 @@ public interface PageMapper {
     int deletePage(@Param("uuid") String uuid);
 
     Page queryPageByOmit(@Param("omit") String omit);
+
+    Long queryPageUserIdByPageId(@Param("targetId") Long targetId);
 }

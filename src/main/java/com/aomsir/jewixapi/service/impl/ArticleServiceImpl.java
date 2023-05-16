@@ -101,6 +101,7 @@ public class ArticleServiceImpl implements ArticleService {
         int length = (Integer) param.get("length");
         pageUtils = new PageUtils(list, count, start, length);
 
+
         if ((int) param.get("start") == 0) {
             this.redisTemplate.opsForValue()
                     .set(ARTICLE_FRONT_LIST_KEY, pageUtils,ARTICLE_FRONT_LIST_EXPIRE,TimeUnit.DAYS);

@@ -40,7 +40,7 @@ public class FriendLinkController {
      */
     @ApiOperation(value = "分页查询友链列表")
     @GetMapping("/friend-links/page")
-    public R getFriendLinksByPage(@Validated FriendLinkPageVo friendLinkPageVo) {
+    public R getFriendLinksByPage(FriendLinkPageVo friendLinkPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(friendLinkPageVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");

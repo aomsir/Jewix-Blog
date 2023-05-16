@@ -69,7 +69,7 @@ public class PhotoController {
      */
     @ApiOperation(value = "根据类型分页查询相册列表")
     @GetMapping("/admin/photos")
-    public R getPhotoListByPage(@Validated PhotoPageVo photoPageVo) {
+    public R getPhotoListByPage(PhotoPageVo photoPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(photoPageVo);
 
         int page = photoPageVo.getPage();

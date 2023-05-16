@@ -45,7 +45,7 @@ public class ArticleController {
      */
     @ApiOperation(value = "后台无限制分页获取文章列表", notes = "后台无限制分页获取文章列表")
     @GetMapping("/admin/articles")
-    public R getBackendArticleByPage(@Validated ArticleBackendPageVo articleBackendPageVo) {
+    public R getBackendArticleByPage(ArticleBackendPageVo articleBackendPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleBackendPageVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");
@@ -65,7 +65,7 @@ public class ArticleController {
      */
     @ApiOperation(value = "前台获取文章分页列表", notes = "前台获取文章分页列表")
     @GetMapping("/articles")
-    public R getFrontArticleByPage(@Valid ArticleFrontPageVo articleFrontPageVo) {
+    public R getFrontArticleByPage(ArticleFrontPageVo articleFrontPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleFrontPageVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");

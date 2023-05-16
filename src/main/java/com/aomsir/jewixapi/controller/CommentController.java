@@ -37,7 +37,7 @@ public class CommentController {
      */
     @ApiOperation(value = "后台无限制获取评论列表")
     @GetMapping("/admin/comments")
-    public R getCommentsBackendListByPage(@Validated CommentBackendPageVo commentBackendPageVo) {
+    public R getCommentsBackendListByPage(CommentBackendPageVo commentBackendPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(commentBackendPageVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");
@@ -61,7 +61,7 @@ public class CommentController {
      */
     @ApiOperation(value = "前台根据目标id与类型获取评论列表")
     @GetMapping("/comments")
-    public R getCommentsById(@Validated CommentFrontVo commentFrontVo) {
+    public R getCommentsById(CommentFrontVo commentFrontVo) {
         Map<String, Object> param = BeanUtil.beanToMap(commentFrontVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");

@@ -45,4 +45,6 @@ public interface CommentMapper {
     List<Long> queryCommentIdsByTypeAndTargetId(@Param("id") Long id, @Param("type") Integer type);
 
     void deleteCommentByIds(@Param("ids") List<Long> commentIds);
+
+    Long queryArticleAuthorId(@Param("targetId") Long targetId);
 }

@@ -80,4 +80,10 @@
         FROM tb_page
         WHERE omit = #{omit}
     </select>
+
+    <select id="queryPageUserIdByPageId" resultType="Long">
+        SELECT user_id
+        FROM tb_page
+        WHERE id = #{targetId}
+    </select>
 </mapper>

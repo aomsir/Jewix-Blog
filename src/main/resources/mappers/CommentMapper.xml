@@ -229,4 +229,12 @@
             #{id}
         </foreach>
     </delete>
+
+    <select id="queryArticleAuthorId" resultType="Long">
+        SELECT tau.user_id
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_user AS tau
+        ON ta.id = tau.article_id
+        WHERE ta.id = #{targetId}
+    </select>
 </mapper>

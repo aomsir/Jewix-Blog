@@ -4,9 +4,12 @@ import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.CommentMapper;
+import com.aomsir.jewixapi.mapper.PageMapper;
+import com.aomsir.jewixapi.mapper.UserMapper;
 import com.aomsir.jewixapi.pojo.dto.CommentDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.entity.Comment;
+import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.CommentAddVo;
 import com.aomsir.jewixapi.pojo.vo.CommentUpdateStatusVo;
 import com.aomsir.jewixapi.pojo.vo.CommentUpdateVo;
@@ -28,6 +31,8 @@ import java.util.*;
 import static com.aomsir.jewixapi.constant.ArticleConstants.ARTICLE_IS_NULL;
 import static com.aomsir.jewixapi.constant.CommentConstants.*;
 import static com.aomsir.jewixapi.constant.RedisConstants.WEB_CONFIG_KEY;
+import static com.aomsir.jewixapi.constant.UserConstants.ARTICLE_USER_IS_NULL;
+import static com.aomsir.jewixapi.constant.UserConstants.USER_IS_NULL;
 
 /**
  * @Author: Aomsir
@@ -48,7 +53,13 @@ public class CommentServiceImpl implements CommentService {
     private ArticleMapper articleMapper;
 
     @Resource
+    private PageMapper pageMapper;
+
+    @Resource
     private NetUtils netUtils;
+
+    @Resource
+    private UserMapper userMapper;
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -72,11 +83,27 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public PageUtils searchFrontCommentListByPage(Map<String, Object> param) {
-        Integer count = this.commentMapper.queryCommentFrontParentCount(param);    // 查询的一级评论的数量
+        Long targetId = (Long) param.get("targetId");
+        Integer type = (Integer) param.get("type");
 
+        Integer count = this.commentMapper.queryCommentFrontParentCount(param);    // 查询的一级评论的数量
         ArrayList<Comment> list = null;
         List<CommentDTO> commentDTOList = null;
         if (count > 0) {
+            // 查询作者
+            Long userId = null;
+            if (type == 1) {
+                userId = this.commentMapper.queryArticleAuthorId(targetId);
+            } else if (type >= 21 && type <= 25) {
+                userId = this.pageMapper.queryPageUserIdByPageId(targetId);
+            }
+
+            User user = null;
+            if (userId != null) {
+                user = this.userMapper.queryUserById(userId);
+            }
+
+            // 查询评论
             list = this.commentMapper.queryCommentFrontPageList(param);     // 当前文章下所有的评论(已开放)
             commentDTOList = new ArrayList<>();
 
@@ -84,6 +111,13 @@ public class CommentServiceImpl implements CommentService {
             // 抽出所有一级评论
             for (Comment comment : list) {
                 if (comment.getParentId() == 0) {
+                    if (user != null) {
+                        if (Objects.equals(comment.getEmail(), user.getEmail())) {
+                            comment.setBlogger(true);
+                        } else {
+                            comment.setBlogger(false);
+                        }
+                    }
                     commentDTOList.add(BeanUtil.copyProperties(comment, CommentDTO.class));
                 }
             }
@@ -92,6 +126,14 @@ public class CommentServiceImpl implements CommentService {
             for (CommentDTO commentDTO : commentDTOList) {
                 ArrayList<Comment> comments = new ArrayList<>();
                 for (Comment comment : list) {
+                    if (user != null) {
+                        if (Objects.equals(comment.getEmail(), user.getEmail())) {
+                            comment.setBlogger(true);
+                        } else {
+                            comment.setBlogger(false);
+                        }
+                    }
+
                     if (Objects.equals(comment.getPermId(), commentDTO.getId())) {
                         comments.add(comment);
                     }

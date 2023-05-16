@@ -67,15 +67,22 @@ public class CategoryServiceImpl implements CategoryService {
         pageUtils = new PageUtils(list, count, start, length);
 
         // 存储至Redis
-        this.redisTemplate.opsForValue()
-                .set(CATEGORY_FRONT_LIST_KEY, pageUtils, CATEGORY_FRONT_LIST_EXPIRE, TimeUnit.DAYS);
+        if (start == 0) {
+            this.redisTemplate.opsForValue()
+                    .set(CATEGORY_FRONT_LIST_KEY, pageUtils, CATEGORY_FRONT_LIST_EXPIRE, TimeUnit.DAYS);
+        }
         return pageUtils;
     }
 
     @Override
     public PageUtils searchCategorySonListPageByPatentId(Map<String, Object> param) {
+        Long parentId = (Long) param.get("parentId");
+        if (parentId == null) {
+            parentId = 0L;
+        }
+
         PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue()
-                .get(CATEGORY_SON_KEY);
+                .get(CATEGORY_SON_KEY + parentId);
         if (pageUtils != null && (int) param.get("start") == 0) {
             return pageUtils;
         }
@@ -90,11 +97,13 @@ public class CategoryServiceImpl implements CategoryService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        pageUtils = new PageUtils(list,count,start,length);
+        pageUtils = new PageUtils(list, count, start, length);
 
         // 存储至Redis
-        this.redisTemplate.opsForValue()
-                .set(CATEGORY_SON_KEY, pageUtils, CATEGORY_SON_EXPIRE, TimeUnit.DAYS);
+        if (start == 0) {
+            this.redisTemplate.opsForValue()
+                    .set(CATEGORY_SON_KEY + parentId, pageUtils, CATEGORY_SON_EXPIRE, TimeUnit.DAYS);
+        }
         return pageUtils;
     }
 

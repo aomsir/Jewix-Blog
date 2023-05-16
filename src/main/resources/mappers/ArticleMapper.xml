@@ -111,7 +111,7 @@
             </if>
             AND status = 0
         </where>
-        ORDER BY is_top,update_time DESC
+        ORDER BY is_top DESC,update_time DESC
         LIMIT #{param.start},#{param.length}
     </select>
 
@@ -359,7 +359,7 @@
     </select>
 
     <select id="queryArticleByArchive" resultType="com.aomsir.jewixapi.pojo.dto.ArticleArchiveDTO">
-        SELECT title,create_time
+        SELECT uuid,title,create_time
         FROM tb_article
         WHERE status = 0
         AND is_delete = 0
