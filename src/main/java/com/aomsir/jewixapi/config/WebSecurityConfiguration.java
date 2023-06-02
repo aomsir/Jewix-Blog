@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,16 +24,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @Author: Aomsir
  * @Date: 2023/2/19
  * @Description: 新版SpringSecurity配置类
+ * @TODO 更换SpringBoot2.7.5,重写配置
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-// TODO:更换SpringBoot2.7.5,重写配置
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
@@ -57,7 +59,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private String prefix;
 
     @Bean
-    public PasswordEncoder BcryptPasswordEncoder() {
+    public PasswordEncoder bcryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -69,7 +71,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(this.userDetailsService).passwordEncoder(BcryptPasswordEncoder());
+        auth.userDetailsService(this.userDetailsService).passwordEncoder(bcryptPasswordEncoder());
     }
 
 
@@ -85,21 +87,22 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .mvcMatchers("/admin/**").authenticated()   // /admin请求都过SpringSecurity且需要认证
-                .and().exceptionHandling()     // 开启异常处理
-                    .authenticationEntryPoint(new SimpleAuthenticationEntryPoint())    // 认证异常捕获
-                    .accessDeniedHandler(new SimpleAccessDeniedHandler())           // 失败异常捕获
-                .and().csrf().disable()  // 关闭csrf
-                    .cors().configurationSource(configurationSource())  // 开启跨域以便前端调用接口
-                .and().logout()
+        http
+                .authorizeRequests(req -> req.mvcMatchers("/admin/**").authenticated())
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(new SimpleAccessDeniedHandler())
+                        .authenticationEntryPoint(new SimpleAuthenticationEntryPoint()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(configurationSource()))
+                .logout(out -> out
                         .logoutUrl("/logout")
-                                .logoutSuccessHandler(this.simpleLogoutSuccessHandler);
+                        .logoutSuccessHandler(this.simpleLogoutSuccessHandler))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
 
         http.addFilterBefore(this.tokenVerifyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(new EmailPasswordAuthenticationFilter(authenticationManager(),redisTemplate,logService),
                 PerTokenVerifyFilter.class);
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);   // 禁用Session
     }
 
 
@@ -108,9 +111,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     CorsConfigurationSource configurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
-        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
-        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
+        corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("*"));
         corsConfiguration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);

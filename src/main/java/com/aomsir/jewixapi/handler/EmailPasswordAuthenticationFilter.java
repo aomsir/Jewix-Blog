@@ -163,7 +163,8 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         } else if (e instanceof UsernameNotFoundException) {
             r = R.error(500,USERNAME_NOT_FOUND_EXCEPTION);
         } else if (e instanceof AuthenticationServiceException) {
-            r = R.error(500,e.getMessage());   // 邮箱格式有误(自己对SpringSecurity进行一层封装)
+            // 邮箱格式有误(自己对SpringSecurity进行一层封装)
+            r = R.error(500,e.getMessage());
         } else {
             r = R.error(500,LOGIN_FAILED);
         }
