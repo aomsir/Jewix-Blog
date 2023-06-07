@@ -1,0 +1,48 @@
+.archive-content {
+    background-color: rgb(var(--color-foreground));
+    border-radius: 0.365vw;
+    padding: 25px;
+    color: rgb(var(--color-title));
+
+    :global {
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        .Cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            margin: 0 auto;
+            margin-top: 20px;
+            padding: 10px 25px;
+            color: rgb(var(--color-title));
+            background: rgb(var(--color-background-accent));
+            border-radius: 999px;
+
+            svg {
+                path {
+                    fill: rgb(var(--color-title));
+                }
+            }
+        }
+
+        @media screen and ($phone) {
+            padding: 15px;
+
+            h1 {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+        }
+    }
+}

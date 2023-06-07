@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aomsir.jewixapi.mapper.UserMapper">
+
+    <select id="queryUserByEmail" resultType="User">
+        SELECT id, uuid, nickname, email, salt, description, password, web_site, create_time, update_time, status
+        FROM tb_user
+        WHERE email = #{email}
+    </select>
+
+
+    <select id="queryUserByUUID" resultType="User">
+        SELECT id, uuid, nickname, email, description, web_site, create_time, update_time, status
+        FROM tb_user
+        WHERE uuid = #{uuid}
+    </select>
+
+    <select id="queryConfigUser" resultType="com.aomsir.jewixapi.pojo.dto.UserConfigDTO">
+        SELECT id,uuid,nickname,description,web_site
+        FROM tb_user
+        WHERE id = 10000;
+    </select>
+
+    <select id="queryUserCount" resultType="Long">
+        SELECT COUNT(id)
+        FROM tb_user
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="email != null">
+                email = #{email}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryUserListByPage" resultType="User">
+        SELECT id, uuid, nickname, email, description, web_site, create_time, update_time, status
+        FROM tb_user
+        <where>
+            <if test="param.status != null">
+                status = #{param.status}
+            </if>
+            <if test="param.email != null">
+                email = #{param.email}
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{param.start},#{param.length}
+    </select>
+
+
+    <select id="queryUserByNickname" resultType="User">
+        SELECT id, uuid, nickname, email, salt, description, password, web_site, create_time, update_time, status
+        FROM tb_user
+        WHERE nickname = #{nickname}
+    </select>
+
+
+    <insert id="insertUser">
+        INSERT INTO tb_user(uuid,nickname, email, salt, description, password, web_site, create_time, update_time, status)
+        VALUES (#{param.uuid},
+                #{param.nickname},
+                #{param.email},
+                #{param.salt},
+                #{param.description},
+                #{param.password},
+                #{param.webSite},
+                #{param.createTime},
+                #{param.updateTime},
+                #{param.status})
+    </insert>
+
+    <update id="updateUser">
+        UPDATE tb_user
+        SET nickname = #{param.nickname},
+            email = #{param.email},
+            description = #{param.description},
+            web_site = #{param.webSite},
+            update_time = #{param.updateTime}
+            <if test="param.password != null">
+                ,password = #{param.password}
+            </if>
+        WHERE id = #{param.id}
+        AND uuid = #{param.uuid}
+    </update>
+
+
+    <select id="queryUserByEmailOrNickname" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_user
+        <where>
+            <if test="param.email != null">
+                email = #{param.email}
+            </if>
+            <if test="param.nickname != null">
+                AND nickname = #{param.nickname}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateUserStatus">
+        UPDATE tb_user
+        SET status = #{param.status}
+        WHERE uuid = #{param.uuid}
+    </update>
+
+    <select id="queryUserById" resultType="User">
+        SELECT id, uuid, nickname, email, salt, description, password, web_site, create_time, update_time, status
+        FROM tb_user
+        WHERE id = #{userId}
+    </select>
+
+    <update id="deleteUserByArchive">
+        UPDATE tb_user
+        SET status = 3
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <delete id="deleteUserByPhysics">
+        DELETE FROM tb_user
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

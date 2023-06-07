@@ -1,0 +1,7 @@
+.blogrollTabbar {
+    my-tabs {
+        my-tab:global(.active) {
+            border-color: myRgb(--color-border-accent) !important;
+        }
+    }
+}

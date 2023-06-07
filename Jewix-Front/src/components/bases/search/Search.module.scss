@@ -1,0 +1,48 @@
+.search {
+    cursor: pointer;
+    :global {
+        .input {
+            height: auto;
+            display: none;
+            animation: showSearchInput 0.2s ease-in-out;
+            overflow: hidden;
+            background-color: transparent;
+            border-radius: 5px;
+            padding: 0;
+            background-color: myRgb(--color-background-input);
+            height: 100%;
+
+            input {
+                padding-left: 10px;
+                outline: none;
+                width: 0;
+                flex-grow: 1;
+                background-color: transparent;
+            }
+
+            button {
+                aspect-ratio: 1/1;
+
+                i {
+                    padding: 5px;
+                    display: flex;
+                    align-items: center;
+                    background-color: myRgb(--color-background-accent);
+                    height: 100%;
+                    justify-content: center;
+                }
+            }
+        }
+
+        i {
+            &.hidden {
+                display: none !important;
+                animation: none;
+
+                + .input {
+                    display: flex;
+                }
+            }
+        }
+    }
+}

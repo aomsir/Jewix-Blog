@@ -1,0 +1,103 @@
+// scss的全局变量
+$phone: "max-width: 500px";
+$pad: "max-width: 769px";
+$laptop: "max-width: 1441px";
+// font-size的尺寸手机端
+$large: 18px;
+$middle: 16px;
+$normal: 14px;
+$small: 12px;
+// font-size的尺寸电脑端
+$large-pc: 20px;
+$middle-pc: 18px;
+$normal-pc: 16px;
+$small-pc: 14px;
+
+@mixin font-size-large {
+    @include responsive(font-size, $large-pc, $large, $large, $large);
+}
+@mixin font-size-middle {
+    @include responsive(font-size, $middle-pc, $middle, $middle, $middle);
+}
+@mixin font-size-normal {
+    @include responsive(font-size, $normal-pc, $normal, $normal, $normal);
+}
+@mixin font-size-small {
+    @include responsive(font-size, $small-pc, $small, $small, $small);
+}
+
+$gap-normal: 10px;
+$gap-large: 20px;
+
+@function myRgb($rgb) {
+    @return rgb(var($rgb));
+}
+
+/**
+ * 设置响应式属性
+ *
+ * @param {String} $property 属性名称
+ * @param {StyleSheet} $value 属性值
+ * @param {Any} $phoneValue 手机端属性值
+ */
+@mixin responsive($property, $value, $phoneValue, $padValue: null, $laptopValue: null) {
+    #{$property}: $value;
+
+    @if $laptopValue != null {
+        @media screen and ($laptop) {
+            #{$property}: $laptopValue;
+        }
+    }
+    @if $padValue != null {
+        @media screen and ($pad) {
+            #{$property}: $padValue;
+        }
+    }
+    @if $phoneValue != null {
+        @media screen and ($phone) {
+            #{$property}: $phoneValue;
+        }
+    }
+}
+
+@mixin font-size($value) {
+    @include responsive(font-size, $value, $value / 1.25 * 4, $value * 1.7);
+}
+// 带笔记本的尺寸
+@mixin font-size2($value) {
+    @include responsive(font-size, $value, $value / 1.6, $value / 1.4, $value / 1.3);
+}
+
+@mixin padding($v1: null, $v2: null, $v3: null, $v4: null, $_: padding) {
+    @if $v2 == null {
+        @include responsive($_, $v1, $v1 * 2, $v1 * 1.5);
+    } @else if $v3 == null {
+        @include responsive($_, $v1 $v2, $v1 * 2 $v2 * 2, $v1 * 1.5 $v2 * 1.5);
+    } @else {
+        @include responsive($_, $v1 $v2 $v3 $v4, $v1 * 2 $v2 * 2 $v3 * 2 $v4 * 2, $v1 * 1.5 $v2 * 1.5 $v3 * 1.5 $v4 * 1.5);
+    }
+}
+
+@mixin colorTitle {
+    color: myRgb(--color-title);
+}
+
+@mixin margin($v1: null, $v2: null, $v3: null, $v4: null) {
+    @include padding($v1, $v2, $v3, $v4, margin);
+}
+@mixin margin-top($v) {
+    @include margin($v, 0, 0, 0);
+}
+
+@mixin gap($v1: null, $v2: null, $v3: null, $v4: null) {
+    @include padding($v1, $v2, $v3, $v4, gap);
+}
+
+@mixin square($v) {
+    width: $v;
+    height: $v;
+}
+
+@mixin box-shadow($x: 0, $y: 0) {
+    box-shadow: $x $y 5px rgba(0, 0, 0, 0.1);
+}

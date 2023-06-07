@@ -1,0 +1,44 @@
+.MarkDownEditor {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+
+  @mixin common {
+    padding: 15px;
+    overflow: auto;
+  }
+
+  textarea {
+    width: 50%;
+    border: none;
+    outline: none;
+    resize: none;
+    @include common();
+  }
+
+  :global {
+    .toolbars {
+      position: sticky;
+      top: 0;
+      height: 40px;
+      padding: 4px 0;
+      background-color: #fff;
+      border-bottom: none;
+      box-shadow: 0 2px 2px -2px rgba(34, 47, 62, 0.1), 0 8px 8px -4px rgba(34, 47, 62, 0.07);
+    }
+    .editorInner {
+      display: flex;
+      flex-grow: 1;
+      height: 100%;
+    }
+    .preview {
+      flex-grow: 1;
+      width: 0;
+      border-left: 1px solid #ccc;
+      @include common();
+    }
+  }
+}

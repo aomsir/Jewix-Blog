@@ -1,0 +1,54 @@
+server:
+  port: 7891
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: JewixApiApplication
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/blog?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+  redis:
+    host: localhost
+    password: 123456
+    port: 6379
+    database: 5
+    lettuce:
+      pool:
+        max-active: 8  # 最大连接
+        max-idle: 8    # 最大空闲数量
+        min-idle: 0    # 最小空闲数量
+        max-wait: 100ms  # 连接等待时间
+
+
+
+
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.aomsir.jewixapi.pojo.entity
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES  # 指定加密算法
+    password: 12345678   # 密钥,推荐启动项目的时候虚拟机参数
+
+
+jewix:
+  basePath: ENC(um/IPJ8aGJn5OBNKfn6MJjC3nS5m71BAiBlK8Qd2HoqsZ+JkCkjMeIY16F2GrJHXkW2jb3BLGVY=)  # 相册本地存储位置
+  tencent-location-api-key: ENC(nzlEq9wIleBwe/2tgrJN7QmG5BcwS8IBmwmgI3zsrrMXILANBtlsXA4wW18M09CSkQ09ro5VFoY=)  # 腾讯地图密钥
+
+cloud:
+  upyun:
+    bucket: ENC(b2hDZgpNEVURPBCUYxPN0yQOZ14zpt8U3e1IiVpK/dU=)  # 存储空间名
+    operator-name: ENC(FWy24uV2aAkMdQcEHAHexCl7VlrYZyTwLCQ0b6dMndo=)   # 操作员名称
+    operator-pwd: ENC(kybvZaQpEeSPkmq7a43Rtu7EupPljVRdprNgkYj+VsR8Gs37o3KQ4EiPR6CxHSkAJnoeb+OSDKU=)  # 操作员密码
+    url: ENC(HvYrWCrNQml8IxhF0uznTMHlB5jpc88nDfKQThmEq9Oe1dgnSzefzrZB4xzXvcPz)    # 存储桶地址

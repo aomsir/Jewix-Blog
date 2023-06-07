@@ -1,0 +1,33 @@
+.imageCard {
+  position: relative;
+
+  :global {
+    .ant-btn {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+      font-size: 12px;
+      opacity: 0;
+
+      &:last-of-type {
+        top: 0;
+      }
+    }
+
+    .ant-image {
+      img {
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  &:hover {
+    :global {
+      .ant-btn {
+        opacity: 1;
+      }
+    }
+  }
+}

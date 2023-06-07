@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aomsir.jewixapi.mapper.TagMapper">
+    
+    <insert id="insertTag" parameterType="Tag" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_tag(tag_name, create_time, update_time)
+        VALUES(#{tag.tagName}, #{tag.createTime}, #{tag.updateTime})
+    </insert>
+
+    <select id="queryTagCount" resultType="Long">
+        SELECT COUNT(id)
+        FROM tb_tag
+    </select>
+
+    <select id="queryTagListByPage" resultType="Tag">
+        SELECT id,tag_name,create_time,update_time
+        FROM tb_tag
+        LIMIT #{param.start},#{param.length}
+    </select>
+
+    <select id="queryTagByName" resultType="Tag">
+        SELECT id,tag_name,create_time,update_time
+        FROM tb_tag
+        WHERE tag_name = #{tagName}
+    </select>
+
+    <select id="queryTagById" resultType="Tag">
+        SELECT id,tag_name,create_time,update_time
+        FROM tb_tag
+        WHERE id = #{id}
+    </select>
+
+
+    <select id="queryArticleListByTagName" resultType="com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO">
+        SELECT a.id AS a_id,
+               a.title AS title,
+               a.cover AS cover,
+               LEFT(a.content, 30) AS content,
+               a.views AS views,
+               a.is_top AS isTop,
+               a.create_time AS createTime,
+               a.update_time AS updateTime
+        FROM tb_tag AS t
+        LEFT JOIN tb_article_tag AS at ON at.tag_id = t.id
+        LEFT JOIN tb_article AS a ON a.id = at.article_id
+        WHERE t.tag_name = #{param.tagName}
+        AND a.status = 0
+        AND a.is_delete = 0
+        ORDER BY a.create_time DESC
+        LIMIT #{param.start},#{param.length}
+    </select>
+
+    <update id="updateTagById">
+        UPDATE tb_tag
+        SET tag_name = #{tag.tagName},update_time = #{tag.updateTime}
+        WHERE id = #{tag.id}
+    </update>
+
+
+    <select id="queryIdsExists" resultType="Boolean" parameterType="List">
+        SELECT COUNT(id) > 0
+        FROM tb_tag
+        WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,45 @@
+.edit-article-form {
+  padding: 10px;
+
+  :global {
+    .title {
+      font-size: 24px;
+      border: none;
+      outline: none;
+      width: 100%;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #efefef;
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      display: grid;
+
+      .ant-form-item {
+        .ant-row {
+          gap: 30px;
+          .ant-form-item-label {
+            width: 100px;
+          }
+          @media screen and (max-width: 575px) {
+            gap: 0;
+          }
+        }
+      }
+
+      .uploadImage {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        .ant-upload-picture-card-wrapper {
+          width: auto;
+        }
+        .desc {
+          color: #8d8585;
+          translate: 0 -10px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+.detail-comment {
+    :global {
+        h3 {
+            color: myRgb(--color-title);
+            margin: 30px 0;
+        }
+        .comment-form {
+            border-radius: 15px;
+            background-color: myRgb(--color-foreground);
+            padding: 20px;
+        }
+    }
+}

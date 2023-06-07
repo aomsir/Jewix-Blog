@@ -1,0 +1,14 @@
+.home-page {
+    :global {
+        .grid {
+            display: flex;
+            gap: 1.563vw;
+
+            .col {
+                .card {
+                    margin-bottom: 1.563vw;
+                }
+            }
+        }
+    }
+}

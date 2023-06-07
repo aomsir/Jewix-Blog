@@ -1,0 +1,17 @@
+.uploadImage {
+  :global {
+    .ant-upload-list-item.ant-upload-list-item-done {
+      pointer-events: none;
+      &::before {
+        display: none;
+      }
+    }
+    .ant-upload-list-item-actions {
+      display: none;
+      // button {
+      //   // 隐藏删除按钮
+      //   display: none;
+      // }
+    }
+  }
+}

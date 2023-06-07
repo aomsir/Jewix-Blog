@@ -1,0 +1,22 @@
+.detail {
+    :global {
+        .pre-next {
+            margin-top: 17px;
+            display: flex;
+            justify-content: space-between;
+
+            a {
+                font-size: 13px;
+                color: myRgb(--color-title);
+                border-radius: 14px;
+                background-color: myRgb(--color-foreground);
+                padding: 5px 21px;
+            }
+        }
+
+        .how-many-comments {
+            color: myRgb(--color-title);
+            margin: 30px 0 0 0;
+        }
+    }
+}

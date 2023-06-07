@@ -1,0 +1,28 @@
+@keyframes showSearchInput {
+    0% {
+        scale: 0.8;
+        opacity: 0;
+    }
+    50% {
+        scale: 1.1;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes rotateRound {
+    from {
+        transform: rotateZ(0deg);
+    }
+    to {
+        transform: rotateZ(360deg);
+    }
+}
+@keyframes rotate180-360 {
+    from {
+        transform: rotateZ(180deg);
+    }
+    to {
+        transform: rotateZ(calc(180deg + 360deg));
+    }
+}

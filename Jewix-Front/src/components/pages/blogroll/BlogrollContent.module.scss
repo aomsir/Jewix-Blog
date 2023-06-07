@@ -1,0 +1,51 @@
+.blogrollContent {
+    :global {
+        .blogroll-info-board-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            @include gap(1.563vw);
+            padding: max(5px, 1.563vw) 0;
+
+            .card {
+                background-color: rgb(var(--color-foreground-background));
+            }
+        }
+        .total,
+        .publish {
+            color: rgb(var(--color-title));
+            font-size: 18px;
+            margin-top: 30px;
+        }
+
+        .publish {
+            margin-bottom: 30px;
+        }
+        .publish-comment {
+            border-radius: 10px;
+            padding: 15px;
+            background-color: rgb(var(--color-foreground));
+        }
+
+        .infoBoard {
+            .info {
+                display: none;
+            }
+        }
+
+        @media screen and ($phone) {
+            .blogroll-info-board-content {
+                padding: $gap-normal 0;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .total {
+                font-size: $middle;
+                margin-top: $gap-large;
+            }
+            .publish {
+                font-size: $middle;
+                margin: $gap-large 0;
+            }
+        }
+    }
+}

@@ -1,0 +1,33 @@
+.card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    @include padding(1.042vw);
+
+    :global {
+        .desc {
+            grid-row-start: 2;
+        }
+        .avatar {
+            grid-row-start: 2;
+            grid-column-start: 2;
+            border-radius: 50%;
+            width: max(40px, 3.125vw);
+            aspect-ratio: 1/1;
+            margin-left: 20px;
+            overflow: hidden;
+        }
+        .title {
+            place-self: flex-start;
+            @include padding(0, 0, 0.521vw, 0);
+            @include margin(0, 0, 0.729vw, 0);
+            display: inline-block;
+            @include font-size(1.146vw);
+            border-bottom: 2px solid currentColor;
+        }
+        .desc {
+            color: rgb(var(--color-text));
+            word-break: break-word;
+            @include font-size(0.938vw);
+        }
+    }
+}

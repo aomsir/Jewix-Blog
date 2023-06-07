@@ -1,0 +1,9 @@
+.PageContent {
+    :global {
+        .comment-form {
+            border-radius: 15px;
+            background-color: myRgb(--color-foreground);
+            padding: 20px;
+        }
+    }
+}

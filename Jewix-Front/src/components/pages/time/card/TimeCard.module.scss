@@ -1,0 +1,96 @@
+.time-card {
+    box-shadow: none;
+    border-radius: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    padding-bottom: 2.604vw;
+    margin-top: 1.563vw;
+    text-align: left;
+
+    &:nth-of-type(n) {
+        border-bottom: 1px solid rgb(var(--color-border));
+    }
+    :global {
+        img {
+            border-radius: 50%;
+            width: 3.333vw;
+            height: 3.333vw;
+        }
+        .info-wrap {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-left: 1.563vw;
+            .nickname {
+                color: rgb(var(--color-title));
+                font-size: 1.146vw;
+            }
+            .info {
+                font-size: 0.833vw;
+                display: flex;
+                gap: 0.7vw;
+            }
+        }
+        .content {
+            color: rgb(var(--color-title));
+            border-radius: 0.625vw;
+            // border: 1.042vw solid #fff;
+            padding: 1.042vw;
+            margin-top: 1.042vw;
+            margin-left: 1.563vw;
+            grid-column-start: 2;
+            font-size: 0.938vw;
+            background-color: rgb(var(--color-background-input));
+
+            .secret {
+                color: rgb(var(--color-text));
+                border-radius: 0.313vw;
+                display: inline-flex;
+                background-color: rgb(var(--color-background-header));
+                padding: 0.833vw;
+            }
+
+            &:has(.secret) {
+                width: fit-content;
+            }
+        }
+    }
+
+    @media ($phone) {
+        margin-top: 5vw;
+        padding-bottom: 6vw;
+
+        :global {
+            img {
+                border-radius: 50%;
+                width: 8vw;
+                height: 8vw;
+            }
+
+            .info-wrap {
+                margin-left: 3vw;
+                .nickname {
+                    font-size: 14px;
+                }
+                .info {
+                    font-size: 12px;
+                    display: flex;
+                    gap: 2vw;
+                }
+            }
+
+            .content {
+                padding: 3vw;
+                border-radius: 1.8vw;
+                margin-top: 2vw;
+                margin-left: 3vw;
+                font-size: 14px;
+
+                .secret {
+                    border-radius: 2vw;
+                    padding: 3vw;
+                }
+            }
+        }
+    }
+}

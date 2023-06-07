@@ -1,0 +1,43 @@
+.Loading {
+    display: inline-block;
+    position: relative;
+    @include square(16px);
+    $border-width: 2px;
+
+    :global {
+        section {
+            position: absolute;
+            left: 0;
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            border-width: $border-width $border-width 0 0;
+            border-style: solid;
+            border-radius: 16px;
+            border-color: transparent;
+            border-top-color: currentColor;
+
+            &:before {
+                content: "";
+                position: absolute;
+                top: -$border-width;
+                right: 0;
+                width: 7.5px;
+                height: 7.5px;
+                border-radius: 999px;
+                background-color: currentColor;
+                box-shadow: 0 0 5px $border-width currentColor;
+            }
+
+            &:first-of-type {
+                color: #f78d3f;
+                animation: rotateRound 1s linear infinite;
+            }
+
+            &:last-of-type {
+                color: #009fb0;
+                animation: rotate180-360 1s linear infinite;
+            }
+        }
+    }
+}

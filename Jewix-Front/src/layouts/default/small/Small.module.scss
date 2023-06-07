@@ -1,0 +1,65 @@
+.small {
+    --header-height: 50px;
+    background-color: rgb(var(--color-background-body));
+
+    header {
+        :global {
+            .logo {
+                width: 120px;
+
+                img {
+                    object-fit: contain;
+                }
+            }
+        }
+    }
+
+    > main {
+        padding: 3vw;
+
+        :global {
+            .grid {
+                gap: 10px;
+                .col {
+                    .card {
+                        margin-bottom: 10px;
+                        .image {
+                            height: 25.375vw;
+                        }
+
+                        .title {
+                            font-size: 3.5vw;
+                        }
+                        .desc {
+                            font-size: 3vw;
+                        }
+                        .viewers {
+                            font-size: 2.5vw;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    :global {
+        .banner {
+            aspect-ratio: 2 / 1;
+
+            h1 {
+                font-size: 7vw;
+            }
+
+            .desc {
+                font-size: 4vw;
+            }
+
+            margin-bottom: 5px;
+        }
+
+        .small-footer {
+            margin-top: 50px;
+            padding: 32px 0;
+        }
+    }
+}

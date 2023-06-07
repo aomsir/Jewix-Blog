@@ -1,0 +1,10 @@
+.Editor {
+  :global {
+    .switchButton {
+      position: absolute;
+      top: 8px;
+      right: 25px;
+      z-index: 12;
+    }
+  }
+}

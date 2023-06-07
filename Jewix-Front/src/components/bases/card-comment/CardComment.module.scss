@@ -1,0 +1,99 @@
+// 评论项
+.comment {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    border-bottom: 2px solid rgb(var(--color-border));
+    column-gap: 6px;
+    padding: 30px 0;
+    color: rgb(var(--color-title));
+
+    :global {
+        // 用户名
+        .name {
+            font-size: 14px;
+        }
+        // 用户信息
+        .desc {
+            font-size: 12px;
+            color: rgb(var(--color-text));
+            display: flex;
+            gap: 5px;
+        }
+        // 评论内容
+        .text {
+            font-size: 15px;
+            word-break: break-word;
+        }
+        // 回复按钮
+        .reply {
+            font-size: 12px;
+            padding: 3px 15px;
+            background-color: rgb(var(--color-background-accent));
+            border-radius: 7px;
+            margin-top: 7px;
+        }
+        // 二级评论
+        .sub-comment {
+            border-bottom: none;
+            padding: 0;
+            padding-top: 30px;
+            a {
+                width: 30px !important;
+                height: 30px !important;
+                .image {
+                    width: 30px !important;
+                    height: 30px !important;
+                }
+            }
+        }
+        // 评论表单
+        .form-comment {
+            background-color: rgb(var(--color-foreground));
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .icon {
+            display: block;
+            padding: 4px;
+            background-color: #249543;
+            border-radius: 4px;
+            svg {
+                width: 12px;
+                height: 12px;
+            }
+        }
+        .visible-container {
+            margin-top: 20px;
+            overflow: hidden;
+            &.hidden {
+                margin-top: 0;
+                // 重写tailwindcss的样式
+                display: block;
+            }
+        }
+        .avatar {
+            position: relative;
+            .image {
+                box-shadow: 0 0 0 2px myRgb(--color-border);
+                border-radius: 50%;
+                overflow: hidden;
+            }
+            .bloggerIcon {
+                position: absolute;
+                right: -10%;
+                bottom: -15%;
+                width: 60%;
+                height: 60%;
+
+                svg {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+
+        @media screen and ($phone) {
+            padding: $gap-large 0;
+        }
+    }
+}

@@ -1,0 +1,39 @@
+.menu-toggle {
+    cursor: pointer;
+    display: inline-block;
+    color: rgb(102, 102, 102);
+    width: 20px;
+
+    :global {
+        .menu-toggle__inner {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            span {
+                height: 2px;
+                background-color: currentColor;
+                border-radius: 999px;
+                transform-origin: left;
+                transition: 0.2s ease-in-out;
+            }
+        }
+    }
+
+    &:global(.active) {
+        :global {
+            .menu-toggle__inner {
+                span:first-child {
+                    rotate: 45deg;
+                }
+                span:nth-child(2) {
+                    opacity: 0;
+                }
+                span:last-child {
+                    rotate: -45deg;
+                }
+            }
+        }
+    }
+}

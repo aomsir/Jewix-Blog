@@ -1,0 +1,40 @@
+.detail-article__footer {
+    margin-top: 20px;
+    :global {
+        font-size: 13px;
+        .info {
+            color: myRgb(--color-text);
+        }
+
+        .bottom {
+            margin-top: 20px;
+            text-align: center;
+
+            button {
+                display: inline-flex;
+                gap: 5px;
+                color: #fff;
+                background-color: #f05050;
+                border-radius: 20px;
+                padding: 10px 24px;
+            }
+
+            p {
+                margin-top: 17px;
+            }
+
+            my-modal {
+                .pay {
+                    display: flex;
+                    gap: 5px;
+                    border-radius: 20px;
+                    img {
+                        width: 150px;
+                        height: 150px;
+                        border-radius: 20px;
+                    }
+                }
+            }
+        }
+    }
+}

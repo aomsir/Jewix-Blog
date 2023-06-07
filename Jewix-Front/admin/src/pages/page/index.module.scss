@@ -1,0 +1,56 @@
+@import '@/styles/mixins.scss';
+// 重写 antd 的弹窗样式
+.editPageDialog {
+  top: 0;
+  width: 100vw !important;
+  max-width: unset;
+  height: 100vh;
+  margin: 0;
+  padding-bottom: 0;
+
+  :global {
+    $header-height: 50px;
+
+    .ant-modal-header,
+    .ant-modal-close {
+      position: fixed;
+      top: 0;
+      width: auto;
+      height: auto;
+      background-color: #fff;
+    }
+    .ant-modal-close {
+      z-index: 999;
+      margin: 10px 17px 0 0;
+      padding: 5px;
+    }
+    .ant-modal-header {
+      right: 0;
+      left: 0;
+      z-index: 999 - 1;
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      height: $header-height;
+      padding: 0 30px;
+      @include box-shadow;
+    }
+    .ant-modal-content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding-top: $header-height + 15px;
+      overflow: auto;
+      border-radius: unset;
+
+      .ant-modal-body {
+        flex-grow: 1;
+      }
+    }
+
+    .ant-modal-footer {
+      position: sticky;
+      bottom: 0;
+    }
+  }
+}

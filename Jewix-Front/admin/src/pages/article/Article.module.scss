@@ -1,0 +1,68 @@
+@import '@/styles/mixins.scss';
+
+.article {
+  :global {
+    .ant-list-item-meta-avatar {
+
+      img {
+        height: 100% !important;
+        object-fit: cover;
+      }
+    }
+  }
+}
+// 重写 antd 的弹窗样式
+.editArticleDialog {
+  width: 100vw !important;
+  max-width: unset;
+  height: 100vh;
+  margin: 0;
+  top: 0;
+  padding-bottom: 0;
+
+  :global {
+    $header-height: 50px;
+
+    .ant-modal-header,
+    .ant-modal-close {
+      position: fixed;
+      top: 0;
+      width: auto;
+      height: auto;
+      background-color: #fff;
+    }
+    .ant-modal-close {
+      z-index: 999;
+      margin: 10px 17px 0 0;
+      padding: 5px;
+    }
+    .ant-modal-header {
+      height: $header-height;
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 0 30px;
+      z-index: 999 - 1;
+      left: 0;
+      right: 0;
+      @include box-shadow;
+    }
+    .ant-modal-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border-radius: unset;
+      overflow: auto;
+      padding-top: $header-height + 15px;
+
+      .ant-modal-body {
+        flex-grow: 1;
+      }
+    }
+
+    .ant-modal-footer {
+      position: sticky;
+      bottom: 0;
+    }
+  }
+}

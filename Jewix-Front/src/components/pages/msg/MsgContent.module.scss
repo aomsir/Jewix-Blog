@@ -1,0 +1,28 @@
+.msg-content {
+    :global {
+        .msg-board {
+            .form-wrap {
+                display: flex;
+                flex-direction: column;
+                @include gap(1.563vw);
+                padding: 16px 0;
+
+                h2 {
+                    @include responsive(font-size, 18px, 16px);
+                }
+            }
+        }
+
+        .comments {
+            // color: rgba(var(--color-title), 0.85);
+            @include margin-top(2.604vw);
+
+            .content {
+                // 去掉末尾评论的分割线
+                .comment:last-of-type {
+                    border-bottom: none;
+                }
+            }
+        }
+    }
+}

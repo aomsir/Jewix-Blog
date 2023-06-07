@@ -1,0 +1,72 @@
+// 导入 Tailwind 的样式
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+body {
+    font-family: PingFang SC-Medium, PingFang SC;
+    color: rgb(var(--color-text));
+}
+/* 亮色 */
+:root {
+    --z-index-max: 999;
+    --color-title: 34, 34, 34;
+    --color-text: 119, 119, 119;
+    --color-desc: 104, 104, 104;
+    --color-border: 234, 234, 234;
+    --color-border-accent: 89, 168, 246;
+    --color-foreground: 255, 255, 255;
+    --color-foreground-background: 246, 246, 246;
+    --color-background-header: var(--color-foreground);
+    --color-background-body: 245, 245, 245;
+    --color-shadow: 0, 0, 0, 0.2;
+    --color-background-hover: 240, 240, 240;
+    --color-background-accent: 186, 213, 240;
+    --color-background-input: 245, 245, 245;
+}
+/* 暗色 */
+@mixin dark {
+    --color-title: 255, 255, 255;
+    --color-text: 119, 119, 119;
+    --color-desc: 98, 98, 98;
+    --color-border: 65, 65, 65;
+    --color-border-accent: 5 128 128;
+    --color-foreground-background: 59, 59, 59;
+    --color-foreground: 43, 43, 43;
+    --color-background-header: 34, 34, 34;
+    --color-background-body: var(--color-background-header);
+    --color-shadow: 123, 121, 121, 0.2;
+    --color-background-hover: 17, 17, 17;
+    --color-background-accent: 50, 74, 74;
+    --color-background-input: 51, 51, 51;
+}
+
+/* 预设跟随系统暗色 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        @include dark;
+    }
+}
+/* 手动设置暗色，在html标签上设置data-theme属性的值为dark */
+[data-theme="dark"] {
+    @include dark;
+}
+
+[class*="card"] {
+    border-radius: 5px;
+    background-color: rgb(var(--color-foreground));
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+// 显示与隐藏容器
+.visible-container {
+    transition: 0.2s;
+    &.hidden {
+        height: 0;
+    }
+}
+.totalMessageCount {
+    color: rgba(var(--color-title), 0.85);
+    font-size: 16px;
+    margin-top: 30px;
+}

@@ -1,0 +1,74 @@
+.header {
+    height: var(--header-height);
+    --topBottom: 10px;
+    top: 0;
+    position: sticky;
+    display: flex;
+    padding: 0 10px;
+    gap: 10px;
+    z-index: var(--z-index-max);
+    background-color: myRgb(--color-background-header);
+    @include box-shadow;
+
+    > *:not(:global(.operations)) {
+        padding: var(--topBottom) 0;
+    }
+
+    :global {
+        .menu-icon {
+            display: flex;
+            align-items: center;
+            color: myRgb(--color-title);
+        }
+        .logo {
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+        .operations {
+            flex-grow: 1;
+            display: flex;
+            justify-content: flex-end;
+
+            .search-warp,
+            .theme {
+                display: flex;
+                align-items: center;
+                padding: 0 10px;
+            }
+
+            .search-warp {
+                flex-grow: 1;
+                flex-direction: row-reverse;
+
+                .search {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row-reverse;
+                    height: 35px;
+
+                     i {
+                        align-self: center;
+                    }
+                    .input {
+                        width: 100%;
+
+                        button {
+                            aspect-ratio: 1/1;
+                            i {
+                                height: 100%;
+                                justify-content: center;
+                            }
+                        }
+                    }
+                }
+                path {
+                    stroke: myRgb(--color-title);
+                    fill: myRgb(--color-title);
+                }
+            }
+        }
+    }
+}

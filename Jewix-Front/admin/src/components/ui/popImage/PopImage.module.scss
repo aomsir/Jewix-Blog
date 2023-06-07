@@ -1,0 +1,16 @@
+.popImage {
+  cursor: zoom-in;
+
+  p {
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  :global {
+    .ant-image {
+      display: none;
+    }
+  }
+}

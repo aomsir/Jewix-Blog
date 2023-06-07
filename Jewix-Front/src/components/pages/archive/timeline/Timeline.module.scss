@@ -1,0 +1,73 @@
+.timeline {
+    margin-top: 30px;
+    :global {
+        .node {
+            // 线条宽度
+            --line-width: 3px;
+            // ⚪半径
+            --circle-radius: 0.5vw;
+            position: relative;
+            min-height: 100px;
+            padding-left: 20px;
+            border-left: var(--line-width) solid #bfbfbf;
+            margin-left: var(--circle-radius);
+
+            &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                left: 0;
+                translate: calc(-50% - var(--line-width) / 2);
+                width: calc(var(--circle-radius) * 2);
+                height: calc(var(--circle-radius) * 2);
+                background-color: #bfbfbf;
+                border-radius: 50%;
+            }
+
+            .title {
+                font-size: 18px;
+                margin-bottom: 10px;
+                transition: color 0.1s;
+
+                &:hover {
+                    color: tomato;
+                }
+            }
+
+            .date {
+                font-size: 16px;
+                color: rgb(var(--color-text));
+            }
+        }
+
+        .year {
+            font-size: 30px;
+            color: rgb(var(--color-text));
+        }
+        .month {
+            color: rgb(var(--color-text));
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        @media screen and ($phone) {
+            .node {
+                --circle-radius: 5px;
+                min-height: 70px;
+                .title {
+                    font-size: $middle;
+                }
+                .date {
+                    font-size: $normal;
+                }
+            }
+            .year {
+                font-size: $large;
+            }
+
+            .month {
+                font-size: $middle;
+            }
+        }
+    }
+}

@@ -1,0 +1,126 @@
+.layout {
+    background-color: rgb(var(--color-background-body));
+
+    .header {
+        :global {
+            .header-inner {
+                box-shadow: 0 0 5px rgb(0, 0, 0, 0.2);
+                width: 100%;
+                z-index: var(--z-index-max);
+                position: fixed;
+                box-sizing: border-box;
+                padding: clamp(5px, 0.938vw, 10px) 2.604vw;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background-color: rgb(var(--color-background-header));
+                transition: 0.2s;
+
+                .logo {
+                    width: clamp(150px, 9.531vw, 300px);
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+
+                .nav {
+                    font-size: min(0.938vw, 16px);
+                    color: rgb(var(--color-title));
+                    display: flex;
+                    align-items: center;
+                    .links {
+                        a {
+                            padding: 0.781vw;
+                        }
+                    }
+                    .my-divider {
+                        height: 0.885vw;
+                        margin: 0 1.823vw;
+                    }
+
+                    .my-menu {
+                        z-index: 2;
+                        .menu-items {
+                            gap: 1.563vw;
+                        }
+                    }
+
+                    .operations {
+                        display: flex;
+                        align-items: center;
+                        gap: 1.667vw;
+
+                        .search {
+                            min-width: 100px;
+
+                            i {
+                                line-height: 35px;
+                            }
+                            .input {
+                                height: 35px;
+                                min-width: 200px;
+                            }
+                            path {
+                                stroke: myRgb(--color-title);
+                                fill: myRgb(--color-title);
+                            }
+                        }
+
+                        i {
+                            display: flex;
+                            &:first-child {
+                                svg {
+                                    width: max(12px, 0.833vw);
+                                    height: max(12px, 0.99vw);
+                                }
+                            }
+                            &:last-child {
+                                svg {
+                                    width: max(12px, 0.781vw);
+                                    height: max(12px, 0.833vw);
+                                }
+                            }
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    :global(.banner) {
+        // margin-bottom: 1vw;
+    }
+
+    .main {
+        margin: 0 auto;
+        // max-width: 1700px;
+        margin-top: 1.563vw;
+        display: flex;
+        align-items: flex-start;
+        gap: 1.563vw;
+        padding: 0 2vw;
+        /* 当屏幕宽度小于500时 */
+        @media ($phone) {
+            padding: 0 2.5vw;
+            flex-direction: column-reverse;
+        }
+        .content {
+            flex-grow: 1;
+            width: 0;
+        }
+        .aside {
+            top: 80px;
+            position: sticky;
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.563vw;
+
+            @media ($phone) {
+            }
+        }
+    }
+}

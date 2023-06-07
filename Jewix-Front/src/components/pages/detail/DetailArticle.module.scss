@@ -1,0 +1,61 @@
+.detail-article {
+    background-color: myRgb(--color-foreground);
+    border-radius: 0.365vw;
+    @include padding(1.302vw, 2.083vw, 3vw, 2.083vw);
+
+    h1 {
+        word-break: break-word;
+    }
+    :global {
+        header {
+            .top {
+                color: myRgb(--color-title);
+                display: flex;
+                align-content: center;
+                gap: 20px;
+
+                .left {
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    @include font-size2(24px);
+                }
+
+                .operations {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+            }
+
+            .bottom {
+                margin-top: 10px;
+                font-size: 13px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                padding-bottom: 13px;
+                border-bottom: 2px solid myRgb(--color-border);
+
+                span {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+
+                    svg {
+                        @include square(14px);
+                    }
+                }
+            }
+        }
+
+        @media screen and ($phone) {
+            header {
+                .bottom {
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+            }
+        }
+    }
+}

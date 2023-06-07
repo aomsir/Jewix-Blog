@@ -1,0 +1,39 @@
+.banner {
+    width: 100%;
+    aspect-ratio: 5 / 1;
+    position: relative;
+
+    :global {
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("/overlay.png");
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 1.302vw;
+            font-weight: 500;
+            h1 {
+                margin: 0;
+                font-size: 2.604vw;
+                color: #fff;
+            }
+
+            .desc {
+                font-size: 1.823vw;
+                color: rgba(255, 255, 255, 0.6);
+            }
+        }
+    }
+}

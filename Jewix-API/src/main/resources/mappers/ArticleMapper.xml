@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aomsir.jewixapi.mapper.ArticleMapper">
+
+    <!--    <resultMap id="ArticleResultMap" type="Article">-->
+<!--        <id property="id" column="id" />-->
+<!--        <result property="uuid" column="uuid" />-->
+<!--        <result property="title" column="title" />-->
+<!--        <result property="cover" column="cover" />-->
+<!--        <result property="content" column="content" jdbcType="LONGVARCHAR"/>-->
+<!--        <result property="type" column="type" />-->
+<!--        <result property="originUrl" column="origin_url" />-->
+<!--        <result property="views" column="views" />-->
+<!--        <result property="isTop" column="is_top" />-->
+<!--        <result property="isDelete" column="is_delete" />-->
+<!--        <result property="status" column="status" />-->
+<!--        <result property="createTime" column="create_time" />-->
+<!--        <result property="updateTime" column="update_time" />-->
+<!--    </resultMap>-->
+
+    <select id="queryArticleCountByTagName" resultType="Long">
+        SELECT COUNT(a.id)
+        FROM tb_article AS a
+        LEFT JOIN tb_article_tag at on a.id = at.article_id
+        LEFT JOIN tb_tag t on at.tag_id = t.id
+        WHERE a.status = 0
+        AND a.is_delete = 0
+        AND t.tag_name = #{tagName}
+    </select>
+
+    <select id="queryArticleCountByCategoryName" resultType="Long">
+        SELECT COUNT(a.id)
+        FROM tb_article AS a
+        LEFT JOIN tb_article_category ac on a.id = ac.article_id
+        LEFT JOIN tb_category c on ac.category_id = c.id
+        WHERE a.status = 0
+        AND a.is_delete = 0
+        AND c.category_name = #{categoryName}
+        AND c.parent_id = #{parentCategoryId}
+    </select>
+
+    <select id="queryArticleBackendCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article
+        <where>
+            <if test="param.title != null">
+                title LIKE CONCAT('%',#{param.title} ,'%')
+                OR content LIKE CONCAT('%',#{param.title} ,'%')
+            </if>
+            <if test="param.type != null">
+                AND type = #{param.type}
+            </if>
+            <if test="param.isTop">
+                AND is_top = #{param.isTop}
+            </if>
+            <if test="param.status != null">
+                AND status = #{param.status}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="queryArticleBackendList" resultType="Article">
+        SELECT id, uuid, title, cover, description,
+        type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        FROM tb_article
+        <where>
+            <if test="param.title != null">
+                title LIKE CONCAT('%',#{param.title} ,'%')
+                OR content LIKE CONCAT('%',#{param.title} ,'%')
+            </if>
+            <if test="param.type != null">
+                AND type = #{param.type}
+            </if>
+            <if test="param.isTop">
+                AND is_top = #{param.isTop}
+            </if>
+            <if test="param.status != null">
+                AND status = #{param.status}
+            </if>
+        </where>
+        ORDER BY is_top,update_time DESC
+        LIMIT #{param.start},#{param.length}
+    </select>
+
+
+    <!--TODO: 联合查询标签和分类表-->
+    <select id="queryArticleFrontCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article
+        <where>
+            <if test="param.title != null">
+                title LIKE CONCAT('%',#{param.title} ,'%')
+                OR content LIKE CONCAT('%',#{param.title} ,'%')
+            </if>
+        </where>
+    </select>
+
+
+    <select id="queryArticleFrontList" resultType="Article">
+        SELECT id, uuid, title, cover, description AS content,
+               type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        FROM tb_article
+        <where>
+            <if test="param.title != null">
+                title LIKE CONCAT('%',#{param.title} ,'%')
+                OR content LIKE CONCAT('%',#{param.title} ,'%')
+            </if>
+            AND status = 0
+        </where>
+        ORDER BY is_top DESC,update_time DESC
+        LIMIT #{param.start},#{param.length}
+    </select>
+
+
+    <insert id="insertArticle" keyProperty="id" useGeneratedKeys="true" >
+        INSERT INTO tb_article(uuid, title, cover, content, description,type, origin_url, is_top, is_delete, status, create_time, update_time)
+        VALUES (#{param.uuid},
+                #{param.title},
+                #{param.cover},
+                #{param.content},
+                #{param.description},
+                #{param.type},
+                #{param.originUrl},
+                #{param.isTop},
+                #{param.isDelete},
+                #{param.status},
+                #{param.createTime},
+                #{param.createTime})
+    </insert>
+
+    <insert id="insertArticleAndTag">
+        INSERT INTO tb_article_tag(article_id, tag_id)
+        VALUES (#{articleId}, #{tagId})
+    </insert>
+
+
+    <insert id="insertArticleAndCategory">
+        INSERT INTO tb_article_category (article_id, category_id)
+        VALUES (#{articleId}, #{categoryId})
+    </insert>
+
+    <insert id="insertArticleAndUser">
+        INSERT INTO tb_article_user(article_id, user_id)
+        VALUES (#{articleId}, #{userId})
+    </insert>
+
+
+    <select id="queryArticleByUuid" resultType="Article">
+        SELECT id, uuid, title, cover, content, type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        FROM tb_article
+        WHERE uuid = #{uuid}
+    </select>
+
+    <select id="queryArticleById" resultType="Article">
+        SELECT id, uuid, title, cover, content, type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        FROM tb_article
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateArticle">
+        UPDATE tb_article
+        <set>
+            <if test="param.title != null">
+                title = #{param.title},
+            </if>
+            <if test="param.cover != null">
+                cover = #{param.cover},
+            </if>
+            <if test="param.content != null">
+                content = #{param.content},
+            </if>
+            <if test="param.isTop != null">
+                is_top = #{param.isTop},
+            </if>
+            <if test="param.isDelete != null">
+                is_delete = #{param.isDelete},
+            </if>
+            <if test="param.status != null">
+                status = #{param.status},
+            </if>
+            <if test="param.updateTime != null">
+                update_time = #{param.updateTime},
+            </if>
+            <if test="param.description != null">
+                description = #{param.description}
+            </if>
+        </set>
+        WHERE id = #{param.id}
+        AND uuid = #{param.uuid}
+    </update>
+
+
+    <select id="queryArticleCategoryNameList" resultType="String">
+        SELECT tc.category_name
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_category AS tac ON ta.id = tac.article_id
+        LEFT JOIN tb_category AS tc ON tac.category_id = tc.id
+        WHERE ta.id = #{id}
+    </select>
+
+    <select id="queryArticleTagNameList" resultType="String">
+        SELECT tt.tag_name
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_tag AS tat ON ta.id = tat.article_id
+        LEFT JOIN tb_tag AS tt ON tat.tag_id = tt.id
+        WHERE ta.id = #{id}
+    </select>
+
+    <select id="queryArticleUserName" resultType="String">
+        SELECT tu.nickname
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_user AS tau ON tau.article_id = ta.id
+        LEFT JOIN tb_user AS tu ON tau.user_id = tu.id
+        WHERE ta.id = #{id}
+    </select>
+
+    <select id="queryLastUuidByCreateTime" resultType="String">
+        SELECT uuid
+        FROM tb_article
+        WHERE create_time &lt; #{createTime}
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="queryNextUuidByCreateTime" resultType="String">
+        SELECT uuid
+        FROM tb_article
+        WHERE create_time &gt; #{createTime}
+        ORDER BY create_time ASC
+        LIMIT 1
+    </select>
+
+    <select id="queryArticleCountById" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <update id="deleteArticlesByArchive">
+        UPDATE tb_article
+        SET is_delete = 1
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+
+
+    <delete id="deleteArticlesByPhysics">
+        DELETE FROM tb_article
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteArticleOfCategories">
+        DELETE FROM tb_article_category
+        WHERE article_id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteArticleOfTags">
+        DELETE FROM tb_article_tag
+        WHERE article_id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteArticleOfUser">
+        DELETE FROM tb_article_user
+        WHERE article_id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryArticleCountByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        FROM tb_article_user
+        WHERE user_id = #{id}
+    </select>
+
+    <select id="queryArticleTagIdList" resultType="Long">
+        SELECT tat.tag_id
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_tag AS tat ON ta.id = tat.article_id
+        LEFT JOIN tb_tag AS tt ON tat.tag_id = tt.id
+        WHERE ta.id = #{id}
+    </select>
+
+    <select id="queryArticleCategoryIdList" resultType="Long">
+        SELECT tac.category_id
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_category AS tac ON ta.id = tac.article_id
+        LEFT JOIN tb_category AS tc ON tac.category_id = tc.id
+        WHERE ta.id = #{id}
+    </select>
+
+    <select id="queryArticleCountByCategoryId" resultType="Long">
+        SELECT COUNT(a.id)
+        FROM tb_article AS a
+        LEFT JOIN tb_article_category ac on a.id = ac.article_id
+        WHERE a.status = 0
+        AND a.is_delete = 0
+        AND ac.category_id = #{categoryId}
+    </select>
+
+    <update id="updateArticleViewCount">
+        UPDATE tb_article
+        SET views = #{count}
+        WHERE id = #{id}
+    </update>
+
+    <select id="queryArticleId" resultType="Long">
+        SELECT id
+        FROM tb_article
+    </select>
+
+    <select id="queryArticlesByRandomIds" resultType="com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO">
+        SELECT id,uuid,title,cover
+        FROM tb_article
+        WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryArticleCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article
+        WHERE is_delete = 0
+        AND status = 0
+    </select>
+
+    <select id="queryLastActive" resultType="Date">
+        SELECT update_time
+        FROM tb_article
+        ORDER BY update_time
+        LIMIT 1
+    </select>
+
+    <select id="queryArticleCountByArchive" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_article
+        WHERE status = 0
+        AND is_delete = 0
+    </select>
+
+    <select id="queryArticleByArchive" resultType="com.aomsir.jewixapi.pojo.dto.ArticleArchiveDTO">
+        SELECT uuid,title,create_time
+        FROM tb_article
+        WHERE status = 0
+        AND is_delete = 0
+        ORDER BY create_time DESC
+        LIMIT #{param.start},#{param.length}
+    </select>
+</mapper>

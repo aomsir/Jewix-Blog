@@ -1,0 +1,95 @@
+.my-menu-wrap {
+    :global {
+        .my-menu {
+            display: flex;
+
+            li {
+                position: relative;
+                z-index: 2;
+                li {
+                    .label {
+                        transition: 0.2s;
+                        gap: 2.656vw;
+                        padding: 0.781vw 0.781vw 0.781vw calc(var(--depth) * 1.042vw);
+                        // 悬浮背景色
+                        &:hover,
+                        &.selected {
+                            background-color: rgb(var(--color-background-hover));
+                        }
+                    }
+
+                    ul {
+                        padding: 0;
+                        position: relative;
+                        box-shadow: none;
+                    }
+                    // 菜单项激活状态
+                    &.selected {
+                        > .label {
+                            background-color: rgb(var(--color-background-hover));
+                        }
+                    }
+                }
+                // 菜单项标题
+                .label {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    white-space: nowrap;
+                    gap: 0.521vw;
+                    padding: 0.781vw;
+                    cursor: pointer;
+                    i {
+                        transition: 0.2s;
+                        line-height: 0;
+                        rotate: 180deg;
+                        svg {
+                            path {
+                                stroke: rgb(var(--color-title));
+                            }
+                        }
+                    }
+                    // 文章数量
+                    .total {
+                        background-color: aqua;
+                        width: 1vw;
+                        height: 1vw;
+                        translate: 20%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 50%;
+                        color: rgb(var(--color-title));
+                        background-color: rgb(var(--color-background-accent));
+                    }
+                }
+                // 菜单项子菜单
+                ul {
+                    font-size: 0.625vw;
+                    overflow: hidden;
+                    transition: 0.2s;
+                    position: absolute;
+                    left: 50%;
+                    translate: -50%;
+                    background-color: rgb(var(--color-background-header));
+                    box-shadow: 0 0 5px rgba(var(--color-shadow));
+
+                    max-height: 400px;
+                }
+                // 菜单项（关闭状态）
+                &.subMenuHidden {
+                    .label {
+                        i {
+                            rotate: 0deg;
+                        }
+                    }
+
+                    ul {
+                        padding: 0;
+                        height: 0;
+                    }
+                }
+            }
+        }
+    }
+}

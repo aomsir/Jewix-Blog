@@ -1,0 +1,27 @@
+.detail-article__content {
+    @include padding(1.771vw, 0);
+    color: myRgb(--color-title);
+
+    pre {
+        position: relative;
+        overflow: visible;
+
+        &::before {
+            // 显示代码语言
+            content: attr(data-language);
+            display: block;
+            text-align: right;
+            color: #fff;
+            position: sticky;
+            height: 0;
+            left: 100%;
+            top: 80px;
+        }
+
+        code {
+            display: block;
+            overflow-x: auto;
+            width: 100%;
+        }
+    }
+}

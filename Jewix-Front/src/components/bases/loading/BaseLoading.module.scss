@@ -1,0 +1,10 @@
+.base-loader {
+    @include font-size-small;
+    translate: 0 20px;
+
+    :global {
+        .loading {
+            justify-content: center;
+        }
+    }
+}

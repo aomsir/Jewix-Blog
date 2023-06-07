@@ -1,0 +1,27 @@
+.category-content {
+    h1 {
+        @include font-size(1.25vw);
+        text-align: center;
+        @include colorTitle;
+        background-color: myRgb(--color-foreground);
+        @include padding(0.729vw);
+        border-radius: 0.365vw;
+    }
+
+    :global {
+        .grid {
+            display: flex;
+            gap: 1.563vw;
+            .col {
+                .card {
+                    margin-bottom: 1.563vw;
+                }
+            }
+        }
+        .breadcrumb {
+            @include margin(1.563vw);
+            display: flex;
+            gap: 10px;
+        }
+    }
+}
