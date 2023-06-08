@@ -13,73 +13,95 @@
 export default [
   {
     path: '/article',
-    name: 'article',
+    name: '文章管理',
     icon: 'BookOutlined',
     component: './article',
+    access: 'normalRouteFilter', // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
   {
     path: '/comment',
-    name: 'comment',
+    name: '评论管理',
     icon: 'comment',
     component: './comment',
+    access: 'normalRouteFilter', // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
   {
     path: '/page',
-    name: 'page',
+    name: '页面管理',
     icon: 'book',
     component: './page',
+    access: 'normalRouteFilter', // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
   {
     path: '/blogroll',
-    name: 'blogroll',
+    name: '友链管理',
     icon: 'TeamOutlined',
     component: './blogroll',
+    access: 'normalRouteFilter', // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
   {
     path: '/category',
-    name: 'category',
+    name: '分类管理',
     icon: 'PicCenterOutlined',
     component: './category',
+    access: 'normalRouteFilter', // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
   {
     path: '/tag',
-    name: 'tag',
+    name: '标签管理',
     icon: 'tag',
     component: './tag',
+    access: 'normalRouteFilter', // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
   {
     path: '/photo',
-    name: 'photo',
+    name: '相册管理',
     icon: 'FolderOpenOutlined',
     component: './photo',
+    access: 'normalRouteFilter', // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
   {
     path: '/user',
-    name: 'user',
+    name: '用户管理',
     icon: 'user',
     component: './user',
-    // access: 'canAdmin',
-    // routes: [
-    //   {
-    //     path: '/admin',
-    //     redirect: '/admin/sub-page',
-    //   },
-    //   {
-    //     path: '/admin/sub-page',
-    //     name: 'sub-page',
-    //     component: './Admin',
-    //   },
-    // ],
+    access: 'normalRouteFilter', // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
 
   {
     path: '/account',
     hideInMenu: true, // 将该路由项隐藏在菜单中
+    name: '',
     routes: [
       {
         path: '/account/settings',
         name: 'profileSettings',
         component: './account/settings',
+      },
+    ],
+  },
+  {
+    path: '/auth',
+    name: '权限管理',
+    icon: 'SecurityScanOutlined',
+    routes: [
+      {
+        path: '/auth/menu',
+        name: '菜单管理',
+        icon: 'MenuOutlined',
+        component: './auth/menu',
+      },
+      {
+        path: '/auth/resource',
+        name: '资源管理',
+        icon: 'ApiOutlined',
+        component: './auth/resource',
+      },
+      {
+        path: '/auth/role',
+        name: '角色管理',
+        icon: 'IdcardOutlined',
+        component: './auth/role',
       },
     ],
   },
@@ -97,11 +119,13 @@ export default [
   },
   {
     path: '/',
+    name: '',
     redirect: '/article',
   },
   {
     path: '*',
+    name: '',
     layout: false,
     component: './404',
   },
-];
+] as const;
