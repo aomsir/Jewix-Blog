@@ -9,6 +9,7 @@ import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +50,7 @@ public class UserController {
      * @param userPageVo 分页获取用户VO对象
      * @return 用户分页列表
      */
+    @PreAuthorize("hasAuthority('ADMIN_USER_LIST')")
     @ApiOperation(value = "分页查询用户列表")
     @GetMapping("/admin/users")
     public R getUserPage(UserPageVo userPageVo) {
@@ -69,6 +71,7 @@ public class UserController {
      * @param uuid 用户uuid
      * @return  用户详情
      */
+    @PreAuthorize("hasAuthority('ADMIN_USER_DETAIL')")
     @ApiOperation(value = "后台根据UUID获取用户个人详细信息")
     @GetMapping("/admin/users/{uuid}")
     public R getBackendUserByUUID(@PathVariable String uuid) {
@@ -83,6 +86,7 @@ public class UserController {
      * @param userAddVo 添加用户VO对象
      * @return 新增用户所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_USER_ADD')")
     @ApiOperation(value = "添加/注册新用户")
     @PostMapping("/admin/users")
     public R addUser(@RequestBody @Validated UserAddVo userAddVo) {
@@ -97,6 +101,7 @@ public class UserController {
      * @param userUpdateVo 更新用户VO对象
      * @return 更新用户所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_USER_UPDATE')")
     @ApiOperation(value = "更新用户接口")
     @PutMapping("/admin/users")
     public R updateUser(@RequestBody @Validated UserUpdateVo userUpdateVo) {
@@ -125,6 +130,7 @@ public class UserController {
      * @param userStatusVo 修改用户状态VO对象
      * @return 更新状态所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_USER_UPDATE_STATUS')")
     @ApiOperation(value = "根据uuid修改用户状态")
     @PutMapping("/admin/users/status")
     public R updateStatus(@RequestBody @Validated UserStatusVo userStatusVo) {
@@ -150,6 +156,7 @@ public class UserController {
      * @param ids 待删除用户id列表
      * @return 删除所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_USER_DELETE_ARCHIVE')")
     @ApiOperation(value = "理论删除用户")
     @DeleteMapping("/admin/users/archive")
     public R deleteUserByArchive(@RequestParam List<Long> ids) {
@@ -163,6 +170,7 @@ public class UserController {
      * @param ids 待删除用户id列表
      * @return 删除所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_USER_DELETE_PHYSICS')")
     @ApiOperation(value = "物理删除用户")
     @DeleteMapping("/admin/users/physics")
     public R deleteUserByPhysics(@RequestParam List<Long> ids) {
@@ -176,6 +184,7 @@ public class UserController {
      * @param userUpdateVo 用户更新信息VO对象
      * @return 更新影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_USER_UPDATE_MY')")
     @ApiOperation(value = "用户更新个人信息")
     @PutMapping("/admin/users/my")
     public R updateMyUserInfo(@RequestBody @Validated UserUpdateVo userUpdateVo) {

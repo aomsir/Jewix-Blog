@@ -8,6 +8,7 @@ import com.aomsir.jewixapi.service.PageService;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +62,7 @@ public class PageController {
      * @param pageAddVo 页面添加实体类
      * @return 新增影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_PAGE_ADD')")
     @ApiOperation(value = "新增页面")
     @PostMapping("/admin/pages")
     public R addPage(@RequestBody @Validated PageAddVo pageAddVo) {
@@ -75,6 +77,7 @@ public class PageController {
      * @param pageUpdateVo 页面更新实体类
      * @return 更新影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_PAGE_UPDATE')")
     @ApiOperation(value = "更新页面")
     @PutMapping("/admin/pages")
     public R updatePage(@RequestBody @Validated PageUpdateVo pageUpdateVo) {
@@ -89,6 +92,7 @@ public class PageController {
      * @param uuid 页面uuid
      * @return 删除影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_PAGE_DELETE')")
     @ApiOperation(value = "删除页面")
     @DeleteMapping("/admin/pages")
     public R deletePage(String uuid) {

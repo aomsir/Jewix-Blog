@@ -71,6 +71,8 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
                 // 使用Spring工具将请求流反序列化
                 LoginVo userInfo = new ObjectMapper().readValue(request.getInputStream(), LoginVo.class);
 
+                // TODO:处理重复登录
+
                 // TODO: 2.0版本添加校验验证码(邮箱)
                 String username = userInfo.getUsername();
                 String password = userInfo.getPassword();
@@ -118,15 +120,16 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
 
         String token = JwtUtils.getToken(temp);
 
-        // 将信息存入Redis
+        // 将token存入Redis
         String userIdStr = user.getId().toString();
         this.redisTemplate.opsForValue()
                 .set(USER_TOKEN_KEY + userIdStr, token,USER_EXPIRED, TimeUnit.DAYS);
+
+        // 将用户信息存入Redis
         this.redisTemplate.opsForHash()
                 .putAll(USER_INFO_KEY + userIdStr, BeanUtil.beanToMap(user));
         this.redisTemplate.expire(USER_INFO_KEY + userIdStr,USER_EXPIRED,TimeUnit.DAYS);
 
-        // TODO:用户权限信息封装进Redis
         R r = R.ok()
                 .put("token",token);
 

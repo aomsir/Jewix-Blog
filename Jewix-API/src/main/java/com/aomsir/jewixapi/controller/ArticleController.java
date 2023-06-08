@@ -12,6 +12,7 @@ import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,7 @@ public class ArticleController {
      * @param articleBackendPageVo 后台无限制获取文章列表VO对象
      * @return 文章分页列表
      */
+    @PreAuthorize("hasAuthority('ADMIN_ARTICLE_LIST')")
     @ApiOperation(value = "后台无限制分页获取文章列表", notes = "后台无限制分页获取文章列表")
     @GetMapping("/admin/articles")
     public R getBackendArticleByPage(ArticleBackendPageVo articleBackendPageVo) {
@@ -83,6 +85,7 @@ public class ArticleController {
      * @param articleAddVo 添加文章VO对象
      * @return 添加文章所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_ARTICLE_ADD')")
     @ApiOperation(value = "添加文章", notes = "添加文章")
     @PostMapping("/admin/articles")
     public R addArticle(@RequestBody @Validated ArticleAddVo articleAddVo) {
@@ -97,6 +100,7 @@ public class ArticleController {
      * @param articleUpdateVo 更新文章VO对象
      * @return 更新文章所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_ARTICLE_UPDATE')")
     @ApiOperation(value = "修改文章", notes = "修改文章")
     @PutMapping("/admin/articles")
     public R updateArticle(@RequestBody @Validated ArticleUpdateVo articleUpdateVo) {
@@ -126,6 +130,7 @@ public class ArticleController {
      * @param ids 待删除的文章id列表
      * @return 删除所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_ARTICLE_DELETE_ARCHIVE')")
     @ApiOperation(value = "理论删除文章", notes = "理论删除文章")
     @DeleteMapping("/admin/articles/archive")
     public R deleteArticleByArchive(@RequestParam List<Long> ids) {
@@ -139,6 +144,7 @@ public class ArticleController {
      * @param ids 待删除的文章id列表
      * @return 删除所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_ARTICLE_DELETE_PHYSICS')")
     @ApiOperation(value = "物理删除文章", notes = "物理删除文章")
     @DeleteMapping("/admin/articles/physics")
     public R deleteArticleByPhysics(@RequestParam List<Long> ids) {

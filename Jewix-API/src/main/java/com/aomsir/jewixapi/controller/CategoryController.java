@@ -8,6 +8,7 @@ import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,6 +88,7 @@ public class CategoryController {
      * @param categoryAddVo 分类添加VO实体类
      * @return 添加分类所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_CATEGORY_ADD')")
     @ApiOperation(value = "添加分类")
     @PostMapping("/admin/categories")
     public R addCategory(@RequestBody @Validated CategoryAddVo categoryAddVo) {
@@ -121,6 +123,7 @@ public class CategoryController {
      * @param ids 待删除分类id列表
      * @return 影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_CATEGORY_DELETE')")
     @ApiOperation(value = "删除分类信息")
     @DeleteMapping("/admin/categories")
     public R deleteCategory(@RequestParam List<Long> ids) {
@@ -135,6 +138,7 @@ public class CategoryController {
      * @param categoryUpdateVo 更改分类VO对象
      * @return 所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_CATEGORY_UPDATE')")
     @ApiOperation(value = "更新分类信息")
     @PutMapping("/admin/categories")
     public R updateCategory(@RequestBody CategoryUpdateVo categoryUpdateVo) {

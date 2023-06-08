@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ import static com.aomsir.jewixapi.constant.CommonConstants.TICKET_ERROR;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-
+@Component
 public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private static final Logger log = LoggerFactory.getLogger(SimpleAuthenticationEntryPoint.class);

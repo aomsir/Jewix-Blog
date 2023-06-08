@@ -12,6 +12,7 @@ import com.upyun.UpException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,6 +53,7 @@ public class PhotoController {
      * @throws UpException 又拍云异常
      * @throws IOException IO异常
      */
+    @PreAuthorize("hasAuthority('ADMIN_PHOTO_ADD')")
     @ApiOperation(value = "上传照片到云端")
     @PostMapping("/admin/photos")
     public R updatePhoto(MultipartFile file,
@@ -67,6 +69,7 @@ public class PhotoController {
      * @param photoPageVo 分页获取相册VO对象
      * @return 相册分页列表
      */
+    @PreAuthorize("hasAuthority('ADMIN_PHOTO_LIST')")
     @ApiOperation(value = "根据类型分页查询相册列表")
     @GetMapping("/admin/photos")
     public R getPhotoListByPage(PhotoPageVo photoPageVo) {
@@ -123,6 +126,7 @@ public class PhotoController {
      * @throws UpException 又拍云异常
      * @throws IOException IO异常
      */
+    @PreAuthorize("hasAuthority('ADMIN_PHOTO_DELETE')")
     @ApiOperation(value = "根据文件名与类型删除相册信息")
     @DeleteMapping("/admin/photos")
     public R deletePhoto(PhotoDeleteVo photoDeleteVo) throws UpException, IOException {

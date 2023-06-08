@@ -6,6 +6,7 @@ import com.aomsir.jewixapi.util.R;
 import org.apache.ibatis.exceptions.IbatisException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.aomsir.jewixapi.constant.ExceptionConstants.DATABASE_EXCEPTION;
+import static com.aomsir.jewixapi.constant.SecurityConstants.PERMISSION_DENIED;
 
 /**
  * @Author: Aomsir
@@ -124,6 +126,16 @@ public class GlobalExceptionHandler {
     public R SQLException(Exception e) {
         log.error("{}", e.getMessage());
         return R.error(DATABASE_EXCEPTION);
+    }
+
+    /**
+     * 授权异常解决
+     * @param e 异常对象
+     * @return 响应数据
+     */
+    @ExceptionHandler({AccessDeniedException.class})
+    public R accessDinedException(Exception e) {
+        return R.error(500, PERMISSION_DENIED);
     }
 
 }

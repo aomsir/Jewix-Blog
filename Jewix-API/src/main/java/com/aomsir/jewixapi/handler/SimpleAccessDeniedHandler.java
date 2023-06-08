@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import static com.aomsir.jewixapi.constant.SecurityConstants.PERMISSION_DENIED;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
+@Component
 public class SimpleAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest req,

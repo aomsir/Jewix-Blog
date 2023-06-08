@@ -17,13 +17,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -31,6 +32,7 @@ import java.util.Collections;
  * @Date: 2023/2/19
  * @Description: 新版SpringSecurity配置类
  * @TODO 更换SpringBoot2.7.5,重写配置
+ * @TODO 解决AccessDeniedHandler
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
@@ -51,6 +53,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Resource
     private RedisTemplate<String,Object> redisTemplate;
+
+
+    @Resource
+    private AccessDeniedHandler accessDeniedHandler;
+
+    @Resource
+    private AuthenticationEntryPoint authenticationEntryPoint;
 
     @Resource
     private LogService logService;
@@ -89,9 +98,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(req -> req.mvcMatchers("/admin/**").authenticated())
-                .exceptionHandling(ex -> ex
-                        .accessDeniedHandler(new SimpleAccessDeniedHandler())
-                        .authenticationEntryPoint(new SimpleAuthenticationEntryPoint()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(configurationSource()))
                 .logout(out -> out
@@ -100,9 +106,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 
-        http.addFilterBefore(this.tokenVerifyFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAt(new EmailPasswordAuthenticationFilter(authenticationManager(),redisTemplate,logService),
+        // http.addFilterBefore(this.tokenVerifyFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(this.tokenVerifyFilter, FilterSecurityInterceptor.class);
+        http.addFilterAfter(new EmailPasswordAuthenticationFilter(authenticationManager(),redisTemplate,logService),
                 PerTokenVerifyFilter.class);
+
+        http.exceptionHandling(ex ->
+                ex.authenticationEntryPoint(this.authenticationEntryPoint)
+                        .accessDeniedHandler(this.accessDeniedHandler));
     }
 
 

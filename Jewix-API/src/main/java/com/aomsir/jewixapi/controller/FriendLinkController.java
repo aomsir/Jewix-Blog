@@ -10,6 +10,7 @@ import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,7 @@ public class FriendLinkController {
      * @param friendLinkAddVo 添加友链VO对象
      * @return 友链分页列表
      */
+    @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_ADD')")
     @ApiOperation(value = "添加友情链接")
     @PostMapping("/admin/friend-links")
     public R addFriendLink(@RequestBody @Validated FriendLinkAddVo friendLinkAddVo) {
@@ -73,6 +75,7 @@ public class FriendLinkController {
      * @param friendLinkUpdateVo 更新友链VO对象
      * @return 更新友链所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_UPDATE')")
     @ApiOperation(value = "修改友情链接信息")
     @PutMapping("/admin/friend-links")
     public R updateFriendLink(@RequestBody @Validated FriendLinkUpdateVo friendLinkUpdateVo) {
@@ -88,6 +91,7 @@ public class FriendLinkController {
      * @param id 友链ID
      * @return 友链详情
      */
+    @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_DETAIL')")
     @ApiOperation(value = "根据id获取友情链接详情")
     @GetMapping("/admin/friend-links/{id}")
     public R getFriendLinkInfo(@PathVariable("id") Integer id) {
@@ -102,6 +106,7 @@ public class FriendLinkController {
      * @param ids 待删除友情链接id列表
      * @return 删除影响的数据库行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_DELETE')")
     @ApiOperation(value = "删除友情链接")
     @DeleteMapping("/admin/friend-links")
     public R deleteFriendLink(@RequestParam List<Integer> ids) {

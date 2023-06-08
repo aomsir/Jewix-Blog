@@ -12,6 +12,7 @@ import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
@@ -56,6 +57,7 @@ public class TagController {
      * @param tagAddVo 添加标签VO对象
      * @return 添加标签所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_TAG_ADD')")
     @ApiOperation(value = "添加新标签")
     @PostMapping("/admin/tags")
     public R addTag(@RequestBody @Validated TagAddVo tagAddVo) {
@@ -69,6 +71,7 @@ public class TagController {
      * @param updateVo 更新标签VO对象
      * @return 更新标签所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_TAG_UPDATE')")
     @ApiOperation(value = "根据id修改标签名")
     @PutMapping("/admin/tags")
     public R updateTag(@RequestBody @Validated TagUpdateVo updateVo) {
@@ -82,6 +85,7 @@ public class TagController {
      * @param tagId 标签id
      * @return 标签
      */
+    @PreAuthorize("hasAuthority('ADMIN_TAG_DETAIL')")
     @ApiOperation(value = "根据id查询标签")
     @GetMapping("/admin/tags/{tagId}")
     public R getTagById(@PathVariable("tagId") Long tagId) {

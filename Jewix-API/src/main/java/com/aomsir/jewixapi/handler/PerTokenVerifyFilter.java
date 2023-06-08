@@ -1,13 +1,13 @@
 package com.aomsir.jewixapi.handler;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.util.UserHolder;
 import com.aomsir.jewixapi.util.JwtUtils;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,9 +18,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.aomsir.jewixapi.constant.CommonConstants.TICKET_ERROR;
+import static com.aomsir.jewixapi.constant.RedisConstants.USER_INFO_KEY;
 import static com.aomsir.jewixapi.constant.RedisConstants.USER_TOKEN_KEY;
 
 /**
@@ -51,10 +53,6 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
             return;
         }
 
-
-        // TODO：从Redis中获取authentication并存储
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-
         String token = request.getHeader("token");
 
         // 没有携带token则进入后续的Filter,后续的Filter会验证当前程序能否正常行走
@@ -84,8 +82,7 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
             request.setAttribute("CustomerAuthenticationException",TICKET_ERROR);
             filterChain.doFilter(request,response);
             return;
-        }
-         else if (!tokenInRedis.equals(token)) {
+        }  else if (!tokenInRedis.equals(token)) {
              request.setAttribute("CustomerAuthenticationException",TICKET_ERROR);
              filterChain.doFilter(request,response);
              return;
@@ -93,8 +90,11 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
         this.userHolder.setUserId(Long.valueOf(userId));
 
-        // TODO:通过Redis查询封装的用户信息等
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("info@say521.cn",null,null));
+
+        Map<Object, Object> objectMap = this.redisTemplate.opsForHash().entries(USER_INFO_KEY + userId);
+        User user = BeanUtil.mapToBean(objectMap, User.class,true,null);
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user.getEmail(),null,user.getAuthorities()));
         filterChain.doFilter(request, response);
     }
 }

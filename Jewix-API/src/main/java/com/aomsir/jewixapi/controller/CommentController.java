@@ -8,6 +8,7 @@ import com.aomsir.jewixapi.util.R;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,7 @@ public class CommentController {
      * @param commentBackendPageVo 后台无限制获取评论列表VO对象
      * @return 无限制评论列表
      */
+    @PreAuthorize("hasAuthority('ADMIN_COMMENT_LIST')")
     @ApiOperation(value = "后台无限制获取评论列表")
     @GetMapping("/admin/comments")
     public R getCommentsBackendListByPage(CommentBackendPageVo commentBackendPageVo) {
@@ -95,6 +97,7 @@ public class CommentController {
      * @param commentUpdateVo 修改评论VO对象
      * @return 更新评论所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_COMMENT_UPDATE')")
     @ApiOperation(value = "后台修改评论相关内容")
     @PutMapping("/admin/comments")
     public R updateComment(@RequestBody @Validated CommentUpdateVo commentUpdateVo) {
@@ -109,6 +112,7 @@ public class CommentController {
      * @param ids 删除评论VO对象
      * @return 删除评论所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_COMMENT_DELETE')")
     @ApiOperation(value = "根据id列表删除文章评论")
     @DeleteMapping("/admin/comments")
     public R deleteComment(@RequestParam("ids") List<Long> ids) {
@@ -123,6 +127,7 @@ public class CommentController {
      * @param commentUpdateStatusVo 修改评论状态VO对象
      * @return 修改评论状态所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_COMMENT_UPDATE_STATUS')")
     @ApiOperation(value = "修改评论状态")
     @PutMapping("/admin/comments/status")
     public R updateCommentStatus(@RequestBody @Validated CommentUpdateStatusVo commentUpdateStatusVo) {

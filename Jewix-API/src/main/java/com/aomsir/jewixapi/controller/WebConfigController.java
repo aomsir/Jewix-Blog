@@ -8,6 +8,7 @@ import com.aomsir.jewixapi.service.WebConfigService;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,7 @@ public class WebConfigController {
      * @param infoWebConfigAddVo 网站通用设置信息VO对象
      * @return 新增信息所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_CONFIG_ADD')")
     @ApiOperation(value = "新增网站通用设置信息")
     @PostMapping("/admin/configs")
     public R addInfoWebConfig(@RequestBody @Validated InfoWebConfigAddVo infoWebConfigAddVo) {
@@ -49,6 +51,7 @@ public class WebConfigController {
      * @param infoWebConfigUpdateVo 更新网站通用设置信息VO对象
      * @return 更新信息所影响的行数
      */
+    @PreAuthorize("hasAuthority('ADMIN_CONFIG_UPDATE')")
     @ApiOperation(value = "修改网站通用设置信息")
     @PutMapping("/admin/configs")
     public R updateInfoWebConfig(@RequestBody @Validated InfoWebConfigUpdateVo infoWebConfigUpdateVo) {
@@ -63,6 +66,7 @@ public class WebConfigController {
      * @param type 类型ID
      * @return 对应的网站信息
      */
+    @PreAuthorize("hasAuthority('ADMIN_CONFIG_DETAIL')")
     @ApiOperation(value = "根据类型获取网站设置信息")
     @GetMapping("/admin/configs")
     public R getInfoAll(@RequestParam Integer type) {
