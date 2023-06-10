@@ -1,24 +1,26 @@
-import PopConfirmDelete from '@/components/bases/popConfirmDelete/PopConfirmDelete';
-import PopImage from '@/components/ui/popImage/PopImage';
-import { BlogrollEnums } from '@/config/enums';
-import { useModelVisionModalForm } from '@/hooks/props';
-import { API } from '@/services/ant-design-pro/typings';
-import { deleteBlogroll, fetchBlogroll, insertBlogroll, updateBlogroll } from '@/services/api';
-import { halfStart } from '@/utils/array';
-import { timestampToTime } from '@/utils/convert';
+import { OPERATIONS } from "@/access";
+import HasOperation from "@/components/bases/hasOperation/hasOperation";
+import PopConfirmDelete from "@/components/bases/popConfirmDelete/PopConfirmDelete";
+import PopImage from "@/components/ui/popImage/PopImage";
+import { BlogrollEnums } from "@/config/enums";
+import { useModelVisionModalForm } from "@/hooks/props";
+import { API } from "@/services/ant-design-pro/typings";
+import { deleteBlogroll, fetchBlogroll, insertBlogroll, updateBlogroll } from "@/services/api";
+import { halfStart } from "@/utils/array";
+import { timestampToTime } from "@/utils/convert";
 import {
   ActionType,
   ModalForm,
   PageContainer,
   ProColumns,
   ProTable,
-} from '@ant-design/pro-components';
-import { message, Space, Table } from 'antd';
-import { map } from 'lodash';
-import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from 'react';
-import { fetchWidthNormalizedResponse } from '../article';
-import ProTableToolBar from '../article/components/ProTableToolBar';
-import EditBlogrollForm from './components/EditBlogrollForm';
+} from "@ant-design/pro-components";
+import { message, Space, Table } from "antd";
+import { map } from "lodash";
+import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
+import { fetchWidthNormalizedResponse } from "../article";
+import ProTableToolBar from "../article/components/ProTableToolBar";
+import EditBlogrollForm from "./components/EditBlogrollForm";
 type BlogrollProps = HTMLAttributes<HTMLDivElement>;
 // 评论列表
 export default function Blogroll(props: BlogrollProps): ReactElement {
@@ -34,23 +36,27 @@ export default function Blogroll(props: BlogrollProps): ReactElement {
   // 操作
   columns[7].render = (dom, entity) => (
     <Space>
-      <a
-        onClick={() => {
-          modalVisionState.setOpen(true);
-          setInitialValues(entity);
-        }}
-      >
-        编辑
-      </a>
-      <PopConfirmDelete
-        onConfirm={async () => {
-          try {
-            await deleteBlogroll({ ids: [entity.id] });
-            message.success('删除成功');
-            actionRef.current?.reload();
-          } catch (error) {}
-        }}
-      />
+      <HasOperation operation={OPERATIONS.UPDATE}>
+        <a
+          onClick={() => {
+            modalVisionState.setOpen(true);
+            setInitialValues(entity);
+          }}
+        >
+          编辑
+        </a>
+      </HasOperation>
+      <HasOperation operation={OPERATIONS.DELETE}>
+        <PopConfirmDelete
+          onConfirm={async () => {
+            try {
+              await deleteBlogroll({ ids: [entity.id] });
+              message.success("删除成功");
+              actionRef.current?.reload();
+            } catch (error) {}
+          }}
+        />
+      </HasOperation>
     </Space>
   );
 
@@ -61,7 +67,7 @@ export default function Blogroll(props: BlogrollProps): ReactElement {
   }, [modalVisionState.open]);
 
   return (
-    <PageContainer className={rest.className ?? ''} {...rest}>
+    <PageContainer className={rest.className ?? ""} {...rest}>
       <ProTable<API.FetchBlogrollResponse, API.PaginationResponse>
         columns={columns}
         rowKey="id"
@@ -88,15 +94,17 @@ export default function Blogroll(props: BlogrollProps): ReactElement {
         // 批量删除
         tableAlertOptionRender={({ selectedRowKeys }) => {
           return (
-            <PopConfirmDelete
-              onConfirm={async () => {
-                try {
-                  await deleteBlogroll({ ids: selectedRowKeys });
-                  message.success('删除成功');
-                  actionRef.current?.reload();
-                } catch (error) {}
-              }}
-            />
+            <HasOperation operation={OPERATIONS.DELETE}>
+              <PopConfirmDelete
+                onConfirm={async () => {
+                  try {
+                    await deleteBlogroll({ ids: selectedRowKeys });
+                    message.success("删除成功");
+                    actionRef.current?.reload();
+                  } catch (error) {}
+                }}
+              />
+            </HasOperation>
           );
         }}
       />
@@ -118,11 +126,11 @@ export default function Blogroll(props: BlogrollProps): ReactElement {
               // @ts-ignore
               parentId: formData.parentId ?? 0,
             } as API.InsertBlogrollBody);
-            message.success('新增成功');
+            message.success("新增成功");
           } else {
             // 更改
             await updateBlogroll(formData as API.UpdateBlogrollBody);
-            message.success('更新成功');
+            message.success("更新成功");
           }
           actionRef.current?.reload();
           return true;
@@ -143,35 +151,35 @@ export const locationOptions = halfStart(
 
 const columns: ProColumns<API.FetchBlogrollResponse>[] = [
   {
-    title: '友链标题',
-    dataIndex: 'title',
+    title: "友链标题",
+    dataIndex: "title",
     width: 100,
-    tip: '友链标题过长会自动收缩',
+    tip: "友链标题过长会自动收缩",
     ellipsis: true,
     hideInSearch: true,
   },
   {
-    title: '友链描述',
-    dataIndex: 'description',
+    title: "友链描述",
+    dataIndex: "description",
     ellipsis: true,
     width: 150,
-    tip: '友链描述过长会自动收缩',
+    tip: "友链描述过长会自动收缩",
     hideInSearch: true,
   },
   {
-    title: '友链链接',
-    dataIndex: 'link',
+    title: "友链链接",
+    dataIndex: "link",
     width: 100,
     hideInSearch: true,
     ellipsis: true,
-    tip: '友链链接过长会自动收缩',
+    tip: "友链链接过长会自动收缩",
   },
   {
-    title: '友链状态',
-    dataIndex: 'location',
+    title: "友链状态",
+    dataIndex: "location",
     width: 100,
     // 过滤条件表单设置
-    valueType: 'select',
+    valueType: "select",
     fieldProps: {
       options: locationOptions,
       // defaultValue: BlogrollEnums.Location.首页,
@@ -180,34 +188,34 @@ const columns: ProColumns<API.FetchBlogrollResponse>[] = [
     hideInTable: true,
   },
   {
-    title: '友链图片',
-    dataIndex: 'photo',
+    title: "友链图片",
+    dataIndex: "photo",
     width: 100,
     ellipsis: true,
-    tip: '图片过长会自动收缩',
+    tip: "图片过长会自动收缩",
     hideInSearch: true,
   },
   {
-    title: '状态',
-    dataIndex: 'location',
+    title: "状态",
+    dataIndex: "location",
     width: 50,
     valueEnum: {
-      1: { text: '首页', status: '' },
-      2: { text: '内页', status: '' },
-      3: { text: '失效', status: 'Error' },
+      1: { text: "首页", status: "" },
+      2: { text: "内页", status: "" },
+      3: { text: "失效", status: "Error" },
     },
   },
   {
-    title: '创建时间',
-    dataIndex: 'createTime',
+    title: "创建时间",
+    dataIndex: "createTime",
     width: 120,
     hideInSearch: true,
   },
   {
-    title: '操作',
+    title: "操作",
     width: 50,
     // 这个属性使表单编辑时显示保存删除取消按钮
-    valueType: 'option',
+    valueType: "option",
     hideInSearch: true,
   },
 ];

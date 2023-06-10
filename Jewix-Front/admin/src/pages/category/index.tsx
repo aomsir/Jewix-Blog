@@ -1,20 +1,22 @@
-import PopConfirmDelete from '@/components/bases/popConfirmDelete/PopConfirmDelete';
-import { useModelVisionModalForm } from '@/hooks/props';
-import { API } from '@/services/ant-design-pro/typings';
-import { deleteCategories, fetchCategories, insertCategory } from '@/services/api/category';
-import { timestampToTime } from '@/utils/convert';
+import { OPERATIONS } from "@/access";
+import HasOperation from "@/components/bases/hasOperation/hasOperation";
+import PopConfirmDelete from "@/components/bases/popConfirmDelete/PopConfirmDelete";
+import { useModelVisionModalForm } from "@/hooks/props";
+import { API } from "@/services/ant-design-pro/typings";
+import { deleteCategories, fetchCategories, insertCategory } from "@/services/api/category";
+import { timestampToTime } from "@/utils/convert";
 import {
   ActionType,
   ModalForm,
   PageContainer,
   ProColumns,
   ProTable,
-} from '@ant-design/pro-components';
-import { message, Table } from 'antd';
-import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from 'react';
-import { fetchWidthNormalizedResponse } from '../article';
-import ProTableToolBar from '../article/components/ProTableToolBar';
-import EditCategoryForm from './components/EditCategoryForm';
+} from "@ant-design/pro-components";
+import { message, Table } from "antd";
+import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
+import { fetchWidthNormalizedResponse } from "../article";
+import ProTableToolBar from "../article/components/ProTableToolBar";
+import EditCategoryForm from "./components/EditCategoryForm";
 type CategoryProps = HTMLAttributes<HTMLDivElement>;
 export default function Category(props: CategoryProps): ReactElement {
   const { ...rest } = props;
@@ -27,15 +29,17 @@ export default function Category(props: CategoryProps): ReactElement {
   columns[1].render = (dom, entity) => timestampToTime(Date.parse(entity.createTime));
   // 渲染操作列
   columns[2].render = (dom, entity) => (
-    <PopConfirmDelete
-      onConfirm={async () => {
-        try {
-          await deleteCategories({ ids: [entity.id] });
-          message.success('删除成功');
-          actionRef.current?.reload();
-        } catch (error) {}
-      }}
-    />
+    <HasOperation operation={OPERATIONS.DELETE}>
+      <PopConfirmDelete
+        onConfirm={async () => {
+          try {
+            await deleteCategories({ ids: [entity.id] });
+            message.success("删除成功");
+            actionRef.current?.reload();
+          } catch (error) {}
+        }}
+      />
+    </HasOperation>
   );
 
   useEffect(() => {
@@ -45,7 +49,7 @@ export default function Category(props: CategoryProps): ReactElement {
   }, [modalVisionState.open]);
 
   return (
-    <PageContainer className={rest.className ?? ''} {...rest}>
+    <PageContainer className={rest.className ?? ""} {...rest}>
       <ProTable<API.FetchCategoryResponse, API.PaginationResponse>
         search={false}
         columns={columns}
@@ -62,7 +66,7 @@ export default function Category(props: CategoryProps): ReactElement {
         ]}
         expandable={{
           // 如果行数据中存在sonList且有值就是可展开行
-          childrenColumnName: 'sonList',
+          childrenColumnName: "sonList",
         }}
         // 批量操作
         rowSelection={{
@@ -73,15 +77,17 @@ export default function Category(props: CategoryProps): ReactElement {
         // 批量删除
         tableAlertOptionRender={({ selectedRowKeys }) => {
           return (
-            <PopConfirmDelete
-              onConfirm={async () => {
-                try {
-                  await deleteCategories({ ids: selectedRowKeys });
-                  message.success('删除成功');
-                  actionRef.current?.reload();
-                } catch (error) {}
-              }}
-            />
+            <HasOperation operation={OPERATIONS.DELETE}>
+              <PopConfirmDelete
+                onConfirm={async () => {
+                  try {
+                    await deleteCategories({ ids: selectedRowKeys });
+                    message.success("删除成功");
+                    actionRef.current?.reload();
+                  } catch (error) {}
+                }}
+              />
+            </HasOperation>
           );
         }}
       ></ProTable>
@@ -102,7 +108,7 @@ export default function Category(props: CategoryProps): ReactElement {
               ...formData,
               parentId: formData.parentId ?? 0,
             } as API.InsertCategoryParams);
-            message.success('新增成功');
+            message.success("新增成功");
             actionRef.current?.reload();
           } else {
             // 更改
@@ -120,18 +126,18 @@ export default function Category(props: CategoryProps): ReactElement {
 
 const columns: ProColumns<API.FetchCategoryResponse>[] = [
   {
-    title: '分类名',
-    dataIndex: 'categoryName',
+    title: "分类名",
+    dataIndex: "categoryName",
   },
   // {
   //   title: '状态',
   //   dataIndex: 'status',
   // },
   {
-    title: '创建时间',
-    dataIndex: 'createTime',
+    title: "创建时间",
+    dataIndex: "createTime",
   },
   {
-    title: '操作',
+    title: "操作",
   },
 ];

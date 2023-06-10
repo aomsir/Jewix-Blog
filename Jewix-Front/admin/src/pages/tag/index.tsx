@@ -1,19 +1,21 @@
-import { useModelVisionModalForm } from '@/hooks/props';
-import { API } from '@/services/ant-design-pro/typings';
-import { fetchTags, insertTag, updateTag } from '@/services/api';
-import { timestampToTime } from '@/utils';
+import { OPERATIONS } from "@/access";
+import HasOperation from "@/components/bases/hasOperation/hasOperation";
+import { useModelVisionModalForm } from "@/hooks/props";
+import { API } from "@/services/ant-design-pro/typings";
+import { fetchTags, insertTag, updateTag } from "@/services/api";
+import { timestampToTime } from "@/utils";
 import {
   ActionType,
   ModalForm,
   PageContainer,
   ProColumns,
   ProTable,
-} from '@ant-design/pro-components';
-import { message, Space } from 'antd';
-import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from 'react';
-import { fetchWidthNormalizedResponse } from '../article';
-import ProTableToolBar from '../article/components/ProTableToolBar';
-import EditForm from './components/EditForm';
+} from "@ant-design/pro-components";
+import { message, Space } from "antd";
+import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
+import { fetchWidthNormalizedResponse } from "../article";
+import ProTableToolBar from "../article/components/ProTableToolBar";
+import EditForm from "./components/EditForm";
 // import css from "./Tag.module.scss"
 type TagProps = HTMLAttributes<HTMLDivElement>;
 export default function Tag(props: TagProps): ReactElement {
@@ -24,14 +26,16 @@ export default function Tag(props: TagProps): ReactElement {
 
   columns[2].render = (dom, entity) => (
     <Space>
-      <a
-        onClick={() => {
-          modalVisionState.setOpen(true);
-          setInitialValues(entity);
-        }}
-      >
-        编辑
-      </a>
+      <HasOperation operation={OPERATIONS.UPDATE}>
+        <a
+          onClick={() => {
+            modalVisionState.setOpen(true);
+            setInitialValues(entity);
+          }}
+        >
+          编辑
+        </a>
+      </HasOperation>
       {/* <PopConfirmDelete
         onConfirm={async () => {
           try {
@@ -51,7 +55,7 @@ export default function Tag(props: TagProps): ReactElement {
   }, [modalVisionState.open]);
 
   return (
-    <div className={`${rest.className ?? ''}`} {...rest}>
+    <div className={`${rest.className ?? ""}`} {...rest}>
       <PageContainer
         // 标签页
         {...rest}
@@ -83,10 +87,10 @@ export default function Tag(props: TagProps): ReactElement {
           onFinish={async (values: API.InsertTagBody | API.UpdateTagBody) => {
             if (!initialValues) {
               await insertTag(values as API.InsertTagBody);
-              message.success('新增成功');
+              message.success("新增成功");
             } else {
               await updateTag(values as API.UpdateTagBody);
-              message.success('更新成功');
+              message.success("更新成功");
             }
             actionRef.current?.reload();
             return true;
@@ -101,8 +105,8 @@ export default function Tag(props: TagProps): ReactElement {
 
 const columns: ProColumns<API.FetchTagResponse>[] = [
   {
-    title: '标签名',
-    dataIndex: 'tagName',
+    title: "标签名",
+    dataIndex: "tagName",
     hideInSearch: true,
     width: 100,
   },
@@ -112,14 +116,14 @@ const columns: ProColumns<API.FetchTagResponse>[] = [
   //   hideInSearch: true,
   // },
   {
-    title: '创建时间',
-    dataIndex: 'createTime',
+    title: "创建时间",
+    dataIndex: "createTime",
     hideInSearch: true,
     width: 100,
     renderText: (text) => timestampToTime(Date.parse(text)),
   },
   {
-    title: '操作',
+    title: "操作",
     hideInSearch: true,
     width: 20,
   },

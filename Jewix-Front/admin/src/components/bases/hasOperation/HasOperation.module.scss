@@ -1,0 +1,8 @@
+.HasOperation {
+  &:global(.forbidden) {
+    a {
+      color: #ccc !important;
+      cursor: not-allowed;
+    }
+  }
+}

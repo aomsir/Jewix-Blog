@@ -1,24 +1,20 @@
-import { PhotoEnums } from '@/config/enums';
-import { useModelVisionModalForm } from '@/hooks/props';
-import { API } from '@/services/ant-design-pro/typings';
-import { deletePhoto, fetchPhotos, getFetchImageUrl } from '@/services/api';
-import { halfStart } from '@/utils/array';
-import { UploadOutlined } from '@ant-design/icons';
-import {
-  ActionType,
-  ModalForm,
-  PageContainer,
-  ProList,
-  ProListMetas,
-} from '@ant-design/pro-components';
-import { Button, Image, Row } from 'antd';
-import { map } from 'lodash';
-import { ReactElement, useEffect, useRef, useState } from 'react';
-import { HTMLAttributes } from 'react';
-import { fetchWidthNormalizedResponse } from '../article';
-import EditPhotoForm from './components/EditPhotoForm';
-import ImageCard from './components/ImageCard';
-import css from './Photo.module.scss';
+import { OPERATIONS } from "@/access";
+import HasOperation from "@/components/bases/hasOperation/hasOperation";
+import { PhotoEnums } from "@/config/enums";
+import { useHasOperation } from "@/hooks/auth";
+import { useModelVisionModalForm } from "@/hooks/props";
+import { API } from "@/services/ant-design-pro/typings";
+import { deletePhoto, fetchPhotos } from "@/services/api";
+import { halfStart } from "@/utils/array";
+import { UploadOutlined } from "@ant-design/icons";
+import { ActionType, ModalForm, PageContainer, ProList } from "@ant-design/pro-components";
+import { Button } from "antd";
+import { map } from "lodash";
+import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
+import { fetchWidthNormalizedResponse } from "../article";
+import EditPhotoForm from "./components/EditPhotoForm";
+import ImageCard from "./components/ImageCard";
+import css from "./Photo.module.scss";
 type PhotoProps = HTMLAttributes<HTMLDivElement>;
 export default function Photo(props: PhotoProps): ReactElement {
   const { ...rest } = props;
@@ -30,6 +26,8 @@ export default function Photo(props: PhotoProps): ReactElement {
     actionRef.current?.reload();
   }, [selectedType]);
 
+  const hasCreateOperation = useHasOperation(OPERATIONS.CREATE);
+
   return (
     <PageContainer
       // 标签页
@@ -38,10 +36,17 @@ export default function Photo(props: PhotoProps): ReactElement {
       onTabChange={(key) => setSelectedType(parseInt(key))}
       className={css.photo}
       extra={
-        <Button type="primary" key={1} onClick={() => modalVisionState.setOpen(true)}>
-          <UploadOutlined />
-          上传
-        </Button>
+        <HasOperation operation={OPERATIONS.CREATE}>
+          <Button
+            disabled={!hasCreateOperation}
+            type="primary"
+            key={1}
+            onClick={() => modalVisionState.setOpen(true)}
+          >
+            <UploadOutlined />
+            上传
+          </Button>
+        </HasOperation>
       }
       {...rest}
     >
