@@ -4,4 +4,81 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.aomsir.jewixapi.mapper.RoleMapper">
+    <select id="queryRoleCounts" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_role
+        <where>
+            <if test="param.roleName != null">
+                role_name LIKE CONCAT('%',#{param.roleName},'%')
+            </if>
+            <if test="param.status != null">
+                status = #{param.status}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryRoleListPage" resultType="Role">
+        SELECT id, role_name, role_label, create_time, update_time
+        FROM tb_role
+        <where>
+            <if test="param.roleName != null">
+                role_name LIKE CONCAT('%',#{param.roleName},'%')
+            </if>
+            <if test="param.status != null">
+                status = #{param.status}
+            </if>
+        </where>
+        LIMIT #{param.start}, #{param.length}
+    </select>
+
+    <select id="queryRoleByRoleName" resultType="Role">
+        SELECT id, role_name, role_label, create_time, update_time
+        FROM tb_role
+        WHERE role_name = #{roleName}
+    </select>
+
+    <select id="queryRoleByRoleLabel" resultType="Role">
+        SELECT id, role_name, role_label, create_time, update_time
+        FROM tb_role
+        WHERE role_label = #{roleLabel}
+    </select>
+
+    <insert id="insertRole" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_role(role_name, role_label, create_time, update_time)
+        VALUES (#{param.roleName}, #{param.roleLabel}, #{param.createTime}, #{param.updateTime})
+    </insert>
+
+    <select id="queryRoleById" resultType="Role">
+        SELECT id, role_name, role_label, create_time, update_time
+        FROM tb_role
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateRoleInfo">
+        UPDATE tb_role
+        SET role_name = #{param.roleName},role_label = #{param.roleLabel},update_time = #{param.updateTime}
+        WHERE id = #{param.id}
+    </update>
+
+    <select id="queryUserCountsByRoleId" resultType="Integer">
+        SELECT COUNT(tur.id)
+        FROM tb_role AS tr
+        LEFT JOIN tb_user_role AS tur on tr.id = tur.role_id
+        WHERE tr.id = #{roleId}
+    </select>
+
+    <delete id="deleteRoleForResource">
+        DELETE FROM tb_role_resource
+        WHERE role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteRoleForMenu">
+        DELETE FROM tb_role_menu
+        WHERE role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteRole">
+        DELETE FROM tb_role
+        WHERE id = #{roleId}
+    </delete>
 </mapper>

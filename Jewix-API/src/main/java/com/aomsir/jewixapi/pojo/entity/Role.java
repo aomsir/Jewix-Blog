@@ -30,13 +30,8 @@ public class Role implements Serializable {
     /**
      * 角色标签
      */
-    private String rollLabel;
+    private String roleLabel;
 
-    /**
-     * 状态：0-不可用、1-可用
-     */
-
-    private Integer status;
 
     /**
      * 角色创建时间
