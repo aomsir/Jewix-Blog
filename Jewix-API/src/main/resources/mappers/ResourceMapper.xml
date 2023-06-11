@@ -14,4 +14,37 @@
         LEFT JOIN tb_resource tr ON tr.id = trr.resource_id
         WHERE tu.id = #{userId}
     </select>
+
+    <select id="queryResourceCountsOfParentByPage" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_resource
+        <where>
+            <if test="param.name != null">
+                name LIKE CONCAT('%',#{param.name},'%')
+            </if>
+            <if test="param.parentId == null">
+                AND parent_id = 0
+            </if>
+        </where>
+    </select>
+
+    <select id="queryResourcesOfParentByPage" resultType="Resource">
+        SELECT id, name, label, parent_id, method, route, create_time
+        FROM tb_resource
+        <where>
+            <if test="param.name != null">
+                name LIKE CONCAT('%',#{param.name},'%')
+            </if>
+            <if test="param.parentId == null">
+                AND parent_id = 0
+            </if>
+        </where>
+        LIMIT #{param.start}, #{param.length}
+    </select>
+
+    <select id="queryResourcesByParentId" resultType="Resource">
+        SELECT id, name, label, parent_id, method, route, create_time
+        FROM tb_resource
+        WHERE parent_id = #{id}
+    </select>
 </mapper>
