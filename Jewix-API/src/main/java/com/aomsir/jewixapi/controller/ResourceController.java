@@ -34,7 +34,7 @@ public class ResourceController {
      */
     @ApiOperation(value = "分页获取资源列表信息")
     @GetMapping("/admin/resources")
-    public R getResourceParentByPage(ResourcePageVo resourcePageVo) {
+    public R getResourceListByPage(ResourcePageVo resourcePageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(resourcePageVo);
         int page = (Integer) param.get("page");
         int length = (Integer) param.get("length");

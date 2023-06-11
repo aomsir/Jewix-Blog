@@ -4,4 +4,36 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.aomsir.jewixapi.mapper.MenuMapper">
+    <select id="queryMenuCountsOfParentByPage" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_menu
+        <where>
+            <if test="param.name != null">
+                name LIKE CONCAT('%', #{param.name}, '%')
+            </if>
+            <if test="param.parentId == null">
+                AND parent_id = 0
+            </if>
+        </where>
+    </select>
+
+    <select id="queryMenuOfParentByPage" resultType="Menu">
+        SELECT id, parent_id, name, icon_name, path, component_path, type, create_time, update_time
+        FROM tb_menu
+        <where>
+            <if test="param.name != null">
+                name LIKE CONCAT('%',#{param.name},'%')
+            </if>
+            <if test="param.parentId == null">
+                AND parent_id = 0
+            </if>
+        </where>
+        LIMIT #{param.start}, #{param.length}
+    </select>
+
+    <select id="queryMenusByParentId" resultType="Menu">
+        SELECT id, parent_id, name, icon_name, path, component_path, type, create_time, update_time
+        FROM tb_menu
+        WHERE parent_id = #{id}
+    </select>
 </mapper>
