@@ -21,14 +21,14 @@ export default [
   {
     path: "/comment",
     name: "评论管理",
-    icon: "comment",
+    icon: "Comment",
     component: "./comment",
     access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
   {
     path: "/page",
     name: "页面管理",
-    icon: "book",
+    icon: "Book",
     component: "./page",
     access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
@@ -49,7 +49,7 @@ export default [
   {
     path: "/tag",
     name: "标签管理",
-    icon: "tag",
+    icon: "Tag",
     component: "./tag",
     access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },
@@ -63,7 +63,7 @@ export default [
   {
     path: "/user",
     name: "用户管理",
-    icon: "user",
+    icon: "User",
     component: "./user",
     access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
   },

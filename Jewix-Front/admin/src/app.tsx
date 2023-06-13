@@ -1,19 +1,19 @@
-import Footer from '@/components/bases/Footer';
-import { API } from '@/services/ant-design-pro/typings';
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
-import { SettingDrawer } from '@ant-design/pro-components';
-import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
-import 'github-markdown-css';
-import defaultSettings from '../config/defaultSettings';
-import { requestConfig } from '../config/request';
-import { AvatarDropdown, AvatarName } from './components/bases/RightContent/AvatarDropdown';
-import { useErrorBoundary } from './hooks/error';
-import { fetchCurrentUserInfo } from './services/api/user';
-import { getAvatarUrlByEmail } from './utils/avatar';
-import { LocalToken } from './utils/token';
-const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/admin/login';
+import Footer from "@/components/bases/Footer";
+import { API } from "@/services/ant-design-pro/typings";
+import type { Settings as LayoutSettings } from "@ant-design/pro-components";
+import { SettingDrawer } from "@ant-design/pro-components";
+import type { RequestConfig, RunTimeLayoutConfig } from "@umijs/max";
+import { history, Link } from "@umijs/max";
+import "github-markdown-css";
+import defaultSettings from "../config/defaultSettings";
+import { requestConfig } from "../config/request";
+import { AvatarDropdown, AvatarName } from "./components/bases/RightContent/AvatarDropdown";
+import { useErrorBoundary } from "./hooks/error";
+import { fetchCurrentUserInfo } from "./services/api/user";
+import { getAvatarUrlByEmail } from "./utils/avatar";
+import { LocalToken } from "./utils/token";
+const isDev = process.env.NODE_ENV === "development";
+const loginPath = "/admin/login";
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -53,8 +53,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // actionsRender: () => [<SelectLang key="SelectLang" />],
     avatarProps: {
       src:
-        getAvatarUrlByEmail(initialState?.currentUser?.email ?? '') ??
-        'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
+        getAvatarUrlByEmail(initialState?.currentUser?.email ?? "") ??
+        "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png",
       title: <AvatarName />,
       render: (_, avatarChildren) => {
         return <AvatarDropdown menu={true}>{avatarChildren}</AvatarDropdown>;
@@ -66,7 +66,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       }
       // 支持二级菜单显示icon
       return (
-        <Link to={menuItemProps.path} style={{ display: 'flex', gap: '10px' }}>
+        <Link to={menuItemProps.path} style={{ display: "flex", gap: "10px" }}>
           {menuItemProps.pro_layout_parentKeys &&
             menuItemProps.pro_layout_parentKeys.length > 0 &&
             menuItemProps.icon}
@@ -83,27 +83,27 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       const { location } = history;
       // 如果没有登录，重定向到 login
       if (!LocalToken.get() && location.pathname !== loginPath) {
-        history.push(loginPath.replace('/admin', ''));
+        history.push(loginPath.replace("/admin", ""));
       }
     },
     layoutBgImgList: [
       {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',
+        src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr",
         left: 85,
         bottom: 100,
-        height: '303px',
+        height: "303px",
       },
       {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr',
+        src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr",
         bottom: -68,
         right: -45,
-        height: '303px',
+        height: "303px",
       },
       {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr',
+        src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr",
         bottom: 0,
         left: 0,
-        width: '331px',
+        width: "331px",
       },
     ],
     // links: isDev

@@ -1,7 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 
-import { ArticleEnums, BlogrollEnums, PageEnums, PhotoEnums, UserEnums } from '@/config/enums';
+import { ArticleEnums, BlogrollEnums, PageEnums, PhotoEnums, UserEnums } from "@/config/enums";
 // 与后端约定的响应数据格式
 declare namespace API {
   type ResponseStructure<Result = any> = {
@@ -43,12 +43,12 @@ declare namespace API {
   type FetchArticleDetailResponse = API.FetchArticleResponse & {
     categories: [null];
     commentCount: 0;
-    lastUuid: '4e5dcbe2-5240-45fa-900c-d59ae3d0169b';
+    lastUuid: "4e5dcbe2-5240-45fa-900c-d59ae3d0169b";
     nextUuid: null;
     tags: [null];
     userName: null;
   };
-  type UpdateArticleBody = Omit<InsertArticleBody, 'createTime' | 'updateTime'>;
+  type UpdateArticleBody = Omit<InsertArticleBody, "createTime" | "updateTime">;
   type InsertArticleBody = {
     categoryIds: number[];
     content: string;
@@ -107,7 +107,7 @@ declare namespace API {
     description: string;
     webSite: string;
   };
-  type UpdateUserParams = Omit<InsertUserParams, 'password'> & {
+  type UpdateUserParams = Omit<InsertUserParams, "password"> & {
     password?: string;
     id: number;
     uuid: string;
@@ -202,7 +202,7 @@ declare namespace API {
   type DeleteCommentParams = {
     ids: (number | string)[];
   };
-  type UpdateCommentStatusParams = Pick<API.UpdateCommentParams, 'id', 'status'>;
+  type UpdateCommentStatusParams = Pick<API.UpdateCommentParams, "id", "status">;
   type FetchBlogrollParams = API.PaginationParams & {
     location: BlogrollEnums.Location;
   };
@@ -307,7 +307,7 @@ declare namespace API {
     description: string;
     type: PageEnums;
   };
-  export type UpdatePageBody = {
+  type UpdatePageBody = {
     id: number;
     uuid: string;
     title: string;
@@ -316,8 +316,46 @@ declare namespace API {
     type: number;
     views: number;
   };
-  export type DeletePageParams = {
+  type DeletePageParams = {
     uuid: string;
+  };
+  type FetchMenuResponse = {
+    componentPath: string;
+    createTime: string;
+    iconName: string;
+    id: number;
+    name: string;
+    parentId: number;
+    path: string;
+    sonList: API.FetchMenuResponse[];
+    type: number;
+    updateTime: string;
+  };
+  type FetchResourceResponse = {
+    createTime: string;
+    id: 2;
+    label: string;
+    method: string;
+    name: string;
+    parentId: number;
+    route: string;
+  };
+  type FetchRolesResponse = {
+    createTime: string;
+    id: number;
+    roleLabel: string;
+    roleName: string;
+    updateTime: string;
+  };
+  type InsertRoleBody = {
+    roleName: string;
+    labelRole: string;
+  };
+  type UpdateRoleBody = {
+    id: number;
+  } & API.InsertRoleBody;
+  type DeleteRolesParams = {
+    roleIds: (number | string)[];
   };
 
   type LoginParams = {
@@ -364,7 +402,7 @@ declare namespace API {
     total?: number;
     success?: boolean;
   };
-  type NoticeIconItemType = 'notification' | 'message' | 'event';
+  type NoticeIconItemType = "notification" | "message" | "event";
   type NoticeIconItem = {
     id?: string;
     extra?: string;
