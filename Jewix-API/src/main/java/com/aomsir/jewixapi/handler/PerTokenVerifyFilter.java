@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.handler;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.pojo.dto.CurrentUserDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.util.UserHolder;
 import com.aomsir.jewixapi.util.JwtUtils;
@@ -92,7 +93,8 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
 
         Map<Object, Object> objectMap = this.redisTemplate.opsForHash().entries(USER_INFO_KEY + userId);
-        User user = BeanUtil.mapToBean(objectMap, User.class,true,null);
+        CurrentUserDTO currentUserDTO = BeanUtil.mapToBean(objectMap, CurrentUserDTO.class,true,null);
+        User user = currentUserDTO.getUser();
 
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user.getEmail(),null,user.getAuthorities()));
         filterChain.doFilter(request, response);

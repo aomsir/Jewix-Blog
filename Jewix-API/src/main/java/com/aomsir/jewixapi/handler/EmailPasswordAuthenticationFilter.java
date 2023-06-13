@@ -3,9 +3,12 @@ package com.aomsir.jewixapi.handler;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.exception.CustomerException;
+import com.aomsir.jewixapi.pojo.dto.CurrentUserDTO;
+import com.aomsir.jewixapi.pojo.dto.MenuListPageDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
 import com.aomsir.jewixapi.service.LogService;
+import com.aomsir.jewixapi.service.MenuService;
 import com.aomsir.jewixapi.util.JwtUtils;
 import com.aomsir.jewixapi.util.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.aomsir.jewixapi.constant.CommonConstants.LOGIN_METHOD;
@@ -44,14 +48,18 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
 
     private LogService logService;
 
+    private MenuService menuService;
+
 
     public EmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
                                              RedisTemplate<String,Object> redisTemplate,
-                                             LogService logService) {
+                                             LogService logService,
+                                             MenuService menuService) {
         this.setAuthenticationManager(authenticationManager);
         this.redisTemplate = redisTemplate;
         this.setPostOnly(false);
         this.logService = logService;
+        this.menuService = menuService;
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login","POST"));
     }
 
@@ -125,9 +133,15 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         this.redisTemplate.opsForValue()
                 .set(USER_TOKEN_KEY + userIdStr, token,USER_EXPIRED, TimeUnit.DAYS);
 
+        // 查询菜单信息
+        List<MenuListPageDTO> userMenuList = this.menuService.searchMenusByUserId(user.getId());
+        CurrentUserDTO currentUserDTO = new CurrentUserDTO();
+        currentUserDTO.setUser(user);
+        currentUserDTO.setMenuListPageDTO(userMenuList);
+
         // 将用户信息存入Redis
         this.redisTemplate.opsForHash()
-                .putAll(USER_INFO_KEY + userIdStr, BeanUtil.beanToMap(user));
+                .putAll(USER_INFO_KEY + userIdStr, BeanUtil.beanToMap(currentUserDTO));
         this.redisTemplate.expire(USER_INFO_KEY + userIdStr,USER_EXPIRED,TimeUnit.DAYS);
 
         R r = R.ok()
@@ -138,7 +152,6 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         String s = new ObjectMapper().writeValueAsString(r);
 
         this.logService.insertLoginLog(req,user.getId());
-
         resp.getWriter().println(s);
     }
 

@@ -17,4 +17,10 @@ public interface ResourceMapper {
     ArrayList<Resource> queryResourcesOfParentByPage(@Param("param") Map<String, Object> param);
 
     List<Resource> queryResourcesByParentId(@Param("id") Integer id);
+
+    Resource queryResourceById(@Param("resourceId") Integer resourceId);
+
+    int deleteResourcesByRoleId(@Param("roleId") Integer roleId);
+
+    int insertResourceForRole(@Param("roleId") Integer roleId, @Param("resourceIds") List<Integer> resourceIds);
 }

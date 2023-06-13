@@ -47,4 +47,23 @@
         FROM tb_resource
         WHERE parent_id = #{id}
     </select>
+
+    <select id="queryResourceById" resultType="Resource">
+        SELECT id, name, label, parent_id, method, route, create_time
+        FROM tb_resource
+        WHERE id = #{resourceId}
+    </select>
+
+    <delete id="deleteResourcesByRoleId">
+        DELETE FROM tb_role_resource
+        WHERE role_id = #{roleId}
+    </delete>
+
+    <insert id="insertResourceForRole">
+        INSERT INTO tb_role_resource(role_id, resource_id)
+        VALUES
+        <foreach collection="resourceIds" index="index" item="resourceId" separator=",">
+            (#{roleId}, #{resourceId})
+        </foreach>
+    </insert>
 </mapper>

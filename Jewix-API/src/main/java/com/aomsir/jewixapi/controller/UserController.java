@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.pojo.dto.CurrentUserDTO;
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.*;
@@ -146,9 +147,9 @@ public class UserController {
     @ApiOperation(value = "查询当前登录的用户信息")
     @GetMapping("/users/current")
     public R getCurrentUser() {
-        User user = this.userService.searchCurrentUser();
+        CurrentUserDTO currentUserDTO = this.userService.searchCurrentUser();
         return R.ok()
-                .put("status", user);
+                .put("status", currentUserDTO);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.service;
 
+import com.aomsir.jewixapi.pojo.dto.CurrentUserDTO;
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.*;
@@ -24,7 +25,7 @@ public interface UserService {
 
     int updateStatus(UserStatusVo userStatusVo);
 
-    User searchCurrentUser();
+    CurrentUserDTO searchCurrentUser();
 
     int deleteUserByArchive(List<Long> ids);
 

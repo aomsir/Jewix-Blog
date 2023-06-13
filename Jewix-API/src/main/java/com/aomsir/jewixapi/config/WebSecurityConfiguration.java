@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.config;
 
 import com.aomsir.jewixapi.handler.*;
 import com.aomsir.jewixapi.service.LogService;
+import com.aomsir.jewixapi.service.MenuService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -64,6 +65,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Resource
     private LogService logService;
 
+    @Resource
+    private MenuService menuService;
+
     @Value("${server.servlet.context-path}")
     private String prefix;
 
@@ -108,7 +112,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // http.addFilterBefore(this.tokenVerifyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(this.tokenVerifyFilter, FilterSecurityInterceptor.class);
-        http.addFilterAfter(new EmailPasswordAuthenticationFilter(authenticationManager(),redisTemplate,logService),
+        http.addFilterAfter(new EmailPasswordAuthenticationFilter(authenticationManager(),redisTemplate,logService,menuService),
                 PerTokenVerifyFilter.class);
 
         http.exceptionHandling(ex ->

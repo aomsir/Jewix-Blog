@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.UserMapper;
+import com.aomsir.jewixapi.pojo.dto.CurrentUserDTO;
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.*;
@@ -181,8 +182,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User searchCurrentUser() {
-
+    public CurrentUserDTO searchCurrentUser() {
         Long userId = this.userHolder.getUserId();
         if (userId == null) {
             throw new CustomerException(TICKET_ERROR);
@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService {
             throw new CustomerException(TICKET_ERROR);
         }
 
-        return BeanUtil.toBean(userMap, User.class);
+        return BeanUtil.toBean(userMap, CurrentUserDTO.class);
     }
 
     @Override

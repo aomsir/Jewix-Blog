@@ -2,12 +2,16 @@ package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.pojo.vo.ResourcePageVo;
+import com.aomsir.jewixapi.pojo.vo.RoleOfResourcesAddVo;
 import com.aomsir.jewixapi.service.ResourceService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -44,5 +48,14 @@ public class ResourceController {
         PageUtils pageUtils = this.resourceService.searchResourcesByPage(param);
         return R.ok()
                 .put("result", pageUtils);
+    }
+
+    @ApiOperation(value = "给角色分配资源权限")
+    @PostMapping("/admin/resources/doAssign")
+    public R doAssignResourceForRole(@RequestBody @Validated RoleOfResourcesAddVo addVo) {
+
+        int role = this.resourceService.insertReaourceForRole(addVo);
+        return R.ok()
+                .put("role", role);
     }
 }
