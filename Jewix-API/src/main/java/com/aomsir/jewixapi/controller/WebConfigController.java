@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.controller;
 
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.WebConfig;
 import com.aomsir.jewixapi.pojo.vo.InfoWebConfigAddVo;
@@ -17,13 +18,13 @@ import javax.annotation.Resource;
 /**
  * @Author: Aomsir
  * @Date: 2023/3/7
- * @Description: 网站基本设置控制器
+ * @Description: 网站设置控制器
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
 // TODO: 完成评论等配置
-@Api(tags = "网站基本设置控制器")
+@Api(tags = "网站设置控制器")
 @RestController
 public class WebConfigController {
 
@@ -35,6 +36,7 @@ public class WebConfigController {
      * @param infoWebConfigAddVo 网站通用设置信息VO对象
      * @return 新增信息所影响的行数
      */
+    @OperateLog(optType = "新增网站信息")
     @PreAuthorize("hasAuthority('ADMIN_CONFIG_ADD')")
     @ApiOperation(value = "新增网站通用设置信息")
     @PostMapping("/admin/configs")
@@ -51,6 +53,7 @@ public class WebConfigController {
      * @param infoWebConfigUpdateVo 更新网站通用设置信息VO对象
      * @return 更新信息所影响的行数
      */
+    @OperateLog(optType = "修改网站信息")
     @PreAuthorize("hasAuthority('ADMIN_CONFIG_UPDATE')")
     @ApiOperation(value = "修改网站通用设置信息")
     @PutMapping("/admin/configs")

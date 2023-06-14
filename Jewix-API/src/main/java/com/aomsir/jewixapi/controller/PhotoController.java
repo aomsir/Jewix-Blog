@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.vo.PhotoDeleteVo;
 import com.aomsir.jewixapi.pojo.vo.PhotoPageVo;
@@ -53,6 +54,7 @@ public class PhotoController {
      * @throws UpException 又拍云异常
      * @throws IOException IO异常
      */
+    @OperateLog(optType = "上传照片")
     @PreAuthorize("hasAuthority('ADMIN_PHOTO_ADD')")
     @ApiOperation(value = "上传照片到云端")
     @PostMapping("/admin/photos")
@@ -126,6 +128,7 @@ public class PhotoController {
      * @throws UpException 又拍云异常
      * @throws IOException IO异常
      */
+    @OperateLog(optType = "删除照片")
     @PreAuthorize("hasAuthority('ADMIN_PHOTO_DELETE')")
     @ApiOperation(value = "根据文件名与类型删除相册信息")
     @DeleteMapping("/admin/photos")

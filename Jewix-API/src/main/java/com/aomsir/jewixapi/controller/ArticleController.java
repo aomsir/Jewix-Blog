@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.pojo.dto.ArticleDetailDTO;
 import com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO;
 import com.aomsir.jewixapi.pojo.vo.ArticleAddVo;
@@ -85,6 +86,7 @@ public class ArticleController {
      * @param articleAddVo 添加文章VO对象
      * @return 添加文章所影响的行数
      */
+    @OperateLog(optType = "添加文章")
     @PreAuthorize("hasAuthority('ADMIN_ARTICLE_ADD')")
     @ApiOperation(value = "添加文章", notes = "添加文章")
     @PostMapping("/admin/articles")
@@ -100,6 +102,7 @@ public class ArticleController {
      * @param articleUpdateVo 更新文章VO对象
      * @return 更新文章所影响的行数
      */
+    @OperateLog(optType = "修改文章")
     @PreAuthorize("hasAuthority('ADMIN_ARTICLE_UPDATE')")
     @ApiOperation(value = "修改文章", notes = "修改文章")
     @PutMapping("/admin/articles")
@@ -130,6 +133,7 @@ public class ArticleController {
      * @param ids 待删除的文章id列表
      * @return 删除所影响的行数
      */
+    @OperateLog(optType = "理论删除文章")
     @PreAuthorize("hasAuthority('ADMIN_ARTICLE_DELETE_ARCHIVE')")
     @ApiOperation(value = "理论删除文章", notes = "理论删除文章")
     @DeleteMapping("/admin/articles/archive")
@@ -144,6 +148,7 @@ public class ArticleController {
      * @param ids 待删除的文章id列表
      * @return 删除所影响的行数
      */
+    @OperateLog(optType = "物理删除文章")
     @PreAuthorize("hasAuthority('ADMIN_ARTICLE_DELETE_PHYSICS')")
     @ApiOperation(value = "物理删除文章", notes = "物理删除文章")
     @DeleteMapping("/admin/articles/physics")

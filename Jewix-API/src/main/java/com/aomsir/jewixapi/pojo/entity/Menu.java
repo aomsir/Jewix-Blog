@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.pojo.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Date;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class Menu {
+public class Menu implements Serializable {
     private Integer id;
     private Integer parentId;
     private String name;

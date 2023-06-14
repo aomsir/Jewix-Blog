@@ -73,6 +73,11 @@
 			<version>${mybatis.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
 		<!--spring-jdbc依赖-->
 		<dependency>
 			<groupId>org.springframework</groupId>

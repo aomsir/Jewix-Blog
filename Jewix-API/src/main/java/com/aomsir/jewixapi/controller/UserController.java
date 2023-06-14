@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.pojo.dto.CurrentUserDTO;
 import com.aomsir.jewixapi.pojo.dto.UserConfigDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
@@ -83,10 +84,11 @@ public class UserController {
 
 
     /**
-     * 添加/注册新用户接口
+     * 添加/注册新用户接口(后台)
      * @param userAddVo 添加用户VO对象
      * @return 新增用户所影响的行数
      */
+    @OperateLog(optType = "添加新用户")
     @PreAuthorize("hasAuthority('ADMIN_USER_ADD')")
     @ApiOperation(value = "添加/注册新用户")
     @PostMapping("/admin/users")
@@ -102,8 +104,9 @@ public class UserController {
      * @param userUpdateVo 更新用户VO对象
      * @return 更新用户所影响的行数
      */
+    @OperateLog(optType = "更新用户")
     @PreAuthorize("hasAuthority('ADMIN_USER_UPDATE')")
-    @ApiOperation(value = "更新用户接口")
+    @ApiOperation(value = "更新用户")
     @PutMapping("/admin/users")
     public R updateUser(@RequestBody @Validated UserUpdateVo userUpdateVo) {
         int role = this.userService.updateUser(userUpdateVo);
@@ -157,6 +160,7 @@ public class UserController {
      * @param ids 待删除用户id列表
      * @return 删除所影响的行数
      */
+    @OperateLog(optType = "理论删除用户")
     @PreAuthorize("hasAuthority('ADMIN_USER_DELETE_ARCHIVE')")
     @ApiOperation(value = "理论删除用户")
     @DeleteMapping("/admin/users/archive")
@@ -171,6 +175,7 @@ public class UserController {
      * @param ids 待删除用户id列表
      * @return 删除所影响的行数
      */
+    @OperateLog(optType = "物理删除用户")
     @PreAuthorize("hasAuthority('ADMIN_USER_DELETE_PHYSICS')")
     @ApiOperation(value = "物理删除用户")
     @DeleteMapping("/admin/users/physics")
@@ -185,6 +190,7 @@ public class UserController {
      * @param userUpdateVo 用户更新信息VO对象
      * @return 更新影响的行数
      */
+    @OperateLog(optType = "用户更新个人信息")
     @PreAuthorize("hasAuthority('ADMIN_USER_UPDATE_MY')")
     @ApiOperation(value = "用户更新个人信息")
     @PutMapping("/admin/users/my")

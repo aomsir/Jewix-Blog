@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.controller;
 
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.pojo.dto.PageListDTO;
 import com.aomsir.jewixapi.pojo.entity.Page;
 import com.aomsir.jewixapi.pojo.vo.PageAddVo;
@@ -62,6 +63,7 @@ public class PageController {
      * @param pageAddVo 页面添加实体类
      * @return 新增影响的行数
      */
+    @OperateLog(optType = "新增页面")
     @PreAuthorize("hasAuthority('ADMIN_PAGE_ADD')")
     @ApiOperation(value = "新增页面")
     @PostMapping("/admin/pages")
@@ -77,6 +79,7 @@ public class PageController {
      * @param pageUpdateVo 页面更新实体类
      * @return 更新影响的行数
      */
+    @OperateLog(optType = "修改页面")
     @PreAuthorize("hasAuthority('ADMIN_PAGE_UPDATE')")
     @ApiOperation(value = "更新页面")
     @PutMapping("/admin/pages")
@@ -92,6 +95,7 @@ public class PageController {
      * @param uuid 页面uuid
      * @return 删除影响的行数
      */
+    @OperateLog(optType = "删除页面")
     @PreAuthorize("hasAuthority('ADMIN_PAGE_DELETE')")
     @ApiOperation(value = "删除页面")
     @DeleteMapping("/admin/pages")
