@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.ArticleTagVo;
@@ -57,6 +58,7 @@ public class TagController {
      * @param tagAddVo 添加标签VO对象
      * @return 添加标签所影响的行数
      */
+    @OperateLog(optType = "添加标签")
     @PreAuthorize("hasAuthority('ADMIN_TAG_ADD')")
     @ApiOperation(value = "添加新标签")
     @PostMapping("/admin/tags")
@@ -71,6 +73,7 @@ public class TagController {
      * @param updateVo 更新标签VO对象
      * @return 更新标签所影响的行数
      */
+    @OperateLog(optType = "修改标签")
     @PreAuthorize("hasAuthority('ADMIN_TAG_UPDATE')")
     @ApiOperation(value = "根据id修改标签名")
     @PutMapping("/admin/tags")

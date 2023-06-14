@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.pojo.dto.CategoryListDTO;
 import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.CategoryService;
@@ -88,6 +89,7 @@ public class CategoryController {
      * @param categoryAddVo 分类添加VO实体类
      * @return 添加分类所影响的行数
      */
+    @OperateLog(optType = "添加分类")
     @PreAuthorize("hasAuthority('ADMIN_CATEGORY_ADD')")
     @ApiOperation(value = "添加分类")
     @PostMapping("/admin/categories")
@@ -123,6 +125,7 @@ public class CategoryController {
      * @param ids 待删除分类id列表
      * @return 影响的行数
      */
+    @OperateLog(optType = "删除分类")
     @PreAuthorize("hasAuthority('ADMIN_CATEGORY_DELETE')")
     @ApiOperation(value = "删除分类信息")
     @DeleteMapping("/admin/categories")
@@ -138,6 +141,7 @@ public class CategoryController {
      * @param categoryUpdateVo 更改分类VO对象
      * @return 所影响的行数
      */
+    @OperateLog(optType = "修改分类")
     @PreAuthorize("hasAuthority('ADMIN_CATEGORY_UPDATE')")
     @ApiOperation(value = "更新分类信息")
     @PutMapping("/admin/categories")

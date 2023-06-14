@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.pojo.entity.FriendLink;
 import com.aomsir.jewixapi.pojo.vo.FriendLinkAddVo;
 import com.aomsir.jewixapi.pojo.vo.FriendLinkPageVo;
@@ -59,6 +60,7 @@ public class FriendLinkController {
      * @param friendLinkAddVo 添加友链VO对象
      * @return 友链分页列表
      */
+    @OperateLog(optType = "添加友链")
     @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_ADD')")
     @ApiOperation(value = "添加友情链接")
     @PostMapping("/admin/friend-links")
@@ -75,6 +77,7 @@ public class FriendLinkController {
      * @param friendLinkUpdateVo 更新友链VO对象
      * @return 更新友链所影响的行数
      */
+    @OperateLog(optType = "修改友链")
     @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_UPDATE')")
     @ApiOperation(value = "修改友情链接信息")
     @PutMapping("/admin/friend-links")
@@ -106,6 +109,7 @@ public class FriendLinkController {
      * @param ids 待删除友情链接id列表
      * @return 删除影响的数据库行数
      */
+    @OperateLog(optType = "删除友链")
     @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_DELETE')")
     @ApiOperation(value = "删除友情链接")
     @DeleteMapping("/admin/friend-links")

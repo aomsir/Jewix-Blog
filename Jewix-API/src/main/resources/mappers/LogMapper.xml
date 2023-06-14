@@ -12,4 +12,70 @@
                #{loginLog.location},
                #{loginLog.operateTime})
     </insert>
+
+    <insert id="insertOperateLog">
+        INSERT INTO tb_operate_log(id, user_id, ip, location, opt_module, opt_type, req_url, req_method, java_method, opt_req_msg, opt_resp_msg, opt_time)
+        VALUES(#{param.id},
+               #{param.userId},
+               #{param.ip},
+               #{param.location},
+               #{param.optModule},
+               #{param.optType},
+               #{param.reqUrl},
+               #{param.reqMethod},
+               #{param.javaMethod},
+               #{param.optReqMsg},
+               #{param.optRespMsg},
+               #{param.optTime})
+    </insert>
+
+    <select id="queryLoginLogCounts" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_login_log
+        LIMIT #{param.start}, #{param.length}
+    </select>
+
+    <select id="queryLoginLogsByPage" resultType="com.aomsir.jewixapi.pojo.dto.LoginLogDTO">
+        SELECT id, user_id, ip, location, operate_time
+        FROM tb_login_log
+        LIMIT #{param.start}, #{param.length}
+    </select>
+
+    <select id="queryOperateLogCounts" resultType="Integer">
+        SELECT COUNT(id)
+        FROM tb_operate_log
+        <where>
+            <if test="param.optModule != null">
+                opt_module = CONCAT('%', #{param.optType}, '%')
+            </if>
+        </where>
+        LIMIT #{param.start}, #{param.length}
+    </select>
+
+    <select id="queryOperateLogsByPage" resultType="com.aomsir.jewixapi.pojo.dto.OperateLogDTO">
+        SELECT id, user_id, ip, location, opt_module, opt_type, req_url, req_method, java_method, opt_req_msg, opt_resp_msg, opt_time
+        FROM tb_operate_log
+        <where>
+            <if test="param.optModule != null">
+                opt_module = CONCAT('%', #{param.optType}, '%')
+            </if>
+        </where>
+        LIMIT #{param.start}, #{param.length}
+    </select>
+
+    <delete id="deleteLoginLogs">
+        DELETE FROM tb_login_log
+        WHERE id IN
+        <foreach collection="ids" item="id" open="("  separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteOperateLogs">
+        DELETE FROM tb_operate_log
+        WHERE id IN
+        <foreach collection="ids" item="id" open="("  separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

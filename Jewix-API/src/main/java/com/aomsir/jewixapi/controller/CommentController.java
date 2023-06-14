@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.CommentService;
 import com.aomsir.jewixapi.util.PageUtils;
@@ -97,6 +98,7 @@ public class CommentController {
      * @param commentUpdateVo 修改评论VO对象
      * @return 更新评论所影响的行数
      */
+    @OperateLog(optType = "修改评论")
     @PreAuthorize("hasAuthority('ADMIN_COMMENT_UPDATE')")
     @ApiOperation(value = "后台修改评论相关内容")
     @PutMapping("/admin/comments")
@@ -112,6 +114,7 @@ public class CommentController {
      * @param ids 删除评论VO对象
      * @return 删除评论所影响的行数
      */
+    @OperateLog(optType = "删除评论")
     @PreAuthorize("hasAuthority('ADMIN_COMMENT_DELETE')")
     @ApiOperation(value = "根据id列表删除文章评论")
     @DeleteMapping("/admin/comments")
@@ -127,6 +130,7 @@ public class CommentController {
      * @param commentUpdateStatusVo 修改评论状态VO对象
      * @return 修改评论状态所影响的行数
      */
+    @OperateLog(optType = "修改评论状态")
     @PreAuthorize("hasAuthority('ADMIN_COMMENT_UPDATE_STATUS')")
     @ApiOperation(value = "修改评论状态")
     @PutMapping("/admin/comments/status")

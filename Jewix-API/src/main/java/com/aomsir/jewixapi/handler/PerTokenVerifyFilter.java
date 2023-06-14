@@ -91,7 +91,6 @@ public class PerTokenVerifyFilter extends OncePerRequestFilter {
 
         this.userHolder.setUserId(Long.valueOf(userId));
 
-
         Map<Object, Object> objectMap = this.redisTemplate.opsForHash().entries(USER_INFO_KEY + userId);
         CurrentUserDTO currentUserDTO = BeanUtil.mapToBean(objectMap, CurrentUserDTO.class,true,null);
         User user = currentUserDTO.getUser();

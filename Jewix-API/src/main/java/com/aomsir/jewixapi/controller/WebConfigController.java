@@ -1,5 +1,6 @@
 package com.aomsir.jewixapi.controller;
 
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.WebConfig;
 import com.aomsir.jewixapi.pojo.vo.InfoWebConfigAddVo;
@@ -8,6 +9,7 @@ import com.aomsir.jewixapi.service.WebConfigService;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jdk.nashorn.internal.runtime.regexp.joni.constants.internal.OPCode;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +37,7 @@ public class WebConfigController {
      * @param infoWebConfigAddVo 网站通用设置信息VO对象
      * @return 新增信息所影响的行数
      */
+    @OperateLog(optType = "新增网站信息")
     @PreAuthorize("hasAuthority('ADMIN_CONFIG_ADD')")
     @ApiOperation(value = "新增网站通用设置信息")
     @PostMapping("/admin/configs")
@@ -51,6 +54,7 @@ public class WebConfigController {
      * @param infoWebConfigUpdateVo 更新网站通用设置信息VO对象
      * @return 更新信息所影响的行数
      */
+    @OperateLog(optType = "修改网站信息")
     @PreAuthorize("hasAuthority('ADMIN_CONFIG_UPDATE')")
     @ApiOperation(value = "修改网站通用设置信息")
     @PutMapping("/admin/configs")

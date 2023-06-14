@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.pojo.entity.Role;
 import com.aomsir.jewixapi.pojo.vo.RoleAddVo;
 import com.aomsir.jewixapi.pojo.vo.RolePageVo;
@@ -10,6 +11,7 @@ import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +38,7 @@ public class RoleController {
      * @param rolePageVo 角色分页VO实体类
      * @return 通用返回数据
      */
+    @PreAuthorize("hasAuthority('ADMIN_ROLE_LIST')")
     @ApiOperation(value = "分页获取角色列表")
     @GetMapping("/admin/roles")
     public R getRoleList(RolePageVo rolePageVo) {
@@ -56,6 +59,8 @@ public class RoleController {
      * @param roleAddVo 角色添加VO实体类
      * @return 通用返回数据
      */
+    @PreAuthorize("hasAuthority('ADMIN_ROLE_ADD')")
+    @OperateLog(optType = "添加角色")
     @ApiOperation(value = "添加角色")
     @PostMapping("/admin/roles")
     public R addRole(@RequestBody @Validated RoleAddVo roleAddVo) {
@@ -69,6 +74,8 @@ public class RoleController {
      * @param roleUpdateVo 修改角色VO实体类
      * @return 通用返回数据
      */
+    @PreAuthorize("hasAuthority('ADMIN_ROLE_UPDATE')")
+    @OperateLog(optType = "修改角色信息")
     @ApiOperation(value = "修改角色信息")
     @PutMapping("/admin/roles")
     public R updateRole(@RequestBody @Validated RoleUpdateVo roleUpdateVo) {
@@ -82,6 +89,8 @@ public class RoleController {
      * @param roleIds 角色ids
      * @return 通用返回数据
      */
+    @PreAuthorize("hasAuthority('ADMIN_ROLE_DELETE')")
+    @OperateLog(optType = "删除角色")
     @ApiOperation(value = "删除角色")
     @DeleteMapping("/admin/roles")
     public R deleteRoles(@RequestParam List<Integer> roleIds) {
@@ -96,6 +105,7 @@ public class RoleController {
      * @param id 角色id
      * @return 通用角色id
      */
+    @PreAuthorize("hasAuthority('ADMIN_ROLE_DETAIL')")
     @ApiOperation(value = "根据id获取角色详细信息")
     @GetMapping("/admin/roles/{id}")
     public R getRoleInfoById(@PathVariable("id") Integer id) {
