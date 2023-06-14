@@ -24,7 +24,7 @@ import javax.annotation.Resource;
  */
 
 // TODO: 完成评论等配置
-@Api(tags = "网站基本设置控制器")
+@Api(tags = "网站设置控制器")
 @RestController
 public class WebConfigController {
 
