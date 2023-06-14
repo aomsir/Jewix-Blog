@@ -20,18 +20,19 @@ const loginPath = "/admin/login";
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.FetchUserDetailResponse;
+  currentUser?: API.FetchUserDetailResponse["user"];
   loading?: boolean;
-  fetchUserInfo?: () => Promise<API.FetchUserDetailResponse | undefined>;
+  fetchUserInfo?: () => Promise<API.FetchUserDetailResponse["user"] | undefined>;
 }> {
   const fetchUserInfo = async () => {
     const data = await fetchCurrentUserInfo({
       skipErrorHandler: true,
     });
-    return data.status;
+    return data.status?.user;
   };
   // 如果不是登录页面，执行
   const { location } = history;
+  console.log("location", location);
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
 

@@ -117,24 +117,27 @@ declare namespace API {
     status: UserEnums.Status;
   };
   type FetchUserDetailResponse = {
-    accountNonExpired: boolean;
-    accountNonLocked: boolean;
-    authorities: null;
-    createTime: string;
-    credentialsNonExpired: boolean;
-    description: string;
-    email: string;
-    enabled: boolean;
-    id: number;
-    nickname: string;
-    password: string;
-    roles: unknown[];
-    salt: string;
-    status: number;
-    updateTime: string;
-    username: string;
-    uuid: string;
-    webSite: string;
+    menuListPageDTO: API.FetchMenuResponse[];
+    user: {
+      accountNonExpired: boolean;
+      accountNonLocked: boolean;
+      authorities: null;
+      createTime: string;
+      credentialsNonExpired: boolean;
+      description: string;
+      email: string;
+      enabled: boolean;
+      id: number;
+      nickname: string;
+      password: string;
+      roles: unknown[];
+      salt: string;
+      status: number;
+      updateTime: string;
+      username: string;
+      uuid: string;
+      webSite: string;
+    };
   };
   type UpdateUserDetailBody = {
     id: number;
