@@ -25,6 +25,9 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     "菜单管理",
     "资源管理",
     "角色管理",
+    "日志管理",
+    "操作日志",
+    "登录日志",
   ] as (typeof routes)[number]["name"][];
   const hasOperations = {
     文章管理: ["新增", "更新" /* , "删除" */],

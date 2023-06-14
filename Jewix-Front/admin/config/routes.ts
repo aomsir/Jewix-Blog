@@ -84,13 +84,13 @@ export default [
     path: "/auth",
     name: "权限管理",
     icon: "SecurityScanOutlined",
+    access: "normalRouteFilter",
     routes: [
       {
         path: "/auth/menu",
         name: "菜单管理",
         icon: "MenuOutlined",
         component: "./auth/menu",
-        access: "normalRouteFilter",
       },
       {
         path: "/auth/resource",
@@ -104,6 +104,28 @@ export default [
         name: "角色管理",
         icon: "IdcardOutlined",
         component: "./auth/role",
+        access: "normalRouteFilter",
+      },
+    ],
+  },
+  {
+    path: "/log",
+    name: "日志管理",
+    icon: "FileTextOutlined",
+    access: "normalRouteFilter",
+    routes: [
+      {
+        path: "/log/operation",
+        name: "操作日志",
+        icon: "AuditOutlined",
+        component: "./log/operation",
+        access: "normalRouteFilter",
+      },
+      {
+        path: "/log/login",
+        name: "登录日志",
+        icon: "LoginOutlined",
+        component: "./log/login",
         access: "normalRouteFilter",
       },
     ],
