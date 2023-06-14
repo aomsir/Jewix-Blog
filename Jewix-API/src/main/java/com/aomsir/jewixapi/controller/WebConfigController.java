@@ -9,7 +9,6 @@ import com.aomsir.jewixapi.service.WebConfigService;
 import com.aomsir.jewixapi.util.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jdk.nashorn.internal.runtime.regexp.joni.constants.internal.OPCode;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,7 @@ import javax.annotation.Resource;
 /**
  * @Author: Aomsir
  * @Date: 2023/3/7
- * @Description: 网站基本设置控制器
+ * @Description: 网站设置控制器
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */

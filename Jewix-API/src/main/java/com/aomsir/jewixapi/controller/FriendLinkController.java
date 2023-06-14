@@ -27,7 +27,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Api(tags = "友情链接控制器")
+@Api(tags = "友链控制器")
 @RestController
 public class FriendLinkController {
 

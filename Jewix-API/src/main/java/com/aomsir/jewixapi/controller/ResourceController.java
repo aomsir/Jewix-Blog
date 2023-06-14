@@ -26,7 +26,7 @@ import java.util.Map;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-@Api(tags = "资源接口控制器")
+@Api(tags = "资源控制器")
 @RestController
 public class ResourceController {
 
