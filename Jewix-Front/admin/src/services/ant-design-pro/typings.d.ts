@@ -4,8 +4,28 @@
 import { ArticleEnums, BlogrollEnums, PageEnums, PhotoEnums, UserEnums } from "@/config/enums";
 // 与后端约定的响应数据格式
 declare namespace API {
-  type FetchLogLoginResponse = {};
-  type FetchLogOperationResponse = {};
+  type FetchLogLoginResponse = {
+    id: number;
+    ip: string;
+    location: string;
+    nickname: string;
+    operateTime: string;
+    userId: number;
+  };
+  type FetchLogOperationResponse = {
+    id: number;
+    ip: string;
+    javaMethod: string;
+    location: string;
+    nickname: string;
+    optModule: string;
+    optReqMsg: string;
+    optRespMsg: string;
+    optTime: string;
+    optType: string;
+    reqMethod: string;
+    reqUrl: string;
+  };
   type ResponseStructure<Result = any> = {
     code: number;
     result?: Result;

@@ -1,19 +1,25 @@
 import { OPERATIONS } from "@/access";
 import HasOperation from "@/components/bases/hasOperation/hasOperation";
 import PopConfirmDelete from "@/components/bases/popConfirmDelete/PopConfirmDelete";
+import { MAPPING } from "@/config/mapping";
+import { useSelection } from "@/hooks/props";
 import { fetchWidthNormalizedResponse } from "@/pages/article";
 import { API } from "@/services/ant-design-pro/typings";
 import { deleteLogOperation, fetchLogOperation } from "@/services/api/log";
 import { timestampToTime } from "@/utils";
 import { ActionType, PageContainer, ProColumns, ProTable } from "@ant-design/pro-components";
-import { message, Space } from "antd";
-import { HTMLAttributes, ReactElement, useRef } from "react";
+import { Drawer, message, Space, Tag } from "antd";
+import { HTMLAttributes, ReactElement, useRef, useState } from "react";
+import LogOperationDetail from "./components/detail";
 type LogOperationProps = HTMLAttributes<HTMLDivElement>;
 export default function LogOperation(props: LogOperationProps): ReactElement {
   const { ...rest } = props;
   const actionRef = useRef<ActionType>();
+  const [open, setOpen] = useState(false);
+  const [detailData, setDetailData] = useState<API.FetchLogOperationResponse>();
+  const [selectionState, selectionProps] = useSelection();
   // 渲染操作列
-  columns[3].render = (dom, entity) => (
+  columns[9].render = (dom, entity) => (
     <Space>
       <HasOperation operation={OPERATIONS.DELETE}>
         <PopConfirmDelete
@@ -26,6 +32,7 @@ export default function LogOperation(props: LogOperationProps): ReactElement {
           }}
         />
       </HasOperation>
+      <a onClick={() => (setOpen(true), setDetailData(entity))}>查看</a>
     </Space>
   );
   return (
@@ -41,23 +48,78 @@ export default function LogOperation(props: LogOperationProps): ReactElement {
         }}
         request={fetchWidthNormalizedResponse(fetchLogOperation)}
         actionRef={actionRef}
+        // 批量操作
+        rowSelection={selectionProps}
+        //批量删除
+        tableAlertRender={({ selectedRowKeys, onCleanSelected }) => (
+          <Space size={24}>
+            <span>已选择 {selectedRowKeys.length} 项</span>
+            <HasOperation operation={OPERATIONS.DELETE}>
+              <PopConfirmDelete
+                onConfirm={async () => {
+                  try {
+                    await deleteLogOperation({ ids: selectedRowKeys });
+                    message.success("删除成功");
+                    onCleanSelected();
+                    actionRef.current?.reload();
+                  } catch (error) {}
+                }}
+              >
+                批量删除
+              </PopConfirmDelete>
+            </HasOperation>
+          </Space>
+        )}
       />
+      {detailData && (
+        <Drawer title="详细信息" placement="right" onClose={() => setOpen(false)} open={open}>
+          <LogOperationDetail data={detailData} />
+        </Drawer>
+      )}
     </PageContainer>
   );
 }
 
 const columns: ProColumns<API.FetchLogOperationResponse>[] = [
   {
-    title: "菜单名称",
-    dataIndex: "name",
+    title: "用户名",
+    dataIndex: "nickname",
   },
   {
-    title: "访问路径",
-    dataIndex: "path",
+    title: "IP地址",
+    dataIndex: "ip",
   },
   {
-    title: "创建时间",
-    dataIndex: "createTime",
+    title: "地址",
+    dataIndex: "location",
+  },
+  {
+    title: "操作模块",
+    dataIndex: "optModule",
+  },
+  {
+    title: "操作类型",
+    dataIndex: "optType",
+  },
+  {
+    title: "请求方法",
+    dataIndex: "reqMethod",
+    render: (_, record) => (
+      // @ts-ignore
+      <Tag color={MAPPING.METHOD_COLOR[record.reqMethod]}>{record.reqMethod}</Tag>
+    ),
+  },
+  {
+    title: "请求地址",
+    dataIndex: "reqUrl",
+  },
+  {
+    title: "操作类型",
+    dataIndex: "optType",
+  },
+  {
+    title: "操作时间",
+    dataIndex: "optTime",
     renderText: (text) => timestampToTime(Date.parse(text)),
   },
   {

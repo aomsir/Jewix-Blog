@@ -1,7 +1,9 @@
+import { MAPPING } from "@/config/mapping";
 import { fetchWidthNormalizedResponse } from "@/pages/article";
 import { fetchResources } from "@/services/api/resource";
 import { timestampToTime } from "@/utils";
 import { PageContainer, ProColumns, ProTable } from "@ant-design/pro-components";
+import { Tag } from "antd";
 import { HTMLAttributes, ReactElement } from "react";
 import css from "./AuthResource.module.scss";
 type AuthResourceProps = HTMLAttributes<HTMLDivElement>;
@@ -44,7 +46,13 @@ const columns: ProColumns<any>[] = [
   {
     title: "请求方式",
     dataIndex: "method",
-    renderText: (text) => (text === "NULL" ? "" : text),
+    render: (_, record) =>
+      record.method === "NULL" ? (
+        "-"
+      ) : (
+        // @ts-ignore
+        <Tag color={MAPPING.METHOD_COLOR[record.method]}>{record.method}</Tag>
+      ),
   },
   {
     title: "创建时间",

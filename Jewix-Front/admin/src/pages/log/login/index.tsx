@@ -1,6 +1,7 @@
 import { OPERATIONS } from "@/access";
 import HasOperation from "@/components/bases/hasOperation/hasOperation";
 import PopConfirmDelete from "@/components/bases/popConfirmDelete/PopConfirmDelete";
+import { useSelection } from "@/hooks/props";
 import { fetchWidthNormalizedResponse } from "@/pages/article";
 import { API } from "@/services/ant-design-pro/typings";
 import { deleteLogLogins, fetchLogLogin } from "@/services/api/log";
@@ -12,8 +13,9 @@ type LogLoginProps = HTMLAttributes<HTMLDivElement>;
 export default function LogLogin(props: LogLoginProps): ReactElement {
   const { ...rest } = props;
   const actionRef = useRef<ActionType>();
+  const [selectionState, selectionProps] = useSelection();
   // 渲染操作列
-  columns[3].render = (dom, entity) => (
+  columns[5].render = (dom, entity) => (
     <Space>
       <HasOperation operation={OPERATIONS.DELETE}>
         <PopConfirmDelete
@@ -41,6 +43,28 @@ export default function LogLogin(props: LogLoginProps): ReactElement {
         }}
         request={fetchWidthNormalizedResponse(fetchLogLogin)}
         actionRef={actionRef}
+        // 批量操作
+        rowSelection={selectionProps}
+        //批量删除
+        tableAlertRender={({ selectedRowKeys, onCleanSelected }) => (
+          <Space size={24}>
+            <span>已选择 {selectedRowKeys.length} 项</span>
+            <HasOperation operation={OPERATIONS.DELETE}>
+              <PopConfirmDelete
+                onConfirm={async () => {
+                  try {
+                    await deleteLogLogins({ ids: selectedRowKeys });
+                    message.success("删除成功");
+                    onCleanSelected();
+                    actionRef.current?.reload();
+                  } catch (error) {}
+                }}
+              >
+                批量删除
+              </PopConfirmDelete>
+            </HasOperation>
+          </Space>
+        )}
       />
     </PageContainer>
   );
@@ -48,20 +72,24 @@ export default function LogLogin(props: LogLoginProps): ReactElement {
 
 const columns: ProColumns<API.FetchLogLoginResponse>[] = [
   {
-    title: "菜单名称",
-    dataIndex: "name",
+    title: "用户名",
+    dataIndex: "nickname",
   },
   {
-    title: "访问路径",
-    dataIndex: "path",
+    title: "用户ID",
+    dataIndex: "userId",
   },
   {
-    title: "组件路径",
-    dataIndex: "componentPath",
+    title: "IP地址",
+    dataIndex: "ip",
   },
   {
-    title: "创建时间",
-    dataIndex: "createTime",
+    title: "地址",
+    dataIndex: "location",
+  },
+  {
+    title: "操作时间",
+    dataIndex: "operateTime",
     renderText: (text) => timestampToTime(Date.parse(text)),
   },
   {

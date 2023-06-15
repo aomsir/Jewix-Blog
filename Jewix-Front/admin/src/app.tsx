@@ -20,19 +20,18 @@ const loginPath = "/admin/login";
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.FetchUserDetailResponse["user"];
+  currentUser?: API.FetchUserDetailResponse;
   loading?: boolean;
-  fetchUserInfo?: () => Promise<API.FetchUserDetailResponse["user"] | undefined>;
+  fetchUserInfo?: () => Promise<API.FetchUserDetailResponse | undefined>;
 }> {
   const fetchUserInfo = async () => {
     const data = await fetchCurrentUserInfo({
       skipErrorHandler: true,
     });
-    return data.status?.user;
+    return data.status;
   };
   // 如果不是登录页面，执行
   const { location } = history;
-  console.log("location", location);
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
 
@@ -54,7 +53,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // actionsRender: () => [<SelectLang key="SelectLang" />],
     avatarProps: {
       src:
-        getAvatarUrlByEmail(initialState?.currentUser?.email ?? "") ??
+        getAvatarUrlByEmail(initialState?.currentUser?.user.email ?? "") ??
         "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png",
       title: <AvatarName />,
       render: (_, avatarChildren) => {
