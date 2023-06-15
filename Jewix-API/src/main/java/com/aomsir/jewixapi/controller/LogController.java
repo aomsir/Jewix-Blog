@@ -40,7 +40,7 @@ public class LogController {
      * @param loginLogPageVo 登录登录日志VO对象
      * @return 分页数据
      */
-    @PreAuthorize("hasAuthority('ADMIN_LOGIN_LOG_LIST')")
+    @PreAuthorize("hasAuthority('ADMIN_LOG_LOGIN_LIST')")
     @ApiOperation(value = "分页获取登录日志")
     @GetMapping("/admin/logs/login")
     public R getLoginLogsByPage(@Validated LoginLogPageVo loginLogPageVo) {
@@ -60,7 +60,7 @@ public class LogController {
      * @param operateLogPageVo 分页操作日志VO对象
      * @return 分页数据
      */
-    @PreAuthorize("hasAuthority('ADMIN_OPERATE_LOG_LIST')")
+    @PreAuthorize("hasAuthority('ADMIN_LOG_OPERATE_LIST')")
     @ApiOperation(value = "分页获取操作日志")
     @GetMapping("/admin/logs/operate")
     public R getOperateLogsByPage(@Validated OperateLogPageVo operateLogPageVo) {
@@ -81,7 +81,7 @@ public class LogController {
      * @param ids 待删除登录日志id列表
      * @return 删除所影响的行数
      */
-    @PreAuthorize("hasAuthority('ADMIN_LOGIN_LOG_DELETE')")
+    @PreAuthorize("hasAuthority('ADMIN_LOG_LOGIN_DELETE')")
     @OperateLog(optType = "删除登录日志")
     @ApiOperation(value = "删除登录日志")
     @DeleteMapping("/admin/logs/login")
@@ -96,7 +96,7 @@ public class LogController {
      * @param ids 待删除操作日志id列表
      * @return 删除所影响的行数
      */
-    @PreAuthorize("hasAuthority('ADMIN_OPERATE_LOG_DELETE')")
+    @PreAuthorize("hasAuthority('ADMIN_LOG_OPERATE_DELETE')")
     @OperateLog(optType = "删除操作日志")
     @ApiOperation(value = "删除操作日志")
     @DeleteMapping("/admin/logs/operate")
