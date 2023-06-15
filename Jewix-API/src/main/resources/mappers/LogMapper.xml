@@ -32,7 +32,6 @@
     <select id="queryLoginLogCounts" resultType="Integer">
         SELECT COUNT(id)
         FROM tb_login_log
-        LIMIT #{param.start}, #{param.length}
     </select>
 
     <select id="queryLoginLogsByPage" resultType="com.aomsir.jewixapi.pojo.dto.LoginLogDTO">
@@ -49,7 +48,6 @@
                 opt_module = CONCAT('%', #{param.optType}, '%')
             </if>
         </where>
-        LIMIT #{param.start}, #{param.length}
     </select>
 
     <select id="queryOperateLogsByPage" resultType="com.aomsir.jewixapi.pojo.dto.OperateLogDTO">

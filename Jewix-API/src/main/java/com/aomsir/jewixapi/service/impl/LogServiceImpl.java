@@ -99,15 +99,16 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
+    @Transactional
     public int deleteLoginLogs(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             throw new CustomerException("参数异常");
         }
-
         return this.logMapper.deleteLoginLogs(ids);
     }
 
     @Override
+    @Transactional
     public int deleteOperateLogs(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             throw new CustomerException("参数异常");
