@@ -1,6 +1,7 @@
 .detail-article__content {
     @include padding(1.771vw, 0);
     color: myRgb(--color-title);
+    background-color: myRgb(--color-foreground);
 
     pre {
         position: relative;

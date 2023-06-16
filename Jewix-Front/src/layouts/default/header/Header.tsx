@@ -40,7 +40,7 @@ export default function Header({ links, menuData, ...rest }: Header): ReactEleme
                     <Links className="links" links={links} />
                     <Divider className="my-divider" />
                     {/*  菜单 */}
-                    <Menu menuData={menuData} activeIndexes={[0, 1]} />
+                    <Menu menuData={menuData} activeIndexes={[0, 1, 1]} />
                     <Divider className="my-divider" />
                     {/* 操作（主题|搜索） */}
                     <div className="operations">

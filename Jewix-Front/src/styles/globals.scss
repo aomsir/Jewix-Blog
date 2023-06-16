@@ -8,7 +8,7 @@ body {
     color: rgb(var(--color-text));
 }
 /* 亮色 */
-:root {
+@mixin light {
     --z-index-max: 999;
     --color-title: 34, 34, 34;
     --color-text: 119, 119, 119;
@@ -47,11 +47,18 @@ body {
         @include dark;
     }
 }
+@media (prefers-color-scheme: light) {
+    :root {
+        @include light;
+    }
+}
 /* 手动设置暗色，在html标签上设置data-theme属性的值为dark */
 [data-theme="dark"] {
     @include dark;
 }
-
+[data-theme="light"] {
+    @include light;
+}
 [class*="card"] {
     border-radius: 5px;
     background-color: rgb(var(--color-foreground));

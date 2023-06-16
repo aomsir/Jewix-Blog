@@ -39,6 +39,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
                 }
             )
         ).data.result!.list.map(item => createArticle.toHomeArticle(item))
+        
         return {
             props: {
                 initialBlogs,
