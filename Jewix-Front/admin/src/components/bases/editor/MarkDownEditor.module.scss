@@ -23,7 +23,8 @@
     .toolbars {
       position: sticky;
       top: 0;
-      height: 40px;
+      flex-shrink: 0;
+      height: 47px;
       padding: 4px 0;
       background-color: #fff;
       border-bottom: none;
