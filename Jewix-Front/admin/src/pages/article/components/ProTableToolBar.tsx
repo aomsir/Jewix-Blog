@@ -5,14 +5,15 @@ import { Button, message } from "antd";
 import { HTMLAttributes, ReactElement, useEffect, useRef } from "react";
 type TableToolBarProps = HTMLAttributes<HTMLDivElement> & {
   onInsertButtonClick?: () => void;
+  routerProps?: { name: string };
 };
 export default function TableToolBar(props: TableToolBarProps): ReactElement {
-  const { onInsertButtonClick, ...rest } = props;
+  const { onInsertButtonClick, routerProps: routerProps2, ...rest } = props;
   const containerRef = useRef<HTMLDivElement>(null);
   const { operationFilter } = useAccess();
   const routeProps = useRouteProps();
 
-  const access = operationFilter(routeProps, OPERATIONS.CREATE);
+  const access = operationFilter(routerProps2 ?? routeProps, OPERATIONS.CREATE);
 
   useEffect(() => {
     containerRef.current?.addEventListener(

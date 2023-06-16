@@ -17,7 +17,7 @@ export default function LogLogin(props: LogLoginProps): ReactElement {
   // 渲染操作列
   columns[5].render = (dom, entity) => (
     <Space>
-      <HasOperation operation={OPERATIONS.DELETE}>
+      <HasOperation operation={"删除数据"} routerProps={{ name: "日志管理" }}>
         <PopConfirmDelete
           onConfirm={async () => {
             try {
@@ -49,7 +49,7 @@ export default function LogLogin(props: LogLoginProps): ReactElement {
         tableAlertRender={({ selectedRowKeys, onCleanSelected }) => (
           <Space size={24}>
             <span>已选择 {selectedRowKeys.length} 项</span>
-            <HasOperation operation={OPERATIONS.DELETE}>
+            <HasOperation operation={"删除数据"} routerProps={{ name: "日志管理" }}>
               <PopConfirmDelete
                 onConfirm={async () => {
                   try {

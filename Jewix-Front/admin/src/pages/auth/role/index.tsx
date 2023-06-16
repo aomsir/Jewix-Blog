@@ -36,7 +36,7 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
   // 渲染操作列
   columns[3].render = (dom, entity) => (
     <Space>
-      <HasOperation operation={OPERATIONS.UPDATE}>
+      <HasOperation operation={OPERATIONS.UPDATE} routerProps={{ name: "权限管理" }}>
         <a
           onClick={() => {
             modalVisionState.setOpen(true);
@@ -46,7 +46,7 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
           编辑
         </a>
       </HasOperation>
-      <HasOperation operation={OPERATIONS.DELETE}>
+      <HasOperation operation={OPERATIONS.DELETE} routerProps={{ name: "权限管理" }}>
         <PopConfirmDelete
           onConfirm={async () => {
             try {
@@ -77,7 +77,11 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
         }}
         request={fetchWidthNormalizedResponse(fetchRoles)}
         toolBarRender={() => [
-          <ProTableToolBar key={1} onInsertButtonClick={() => modalVisionState.setOpen(true)} />,
+          <ProTableToolBar
+            key={1}
+            onInsertButtonClick={() => modalVisionState.setOpen(true)}
+            routerProps={{ name: "权限管理" }}
+          />,
         ]}
         actionRef={actionRef}
         // 批量操作
@@ -86,7 +90,7 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
         tableAlertRender={({ selectedRowKeys, onCleanSelected }) => (
           <Space size={24}>
             <span>已选择 {selectedRowKeys.length} 项</span>
-            <HasOperation operation={OPERATIONS.DELETE}>
+            <HasOperation operation={OPERATIONS.DELETE} routerProps={{ name: "权限管理" }}>
               <PopConfirmDelete
                 onConfirm={async () => {
                   try {

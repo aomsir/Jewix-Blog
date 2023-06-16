@@ -4,13 +4,14 @@ import { HTMLAttributes, ReactElement, useEffect, useRef } from "react";
 import css from "./HasOperation.module.scss";
 type HasOperationProps = HTMLAttributes<HTMLDivElement> & {
   operation: string;
+  routerProps?: { name: string };
 };
 export default function HasOperation(props: HasOperationProps): ReactElement {
-  const { operation, children, ...rest } = props;
+  const { operation, children, routerProps: routerProps2, ...rest } = props;
   const { operationFilter } = useAccess();
   const routeProps = useRouteProps();
 
-  const access = operationFilter(routeProps, operation);
+  const access = operationFilter(routerProps2 ?? routeProps, operation);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -31,7 +31,7 @@ export const requestConfig: RequestConfig = {
       if (error.name === 'CustomError') {
         // 我们的 errorThrower 抛出的错误。
         message.error(error.message);
-        if (error.code === 401) {
+        if (error.code === 401 || error.message === "登录状态失效,请重新登录") {
           LocalToken.remove();
           history.replace(`/login?redirect=${history.location.pathname.replace('/admin', '')}`);
         }
