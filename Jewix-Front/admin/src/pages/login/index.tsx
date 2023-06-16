@@ -1,28 +1,28 @@
-import Footer from '@/components/bases/Footer';
+import Footer from "@/components/bases/Footer";
 // import { login } from '@/services/ant-design-pro/api';
-import { API } from '@/services/ant-design-pro/typings';
-import { login } from '@/services/api/user';
-import { LocalToken } from '@/utils/token';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { LoginForm, ProFormText } from '@ant-design/pro-components';
-import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from '@umijs/max';
-import { Alert, message } from 'antd';
-import React, { useState } from 'react';
-import { flushSync } from 'react-dom';
-import Settings from '../../../config/defaultSettings';
-import css from './index.less';
+import { API } from "@/services/ant-design-pro/typings";
+import { login } from "@/services/api/user";
+import { LocalToken } from "@/utils/token";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { LoginForm, ProFormText } from "@ant-design/pro-components";
+import { useEmotionCss } from "@ant-design/use-emotion-css";
+import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from "@umijs/max";
+import { Alert, message } from "antd";
+import React, { useState } from "react";
+import { flushSync } from "react-dom";
+import Settings from "../../../config/defaultSettings";
+import css from "./index.less";
 
 const Lang = () => {
   const langClassName = useEmotionCss(({ token }) => {
     return {
       width: 42,
       height: 42,
-      lineHeight: '42px',
-      position: 'fixed',
+      lineHeight: "42px",
+      position: "fixed",
       right: 16,
       borderRadius: token.borderRadius,
-      ':hover': {
+      ":hover": {
         backgroundColor: token.colorBgTextHover,
       },
     };
@@ -53,7 +53,7 @@ const Login: React.FC = () => {
   // 登录状态
   const [userLoginState, setUserLoginState] = useState<API.ResponseStructure>();
   // 获取初始登录状态
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { initialState, setInitialState } = useModel("@@initialState");
   // 国际化
   const intl = useIntl();
   // 登录
@@ -62,14 +62,15 @@ const Login: React.FC = () => {
     LocalToken.set(data.token);
 
     // 如果成功
-    if (data.msg === 'success') {
+    if (data.msg === "success") {
       message.success(
         intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: '登录成功！',
+          id: "pages.login.success",
+          defaultMessage: "登录成功！",
         }),
       );
       // 如果成功，去获取用户信息
+      console.log("login", initialState);
       const userInfo = await initialState?.fetchUserInfo?.();
       if (userInfo) {
         // flushSync 用于同步更新 state
@@ -83,7 +84,8 @@ const Login: React.FC = () => {
       // 获取到之前的页面
       const urlParams = new URL(window.location.href).searchParams;
       // 跳转到之前的页面
-      history.push(urlParams.get('redirect') || '/');
+      console.log(urlParams.get("redirect") || "/");
+      history.push(urlParams.get("redirect") || "/");
     } else {
       // 如果失败去设置用户错误信息
       setUserLoginState(data);
@@ -96,8 +98,8 @@ const Login: React.FC = () => {
       <Helmet>
         <title>
           {intl.formatMessage({
-            id: 'menu.login',
-            defaultMessage: '登录页',
+            id: "menu.login",
+            defaultMessage: "登录页",
           })}
           - {Settings.title}
         </title>
@@ -105,14 +107,14 @@ const Login: React.FC = () => {
       {/* 内容 */}
       <div
         style={{
-          flex: '1',
-          padding: '32px 0',
+          flex: "1",
+          padding: "32px 0",
         }}
       >
         <LoginForm
           contentStyle={{
             minWidth: 280,
-            maxWidth: '75vw',
+            maxWidth: "75vw",
           }}
           logo={<img alt="logo" src="/admin/logo.svg" />}
           title="Jewix博客"
@@ -125,12 +127,12 @@ const Login: React.FC = () => {
           }}
         >
           {(userLoginState?.code ?? 200) >= 400 && (
-            <LoginMessage content={userLoginState?.msg ?? '未知错误'} />
+            <LoginMessage content={userLoginState?.msg ?? "未知错误"} />
           )}
           <ProFormText
             name="username"
             fieldProps={{
-              size: 'large',
+              size: "large",
               prefix: <UserOutlined />,
             }}
             placeholder="用户名"
@@ -149,7 +151,7 @@ const Login: React.FC = () => {
           <ProFormText.Password
             name="password"
             fieldProps={{
-              size: 'large',
+              size: "large",
               prefix: <LockOutlined />,
             }}
             placeholder="密码"
