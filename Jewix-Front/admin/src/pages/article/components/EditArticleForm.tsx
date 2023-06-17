@@ -1,16 +1,17 @@
-import Editor from '@/components/bases/editor/Editor';
-import { ArticleEnums } from '@/config/enums';
-import { API } from '@/services/ant-design-pro/typings';
+import Editor from "@/components/bases/editor/Editor";
+import { ArticleEnums } from "@/config/enums";
+import { API } from "@/services/ant-design-pro/typings";
 import {
   ProFormRadio,
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
+  ProFormTextArea,
   ProFormTreeSelect,
-} from '@ant-design/pro-components';
-import { Form } from 'antd';
-import { HTMLAttributes, ReactElement, useState } from 'react';
-import css from './EditArticleForm.module.scss';
+} from "@ant-design/pro-components";
+import { Form } from "antd";
+import { HTMLAttributes, ReactElement, useState } from "react";
+import css from "./EditArticleForm.module.scss";
 type EditArticleFormProps = HTMLAttributes<HTMLDivElement> & {
   tags: API.FetchTagResponse[];
   categories: API.FetchCategoryResponse[];
@@ -28,7 +29,7 @@ export default function EditArticleForm({
   const [showLinkInput, setShowLinkInput] = useState(false);
 
   return (
-    <div className={`${rest.className ?? ''} ${css['edit-article-form']}`} {...rest}>
+    <div className={`${rest.className ?? ""} ${css["edit-article-form"]}`} {...rest}>
       <Form.Item name="title" rules={[{ required: true }]}>
         <input className="title" type="text" placeholder="在这里输入文章标题" />
       </Form.Item>
@@ -36,6 +37,7 @@ export default function EditArticleForm({
         <Editor />
       </Form.Item>
       <div className="footer">
+        <ProFormTextArea name="description" label="文章描述"/>
         <ProFormText width={300} name="cover" label="文章封面" placeholder="请输入url地址" />
         <ProFormSelect
           rules={[{ required: true }]}
@@ -52,14 +54,14 @@ export default function EditArticleForm({
           width={300}
           fieldProps={{
             fieldNames: {
-              label: 'categoryName',
-              value: 'id',
-              key: 'id',
-              children: 'sonList',
+              label: "categoryName",
+              value: "id",
+              key: "id",
+              children: "sonList",
             },
             treeData: categories,
             showSearch: false, // 因为值是id，所以不支持输入名字搜索
-            placeholder: '请选择',
+            placeholder: "请选择",
             allowClear: true,
             multiple: true,
           }}
@@ -71,11 +73,11 @@ export default function EditArticleForm({
           initialValue={ArticleEnums.Type.原创}
           options={[
             {
-              label: '原创',
+              label: "原创",
               value: ArticleEnums.Type.原创,
             },
             {
-              label: '转载',
+              label: "转载",
               value: ArticleEnums.Type.转载,
             },
           ]}
@@ -92,11 +94,11 @@ export default function EditArticleForm({
           initialValue={ArticleEnums.Status.公开}
           options={[
             {
-              label: '公开',
+              label: "公开",
               value: ArticleEnums.Status.公开,
             },
             {
-              label: '私密',
+              label: "私密",
               value: ArticleEnums.Status.私密,
             },
           ]}

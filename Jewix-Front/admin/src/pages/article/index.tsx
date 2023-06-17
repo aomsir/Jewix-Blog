@@ -139,10 +139,12 @@ export default function Article({ className, ...rest }: ArticleProps): ReactElem
             let _article = {
               ...values,
               isTop: values.isTop ? ArticleEnums.IsTop.是 : ArticleEnums.IsTop.否,
-              description: md
-                .render(values.content)
-                .replace(/<[^>]+>/g, "")
-                .substring(0, 30),
+              description:
+                values.description ||
+                md
+                  .render(values.content)
+                  .replace(/<[^>]+>/g, "")
+                  .substring(0, 30),
             };
             // 新增标签
             for (const index in values.tagIds) {
