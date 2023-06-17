@@ -23,7 +23,6 @@ import javax.annotation.Resource;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-// TODO: 完成评论等配置
 @Api(tags = "网站设置控制器")
 @RestController
 public class WebConfigController {

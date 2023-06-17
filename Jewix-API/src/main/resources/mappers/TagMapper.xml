@@ -68,4 +68,12 @@
             #{id}
         </foreach>
     </select>
+
+    <delete id="deleteTags">
+        DELETE FROM tb_tag
+        WHERE id IN
+        <foreach collection="tagIds" open="(" separator="," close=")" item="tagId">
+            #{tagId}
+        </foreach>
+    </delete>
 </mapper>

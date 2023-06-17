@@ -60,7 +60,6 @@ public class PhotoController {
     @PostMapping("/admin/photos")
     public R updatePhoto(MultipartFile file,
                          @Validated PhotoUpdateVo photoUpdateVo) throws UpException, IOException {
-        // TODO: 修改为权限校验
         int role = this.photoService.updatePhoto(file,photoUpdateVo.getType());
         return R.ok()
                 .put("role", role);

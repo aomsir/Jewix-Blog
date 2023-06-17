@@ -103,7 +103,6 @@ public class CommentController {
     @ApiOperation(value = "后台修改评论相关内容")
     @PutMapping("/admin/comments")
     public R updateComment(@RequestBody @Validated CommentUpdateVo commentUpdateVo) {
-        // TODO：内容状态等等
         int role = this.commentService.updateComment(commentUpdateVo);
         return R.ok()
                 .put("role",role);

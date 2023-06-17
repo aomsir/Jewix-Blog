@@ -8,7 +8,7 @@
     <select id="queryUserByEmail" resultType="User">
         SELECT id, uuid, nickname, email, salt, description, password, web_site, create_time, update_time, status
         FROM tb_user
-        WHERE email = #{email}
+        WHERE email LIKE CONCAT('%', #{email}, '%')
     </select>
 
 
@@ -32,7 +32,7 @@
                 status = #{status}
             </if>
             <if test="email != null">
-                email = #{email}
+                email LIKE CONCAT('%', #{email}, '%')
             </if>
         </where>
     </select>
@@ -45,7 +45,7 @@
                 status = #{param.status}
             </if>
             <if test="param.email != null">
-                email = #{param.email}
+                email LIKE CONCAT('%', #{param.email}, '%')
             </if>
         </where>
         ORDER BY id DESC
@@ -56,7 +56,7 @@
     <select id="queryUserByNickname" resultType="User">
         SELECT id, uuid, nickname, email, salt, description, password, web_site, create_time, update_time, status
         FROM tb_user
-        WHERE nickname = #{nickname}
+        WHERE nickname =  #{nickname}
     </select>
 
 
@@ -94,10 +94,10 @@
         FROM tb_user
         <where>
             <if test="param.email != null">
-                email = #{param.email}
+                email LIKE CONCAT('%', #{param.email}, '%')
             </if>
             <if test="param.nickname != null">
-                AND nickname = #{param.nickname}
+                AND nickname LIKE CONCAT('%', #{param.nickname}, '%')
             </if>
         </where>
     </select>

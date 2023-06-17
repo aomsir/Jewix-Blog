@@ -5,6 +5,7 @@ import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.util.PageUtils;
 
+import java.util.List;
 import java.util.Map;
 
 public interface TagService {
@@ -18,4 +19,6 @@ public interface TagService {
     Tag searchTagById(Long tagId);
 
     PageUtils searchArticleListByTagName(Map<String, Object> param);
+
+    int deleteTags(List<Long> tagIds);
 }

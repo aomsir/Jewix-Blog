@@ -83,4 +83,6 @@ public interface ArticleMapper {
     Integer queryArticleCountByArchive();
 
     ArrayList<ArticleArchiveDTO> queryArticleByArchive(@Param("param") Map<String, Object> param);
+
+    Article queryArticleByTagId(@Param("tagId") Long tagId);
 }

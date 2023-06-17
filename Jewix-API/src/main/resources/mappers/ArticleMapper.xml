@@ -87,17 +87,25 @@
     </select>
 
 
-    <!--TODO: 联合查询标签和分类表-->
     <select id="queryArticleFrontCount" resultType="Integer">
         SELECT COUNT(id)
         FROM tb_article
         <where>
             <if test="param.title != null">
-                title LIKE CONCAT('%',#{param.title} ,'%')
-                OR content LIKE CONCAT('%',#{param.title} ,'%')
+                AND (
+                title LIKE CONCAT('%', #{param.title}, '%')
+                OR content LIKE CONCAT('%', #{param.title}, '%')
+                OR description LIKE CONCAT('%', #{param.title}, '%')
+                )
             </if>
+            <if test="param.title == null">
+                AND 1 = 1
+            </if>
+            AND status = 0
+            AND is_delete = 0
         </where>
     </select>
+
 
 
     <select id="queryArticleFrontList" resultType="Article">
@@ -106,10 +114,17 @@
         FROM tb_article
         <where>
             <if test="param.title != null">
-                title LIKE CONCAT('%',#{param.title} ,'%')
-                OR content LIKE CONCAT('%',#{param.title} ,'%')
+                AND (
+                title LIKE CONCAT('%', #{param.title}, '%')
+                OR content LIKE CONCAT('%', #{param.title}, '%')
+                OR description LIKE CONCAT('%', #{param.title}, '%')
+                )
+            </if>
+            <if test="param.title == null">
+                AND 1 = 1
             </if>
             AND status = 0
+            AND is_delete = 0
         </where>
         ORDER BY is_top DESC,update_time DESC
         LIMIT #{param.start},#{param.length}
@@ -117,7 +132,7 @@
 
 
     <insert id="insertArticle" keyProperty="id" useGeneratedKeys="true" >
-        INSERT INTO tb_article(uuid, title, cover, content, description,type, origin_url, is_top, is_delete, status, create_time, update_time)
+        INSERT INTO tb_article(uuid, title, cover, content, description,type, origin_url, views, is_top, is_delete, status, create_time, update_time)
         VALUES (#{param.uuid},
                 #{param.title},
                 #{param.cover},
@@ -125,6 +140,7 @@
                 #{param.description},
                 #{param.type},
                 #{param.originUrl},
+                #{param.views},
                 #{param.isTop},
                 #{param.isDelete},
                 #{param.status},
@@ -153,6 +169,8 @@
         SELECT id, uuid, title, cover, content, type, origin_url, views, is_top, is_delete, status, create_time, update_time
         FROM tb_article
         WHERE uuid = #{uuid}
+        AND status = 0
+        AND is_delete = 0
     </select>
 
     <select id="queryArticleById" resultType="Article">
@@ -326,6 +344,8 @@
     <select id="queryArticleId" resultType="Long">
         SELECT id
         FROM tb_article
+        WHERE status = 0
+        AND is_delete = 0
     </select>
 
     <select id="queryArticlesByRandomIds" resultType="com.aomsir.jewixapi.pojo.dto.ArticleRandomDTO">
@@ -365,5 +385,12 @@
         AND is_delete = 0
         ORDER BY create_time DESC
         LIMIT #{param.start},#{param.length}
+    </select>
+
+    <select id="queryArticleByTagId" resultType="Article">
+        SELECT id, uuid, title, cover, content, description, type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        FROM tb_article AS ta
+        LEFT JOIN tb_article_tag AS tag ON ta.id = tag.article_id
+        WHERE tag.tag_id = #{tagId}
     </select>
 </mapper>

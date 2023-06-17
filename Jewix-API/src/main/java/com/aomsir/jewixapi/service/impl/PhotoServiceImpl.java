@@ -134,8 +134,7 @@ public class PhotoServiceImpl implements PhotoService {
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(list, count, start,length);
-        return pageUtils;
+        return new PageUtils(list, count, start,length);
     }
 
 

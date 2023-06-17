@@ -4,6 +4,7 @@ import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.TagMapper;
 import com.aomsir.jewixapi.pojo.dto.ArticlePreviewDTO;
+import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.service.TagService;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.*;
 
+import static com.aomsir.jewixapi.constant.CommonConstants.PARAMETER_ERROR;
 import static com.aomsir.jewixapi.constant.TagConstants.TAG_HAS_EXISTED;
 import static com.aomsir.jewixapi.constant.TagConstants.TAG_IS_NULL;
 
@@ -31,7 +33,6 @@ import static com.aomsir.jewixapi.constant.TagConstants.TAG_IS_NULL;
 @Service
 public class TagServiceImpl implements TagService {
 
-    private static final Logger log = LoggerFactory.getLogger(TagServiceImpl.class);
     @Resource
     private TagMapper tagMapper;
 
@@ -118,5 +119,23 @@ public class TagServiceImpl implements TagService {
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
         return new PageUtils(list,count,start,length);
+    }
+
+    @Override
+    @Transactional
+    public int deleteTags(List<Long> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) {
+            throw new CustomerException(PARAMETER_ERROR);
+        }
+
+        for (Long tagId : tagIds) {
+            Article article = this.articleMapper.queryArticleByTagId(tagId);
+            if (article != null) {
+                Tag tag = this.tagMapper.queryTagById(tagId);
+                throw new CustomerException(tag.getTagName() + "下有文章引用,不可删除");
+            }
+        }
+
+        return this.tagMapper.deleteTags(tagIds);
     }
 }
