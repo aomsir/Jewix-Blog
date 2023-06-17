@@ -17,7 +17,7 @@ import {
   ProFormInstance,
   ProTable,
 } from "@ant-design/pro-components";
-import { message, Space } from "antd";
+import { message, Space, Tag } from "antd";
 import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
 import css from "./AuthRole.module.scss";
 import EditRoleForm from "./components/EditRoleForm";
@@ -164,6 +164,7 @@ const columns: ProColumns<any>[] = [
   {
     title: "权限标签",
     dataIndex: "roleLabel",
+    render: (_, record) => (record.method === "NULL" ? "-" : <Tag>{record.roleLabel}</Tag>),
   },
   {
     title: "创建时间",

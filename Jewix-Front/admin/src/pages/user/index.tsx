@@ -20,6 +20,7 @@ import {
   ProColumns,
   ProTable,
 } from "@ant-design/pro-components";
+import { useModel } from "@umijs/max";
 import { message, Space, Table } from "antd";
 import { map } from "lodash";
 import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
@@ -32,6 +33,8 @@ export default function User(props: UserProps): ReactElement {
   const { modalVisionState, modalVisionProps } = useModelVisionModalForm();
   const actionRef = useRef<ActionType>();
   const [initialValues, setInitialValues] = useState<API.UpdateUserParams>();
+  // 获取初始登录状态
+  const { initialState } = useModel("@@initialState");
 
   // columns[3].filter = (dom, entity) => <>操作</>;
   // 创建时间
@@ -49,20 +52,30 @@ export default function User(props: UserProps): ReactElement {
           编辑
         </a>
       </HasOperation>
-      <HasOperation operation={OPERATIONS.DELETE}>
-        <PopConfirmDelete
-          onConfirm={async () => {
-            try {
-              await deleteUsers({ ids: [entity.id] }, entity.status);
-              message.success("删除成功");
-              actionRef.current?.reload();
-            } catch (error) {}
-          }}
-        />
-      </HasOperation>
+      {initialState?.currentUser?.user.id === entity.id ? (
+        <a
+          aria-disabled={initialState?.currentUser?.user.id === entity.id}
+          onClick={() => message.error("禁止删除自己")}
+        >
+          删除
+        </a>
+      ) : (
+        <HasOperation operation={OPERATIONS.DELETE}>
+          <PopConfirmDelete
+            onConfirm={async () => {
+              try {
+                await deleteUsers({ ids: [entity.id] }, entity.status);
+                message.success("删除成功");
+                actionRef.current?.reload();
+              } catch (error) {}
+            }}
+          ></PopConfirmDelete>
+        </HasOperation>
+      )}
       <HasOperation operation={OPERATIONS.UPDATE_STATUS}>
         {entity.status === UserEnums.Status.正常 ? (
           <a
+            aria-disabled={initialState?.currentUser?.user.id === entity.id}
             style={{ color: "red" }}
             onClick={async () => {
               try {
