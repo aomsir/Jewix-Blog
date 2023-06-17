@@ -14,6 +14,7 @@ import {
   ModalForm,
   PageContainer,
   ProColumns,
+  ProFormInstance,
   ProTable,
 } from "@ant-design/pro-components";
 import { message, Space } from "antd";
@@ -31,6 +32,7 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
   >();
   const [menu, setMenu] = useState<API.FetchMenuResponse[]>();
   const [resources, setResources] = useState<API.FetchResourceResponse[]>();
+  const formRef = useRef<ProFormInstance>(null);
   // 清空初始值
   useEffect(() => {
     if (!modalVisionState.open) {
@@ -120,6 +122,7 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
         )}
       />
       <ModalForm
+        formRef={formRef}
         title="编辑角色"
         {...modalVisionProps}
         /* 下面两个属性，为了更新initialValues */
@@ -128,10 +131,16 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
         }}
         preserve={false}
         initialValues={initialValues}
-        onFinish={async (formData: API.InsertRoleBody | API.UpdateRoleBody) => {
+        onFinish={async (
+          formData: (API.InsertRoleBody | API.UpdateRoleBody) &
+            API.UpsertRoleMenusBody &
+            API.UpsertRoleResourcesBody,
+        ) => {
+          console.log(formData);
           // 新增
           if (!initialValues) {
             await insertRole(formData);
+            // await upsertRoleMenus({ menuIds: formData.roleMenu, roleId: formData.id });
             message.success("新增成功");
           } else {
             // 更改
@@ -142,7 +151,7 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
           return true;
         }}
       >
-        <EditRoleForm menu={menu ?? []} resources={resources ?? []} />
+        <EditRoleForm formRef={formRef} menu={menu ?? []} resources={resources ?? []} />
       </ModalForm>
     </PageContainer>
   );

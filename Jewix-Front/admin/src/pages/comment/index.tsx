@@ -126,7 +126,11 @@ export default function Comment(props: CommentProps): ReactElement {
         tableAlertOptionRender={({ selectedRowKeys }) => {
           return (
             <HasOperation operation={OPERATIONS.DELETE}>
-              <PopConfirmDelete onConfirm={() => deleteComment({ ids: selectedRowKeys })} />
+              <PopConfirmDelete
+                onConfirm={() => (
+                  deleteComment({ ids: selectedRowKeys }), actionRef.current?.reload()
+                )}
+              />
             </HasOperation>
           );
         }}
