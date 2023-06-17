@@ -5,6 +5,8 @@ import { useModelVisionModalForm, useSelection } from "@/hooks/props";
 import { fetchWidthNormalizedResponse } from "@/pages/article";
 import ProTableToolBar from "@/pages/article/components/ProTableToolBar";
 import { API } from "@/services/ant-design-pro/typings";
+import { fetchAllMenuItems } from "@/services/api/menu";
+import { fetchAllResources } from "@/services/api/resource";
 import { deleteRoles, fetchRoles, insertRole, updateRole } from "@/services/api/role";
 import { timestampToTime } from "@/utils";
 import {
@@ -24,13 +26,23 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
   const { modalVisionState, modalVisionProps } = useModelVisionModalForm();
   const actionRef = useRef<ActionType>();
   const [selectionState, selectionProps] = useSelection();
-  const [initialValues, setInitialValues] = useState<API.UpdateRoleBody>();
-
+  const [initialValues, setInitialValues] = useState<
+    API.UpdateRoleBody & API.UpsertRoleMenusBody & API.UpsertRoleResourcesBody
+  >();
+  const [menu, setMenu] = useState<API.FetchMenuResponse[]>();
+  const [resources, setResources] = useState<API.FetchResourceResponse[]>();
   // 清空初始值
   useEffect(() => {
     if (!modalVisionState.open) {
       setInitialValues(undefined);
     }
+
+    (async () => {
+      const menu = await fetchAllMenuItems();
+      const resources = await fetchAllResources();
+      setMenu(menu);
+      setResources(resources);
+    })();
   }, [modalVisionState.open]);
 
   // 渲染操作列
@@ -108,7 +120,6 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
         )}
       />
       <ModalForm
-        width={400}
         title="编辑角色"
         {...modalVisionProps}
         /* 下面两个属性，为了更新initialValues */
@@ -131,7 +142,7 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
           return true;
         }}
       >
-        <EditRoleForm />
+        <EditRoleForm menu={menu ?? []} resources={resources ?? []} />
       </ModalForm>
     </PageContainer>
   );

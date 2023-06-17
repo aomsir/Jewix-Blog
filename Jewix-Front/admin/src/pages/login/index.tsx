@@ -1,7 +1,7 @@
 import Footer from "@/components/bases/Footer";
 // import { login } from '@/services/ant-design-pro/api';
 import { API } from "@/services/ant-design-pro/typings";
-import { login } from "@/services/api/user";
+import { fetchCurrentUserInfo, login } from "@/services/api/user";
 import { LocalToken } from "@/utils/token";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { LoginForm, ProFormText } from "@ant-design/pro-components";
@@ -50,10 +50,11 @@ const LoginMessage: React.FC<{
 };
 
 const Login: React.FC = () => {
+  console.log("login page");
   // 登录状态
   const [userLoginState, setUserLoginState] = useState<API.ResponseStructure>();
   // 获取初始登录状态
-  const { initialState, setInitialState } = useModel("@@initialState");
+  const { initialState, setInitialState, refresh } = useModel("@@initialState");
   // 国际化
   const intl = useIntl();
   // 登录
@@ -69,9 +70,15 @@ const Login: React.FC = () => {
           defaultMessage: "登录成功！",
         }),
       );
-      // 如果成功，去获取用户信息
-      console.log("login", initialState);
-      const userInfo = await initialState?.fetchUserInfo?.();
+      // 等待initialState刷新，不然initialState为空值
+      await refresh();
+      const userInfo =
+        (await initialState?.fetchUserInfo?.()) ??
+        (
+          await fetchCurrentUserInfo({
+            skipErrorHandler: true,
+          })
+        ).status;
       if (userInfo) {
         // flushSync 用于同步更新 state
         flushSync(() => {
@@ -84,7 +91,6 @@ const Login: React.FC = () => {
       // 获取到之前的页面
       const urlParams = new URL(window.location.href).searchParams;
       // 跳转到之前的页面
-      console.log(urlParams.get("redirect") || "/");
       history.push(urlParams.get("redirect") || "/");
     } else {
       // 如果失败去设置用户错误信息

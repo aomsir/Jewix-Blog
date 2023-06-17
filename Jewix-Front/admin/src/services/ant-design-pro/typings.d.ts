@@ -4,6 +4,14 @@
 import { ArticleEnums, BlogrollEnums, PageEnums, PhotoEnums, UserEnums } from "@/config/enums";
 // 与后端约定的响应数据格式
 declare namespace API {
+  type UpsertRoleMenusBody = {
+    menuIds: number[];
+    roleId: number;
+  };
+  type UpsertRoleResourcesBody = {
+    resourceIds?: number[];
+    roleId?: number;
+  };
   type FetchLogLoginResponse = {
     id: number;
     ip: string;
