@@ -29,4 +29,6 @@ public interface TagMapper {
     List<ArticlePreviewDTO> queryArticleListByTagName(@Param("param") Map<String, Object> param);
 
     Boolean queryIdsExists(@Param("list") List<Long> tagIds);
+
+    int deleteTags(@Param("tagIds") List<Long> tagIds);
 }

@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 
@@ -102,7 +103,15 @@ public class TagController {
     }
 
 
-    // TODO: 删除标签
+    @OperateLog(optType = "删除标签")
+    @PreAuthorize("hasAuthority('ADMIN_TAG_DELETE')")
+    @ApiOperation(value = "删除标签")
+    @DeleteMapping("/admin/tags")
+    public R deleteTags(@RequestParam List<Long> tagIds) {
+        int role = this.tagService.deleteTags(tagIds);
+        return R.ok()
+                .put("role", role);
+    }
 
 
     /**

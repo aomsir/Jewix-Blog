@@ -226,34 +226,40 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public int deleteCategories(List<Long> ids) {
-        if (ids == null || ids.size() == 0) {
+        if (ids == null || ids.isEmpty()) {
             throw new CustomerException(PARAMETER_ERROR);
         }
 
         List<Long> trueIds = new ArrayList<>();
         for (Long id : ids) {
             Category category = this.categoryMapper.queryCategoryId(id);
+            if (category == null) {
+                throw new CustomerException(CATEGORY_IS_NULL);
+            }
             // 判断是否为父节点
             if (category.getParentId() != 0) {
                 // 是否有文章引用
                 if (this.categoryMapper.queryCategoryOfArticleCounts(id) == 0) {
                     trueIds.add(id);
                 } else {
-                    throw new CustomerException("id为" + id + "的分类有文章引用,请重新选择");
+                    Category category1 = this.categoryMapper.queryCategoryId(id);
+                    throw new CustomerException(category1.getCategoryName() + "有文章引用,请重新选择");
                 }
             } else {
                 // 为父节点
                 // 是否有子节点
                 List<Category> categories = this.categoryMapper.queryCategoryListByParentId(id);
-                if (categories == null || categories.size() == 0) {
+                if (categories == null || categories.isEmpty()) {
                     // 当前分类是否有文章引用
                     if (this.categoryMapper.queryCategoryOfArticleCounts(id) == 0) {
                         trueIds.add(id);
                     } else {
-                        throw new CustomerException("id为" + id + "的分类有文章引用,请重新选择");
+                        Category category1 = this.categoryMapper.queryCategoryId(id);
+                        throw new CustomerException(category1.getCategoryName() + "下有文章引用,请重新选择");
                     }
                 } else {
-                    throw new CustomerException("id为" + id + "的分类有子分类,请重新选择");
+                    Category category1 = this.categoryMapper.queryCategoryId(id);
+                    throw new CustomerException(category1.getCategoryName() + "下有子分类,请重新选择");
                 }
             }
         }

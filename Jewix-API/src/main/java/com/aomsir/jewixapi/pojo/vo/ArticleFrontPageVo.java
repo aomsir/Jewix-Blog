@@ -19,13 +19,8 @@ import java.io.Serializable;
 public class ArticleFrontPageVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private String title;
-
-    // private Integer isTop;
-
-    // private Integer status;
-
-    // private Integer type;
 
     @NotNull(message = "page不能为空")
     @Min(value = 1, message = "page不能小于1")

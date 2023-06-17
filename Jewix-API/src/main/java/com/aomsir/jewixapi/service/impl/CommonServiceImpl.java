@@ -53,10 +53,9 @@ public class CommonServiceImpl implements CommonService {
     @Override
     public WebInfoDTO searchWebInfo() {
         // 缓存命中
-        // TODO：相关信息更新时得删缓存
         Map<Object, Object> configMap = this.redisTemplate.opsForHash()
                 .entries(WEB_CONFIG_KEY);
-        if (configMap.size() > 0) {
+        if (!configMap.isEmpty()) {
             return BeanUtil.toBean(configMap, WebInfoDTO.class);
         }
 
@@ -84,6 +83,7 @@ public class CommonServiceImpl implements CommonService {
         webInfoDTO.setArticleCount(articleCount);
         webInfoDTO.setCommentCount(commentCount);
         webInfoDTO.setLastActive(Math.toIntExact(daysBetween));
+        // TODO:设置运行天数
 
         // 存入Redis
         this.redisTemplate.opsForHash()

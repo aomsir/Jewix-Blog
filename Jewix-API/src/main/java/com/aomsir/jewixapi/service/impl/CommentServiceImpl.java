@@ -7,6 +7,7 @@ import com.aomsir.jewixapi.mapper.CommentMapper;
 import com.aomsir.jewixapi.mapper.PageMapper;
 import com.aomsir.jewixapi.mapper.UserMapper;
 import com.aomsir.jewixapi.pojo.dto.CommentDTO;
+import com.aomsir.jewixapi.pojo.dto.CurrentUserDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.entity.Comment;
 import com.aomsir.jewixapi.pojo.entity.User;
@@ -16,11 +17,14 @@ import com.aomsir.jewixapi.pojo.vo.CommentUpdateVo;
 import com.aomsir.jewixapi.service.CommentService;
 import com.aomsir.jewixapi.util.NetUtils;
 import com.aomsir.jewixapi.util.PageUtils;
+import com.aomsir.jewixapi.util.UserHolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +34,7 @@ import java.util.*;
 
 import static com.aomsir.jewixapi.constant.ArticleConstants.ARTICLE_IS_NULL;
 import static com.aomsir.jewixapi.constant.CommentConstants.*;
-import static com.aomsir.jewixapi.constant.RedisConstants.WEB_CONFIG_KEY;
+import static com.aomsir.jewixapi.constant.RedisConstants.*;
 import static com.aomsir.jewixapi.constant.UserConstants.ARTICLE_USER_IS_NULL;
 import static com.aomsir.jewixapi.constant.UserConstants.USER_IS_NULL;
 
@@ -45,7 +49,6 @@ import static com.aomsir.jewixapi.constant.UserConstants.USER_IS_NULL;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private static final Logger log = LoggerFactory.getLogger(CommentServiceImpl.class);
     @Resource
     private CommentMapper commentMapper;
 
@@ -60,6 +63,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Resource
     private UserMapper userMapper;
+
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -145,8 +149,7 @@ public class CommentServiceImpl implements CommentService {
         }
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        PageUtils pageUtils = new PageUtils(commentDTOList,count,start,length);
-        return pageUtils;
+        return new PageUtils(commentDTOList,count,start,length);
     }
 
 
@@ -163,15 +166,15 @@ public class CommentServiceImpl implements CommentService {
 
         // 处理目标文章/页面
         // 1:文章,21:时光机,22-友人帐,23-留言板,24-关于
+        Article article = null;
         if (commentAddVo.getType() == 1) {
-            Article article = this.articleMapper.queryArticleById(targetId);
+            article = this.articleMapper.queryArticleById(targetId);
             if (Objects.isNull(article)) {
                 throw new CustomerException(ARTICLE_IS_NULL);
             }
             param.put("type",1);
         } else if (commentAddVo.getType() == 21) {
             // 时光机
-            // TODO：校验是否是管理员
             param.put("type",21);
         } else if (commentAddVo.getType() == 23) {
             // 友人帐
@@ -221,6 +224,11 @@ public class CommentServiceImpl implements CommentService {
         param.put("createTime",new Date());
         param.put("updateTime",new Date());
 
+        // 删除文章的缓存
+        if (commentAddVo.getType() == 1) {
+            assert article != null;
+            this.redisTemplate.delete(ARTICLE_DETAIL_KEY + article.getUuid());
+        }
         return this.commentMapper.insertComment(param);
     }
 
@@ -236,6 +244,12 @@ public class CommentServiceImpl implements CommentService {
         param.put("updateTime",new Date());
 
         // 删除缓存
+        if (comment.getType() == 1) {
+            Article article = this.articleMapper.queryArticleById(comment.getId());
+            if (article != null) {
+                this.redisTemplate.delete(ARTICLE_DETAIL_KEY + article.getUuid());
+            }
+        }
         this.redisTemplate.delete(WEB_CONFIG_KEY);
         return this.commentMapper.updateComment(param);
     }
@@ -244,8 +258,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public int deleteComment(List<Long> ids) {
-
-        if (Objects.isNull(ids) || ids.size() == 0) {
+        if (Objects.isNull(ids) || ids.isEmpty()) {
             throw new CustomerException(COMMENT_DELETE_LIST_IS_NULL);
         }
         int role = 0;
@@ -258,11 +271,11 @@ public class CommentServiceImpl implements CommentService {
             // 查询是否有子评论
             // parentId与permId同为0则为一级评论
             List<Comment> childList_1 = this.commentMapper.queryCommentsByPermId(id);
-            if (childList_1.size() > 0) {
+            if (!childList_1.isEmpty()) {
                 throw new CustomerException(COMMENT_HAS_SON);
             }
             List<Comment> childList_2 = this.commentMapper.queryCommentsByParentId(id);
-            if (childList_2.size() > 0) {
+            if (!childList_2.isEmpty()) {
                 throw new CustomerException(COMMENT_HAS_SON);
             }
 
@@ -271,6 +284,7 @@ public class CommentServiceImpl implements CommentService {
 
         // 删除缓存
         this.redisTemplate.delete(WEB_CONFIG_KEY);
+        this.redisTemplate.delete("article:detail:*");
         return role;
     }
 
@@ -290,9 +304,17 @@ public class CommentServiceImpl implements CommentService {
         param.put("updateTime",new Date());
 
 
+        // 删除缓存
         if (status == 1) {
-            // 删除缓存
+
             this.redisTemplate.delete(WEB_CONFIG_KEY);
+        }
+
+        if (comment.getType() == 1) {
+            Article article = this.articleMapper.queryArticleById(comment.getTargetId());
+            if (article != null) {
+                this.redisTemplate.delete(ARTICLE_DETAIL_KEY + article.getUuid());
+            }
         }
         return this.commentMapper.updateCommentStatus(param);
     }

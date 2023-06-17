@@ -53,6 +53,7 @@
         WHERE target_id = #{param.targetId}
         AND parent_id = 0
         AND type = #{param.type}
+        AND status = 1
     </select>
 
 

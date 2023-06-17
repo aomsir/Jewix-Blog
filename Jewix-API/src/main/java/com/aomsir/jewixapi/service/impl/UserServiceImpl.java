@@ -178,6 +178,10 @@ public class UserServiceImpl implements UserService {
             throw new CustomerException(USER_IS_NULL);
         }
 
+        if (user.getId().equals(this.userHolder.getUserId())) {
+            throw new CustomerException("不允许修改自己的状态");
+        }
+
         return this.userMapper.updateUserStatus(userStatusVo);
     }
 
@@ -201,7 +205,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int deleteUserByArchive(List<Long> ids) {
-        if (ids == null || ids.size() == 0) {
+        if (ids == null || ids.isEmpty()) {
              throw new CustomerException(PARAMETER_ERROR);
         }
 
@@ -226,7 +230,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int deleteUserByPhysics(List<Long> ids) {
-        if (ids == null || ids.size() == 0) {
+        if (ids == null || ids.isEmpty()) {
             throw new CustomerException(PARAMETER_ERROR);
         }
 
@@ -236,7 +240,13 @@ public class UserServiceImpl implements UserService {
             if (this.articleMapper.queryArticleCountByUserId(id) == 0) {
                 trueIds.add(id);
             } else {
-                throw new CustomerException("用户id为" + id + "的用户分类下有文章,请先删除");
+                throw new CustomerException("id为" + id + "的用户分类下有文章,请先删除");
+            }
+
+            // 查询是有是自己
+            User user = this.userMapper.queryUserById(id);
+            if (user.getId().equals(this.userHolder.getUserId())) {
+                throw new CustomerException("不允许删除自己");
             }
         }
 

@@ -37,6 +37,7 @@
     <select id="queryLoginLogsByPage" resultType="com.aomsir.jewixapi.pojo.dto.LoginLogDTO">
         SELECT id, user_id, ip, location, operate_time
         FROM tb_login_log
+        ORDER BY operate_time DESC
         LIMIT #{param.start}, #{param.length}
     </select>
 
@@ -58,6 +59,7 @@
                 opt_module = CONCAT('%', #{param.optType}, '%')
             </if>
         </where>
+        ORDER BY opt_time DESC
         LIMIT #{param.start}, #{param.length}
     </select>
 

@@ -16,8 +16,6 @@ import com.aomsir.jewixapi.service.ArticleService;
 import com.aomsir.jewixapi.util.UserHolder;
 import com.aomsir.jewixapi.util.NetUtils;
 import com.aomsir.jewixapi.util.PageUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +41,6 @@ import static com.aomsir.jewixapi.constant.RedisConstants.*;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-    private static final Logger log = LoggerFactory.getLogger(ArticleServiceImpl.class);
     @Resource
     private ArticleMapper articleMapper;
 
@@ -83,10 +80,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public PageUtils searchFrontArticleListByPage(Map<String, Object> param) {
-        PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue()
-                .get(ARTICLE_FRONT_LIST_KEY);
-        if (pageUtils != null && (int) param.get("start") == 0) {
-            return pageUtils;
+        PageUtils pageUtils;
+        if ((String) param.get("title") == null || ((String) param.get("title")).isEmpty()) {
+            pageUtils= (PageUtils) this.redisTemplate.opsForValue()
+                    .get(ARTICLE_FRONT_LIST_KEY);
+            if (pageUtils != null && (int) param.get("start") == 0) {
+                return pageUtils;
+            }
         }
 
         int count = this.articleMapper.queryArticleFrontCount(param);
@@ -102,10 +102,13 @@ public class ArticleServiceImpl implements ArticleService {
         pageUtils = new PageUtils(list, count, start, length);
 
 
-        if ((int) param.get("start") == 0) {
-            this.redisTemplate.opsForValue()
-                    .set(ARTICLE_FRONT_LIST_KEY, pageUtils,ARTICLE_FRONT_LIST_EXPIRE,TimeUnit.DAYS);
+        if ((String) param.get("title") == null || ((String) param.get("title")).isEmpty()) {
+            if ((int) param.get("start") == 0) {
+                this.redisTemplate.opsForValue()
+                        .set(ARTICLE_FRONT_LIST_KEY, pageUtils, ARTICLE_FRONT_LIST_EXPIRE, TimeUnit.DAYS);
+            }
         }
+
         return pageUtils;
     }
 
@@ -123,19 +126,23 @@ public class ArticleServiceImpl implements ArticleService {
         Boolean categoryFlag = this.categoryMapper.queryIdsExists(categoryIds);
         Boolean tagFlag = this.tagMapper.queryIdsExists(tagIds);
 
-        Long articleId = 0L;
+        Long articleId;
 
         // 存在则进行插入
         if (categoryFlag && tagFlag) {
+            if (articleAddVo.getDescription() == null) {
+                articleAddVo.setDescription("当前文章没有描述嗷~");
+            }
             Map<String, Object> param = BeanUtil.beanToMap(articleAddVo);
             param.put("uuid", UUID.randomUUID().toString());
             param.put("createTime", new Date());
             param.put("updateTime", new Date());
+            param.put("views", 0);
 
             this.articleMapper.insertArticle(param);
             BigInteger tempId = (BigInteger) param.get("id");
-
             articleId = tempId.longValue();
+
             // 文章正常插入再插入关联表
             if (articleId != 0) {
 
@@ -155,7 +162,6 @@ public class ArticleServiceImpl implements ArticleService {
         } else {
             throw new CustomerException(CATEGORY_TAG_IS_NULL);
         }
-
 
         // 添加文章将list列表删除
         this.redisTemplate.delete(ARTICLE_FRONT_LIST_KEY);
@@ -215,12 +221,13 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleDetailDTO detailDTO = (ArticleDetailDTO) this.redisTemplate.opsForValue()
                 .get(ARTICLE_DETAIL_KEY + uuid);
 
+        // 处理浏览量，防止刷浏览
         if (detailDTO != null) {
-            // 封装浏览量
             this.displayViews(request, detailDTO.getUuid(), detailDTO.getId(), detailDTO.getViews(), detailDTO);
             return detailDTO;
         }
 
+        // 查询可访问的文章
         Article article = this.articleMapper.queryArticleByUuid(uuid);
         if (article == null) {
             throw new CustomerException(ARTICLE_IS_NULL);
@@ -230,10 +237,10 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleDetailDTO articleDetailDTO= new ArticleDetailDTO();
         BeanUtil.copyProperties(article,articleDetailDTO);
 
+        // 查询文章所属标签、分类、用户名
         List<String> categotyList = this.articleMapper.queryArticleCategoryNameList(article.getId());
         List<String> tagList = this.articleMapper.queryArticleTagNameList(article.getId());
         String userName = this.articleMapper.queryArticleUserName(article.getId());    // 根据文章id获取文章的作者名
-
         articleDetailDTO.setCategories(categotyList);
         articleDetailDTO.setTags(tagList);
         articleDetailDTO.setUserName(userName);
@@ -254,13 +261,11 @@ public class ArticleServiceImpl implements ArticleService {
         if (article.getViews() == null) {
             article.setViews(0);
         }
-        this.displayViews(request, article.getUuid(), article.getId(), article.getViews(), articleDetailDTO);
 
         Integer count = this.categoryMapper.queryArticleCommentCountsById(article.getId(),1);
         articleDetailDTO.setCommentCount(count);
 
-
-        // 存储至数据库
+        // 存储数据至Redis
         this.redisTemplate.opsForValue()
                 .set(ARTICLE_DETAIL_KEY + article.getUuid(), articleDetailDTO, ARTICLE_DETAIL_EXPIRE,TimeUnit.DAYS);
         return articleDetailDTO;
@@ -273,7 +278,7 @@ public class ArticleServiceImpl implements ArticleService {
         String viewInfoKey = ARTICLE_VIEW_INFO_KEY + id;
 
         // 查询Redis,当前ip有无访问过当前文章
-        Integer isView = (Integer) this.redisTemplate.opsForValue()
+        Long isView = (Long) this.redisTemplate.opsForValue()
                 .get(viewIpKey);
         if (isView == null || isView == 0) {
 
@@ -295,7 +300,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public int deleteArticleByArchive(List<Long> ids) {
-        if (Objects.isNull(ids) || ids.size()==0) {
+        if (Objects.isNull(ids) || ids.isEmpty()) {
             throw new CustomerException(ARTICLE_CHECKED);
         }
 
@@ -309,20 +314,20 @@ public class ArticleServiceImpl implements ArticleService {
             throw new CustomerException(ARTICLE_DELETE_ERROR);
         }
 
+        // 简单处理，颗粒度不够细
         ArrayList<String> keys = new ArrayList<>();
         keys.add(ARTICLE_FRONT_LIST_KEY);
         keys.add(ARTICLE_RANDOM_KEY);
         keys.add(WEB_CONFIG_KEY);
         this.redisTemplate.delete(keys);
         this.redisTemplate.delete(Objects.requireNonNull(this.redisTemplate.keys("article:detail:*")));
-
         return role;
     }
 
     @Override
     @Transactional
     public int deleteArticleByPhysics(List<Long> ids) {
-        if (Objects.isNull(ids) || ids.size()==0) {
+        if (Objects.isNull(ids) || ids.isEmpty()) {
             throw new CustomerException(ARTICLE_CHECKED);
         }
 
@@ -363,7 +368,7 @@ public class ArticleServiceImpl implements ArticleService {
     public List<ArticleRandomDTO> searchRandomArticle() {
         List<ArticleRandomDTO> resultList = (List<ArticleRandomDTO>)this.redisTemplate.opsForValue()
                 .get(ARTICLE_RANDOM_KEY);
-        if (resultList != null && resultList.size() > 0) {
+        if (resultList != null && !resultList.isEmpty()) {
             return resultList;
         }
 
