@@ -1,4 +1,3 @@
-import { OPERATIONS } from "@/access";
 import HasOperation from "@/components/bases/hasOperation/hasOperation";
 import PopConfirmDelete from "@/components/bases/popConfirmDelete/PopConfirmDelete";
 import { useSelection } from "@/hooks/props";
@@ -9,6 +8,7 @@ import { timestampToTime } from "@/utils";
 import { ActionType, PageContainer, ProColumns, ProTable } from "@ant-design/pro-components";
 import { message, Space } from "antd";
 import { HTMLAttributes, ReactElement, useRef } from "react";
+import { tableConfig } from "/config/table";
 type LogLoginProps = HTMLAttributes<HTMLDivElement>;
 export default function LogLogin(props: LogLoginProps): ReactElement {
   const { ...rest } = props;
@@ -40,6 +40,7 @@ export default function LogLogin(props: LogLoginProps): ReactElement {
         pagination={{
           defaultPageSize: 10,
           showSizeChanger: true,
+          pageSizeOptions: tableConfig.pageSizes,
         }}
         request={fetchWidthNormalizedResponse(fetchLogLogin)}
         actionRef={actionRef}

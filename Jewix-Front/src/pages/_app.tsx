@@ -131,24 +131,16 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
             target: "_blank",
             label: item.title,
         }))
-        console.log(3);
         // 获取分类
         const categories = (await fetchAllCategories()).data.result!
-        console.log(4);
         const categoriesConverted = convertKeyOfDeepArray(categories, { categoryName: "label", sonList: "children" } as const, "children")
-        console.log(5);
         const categoriesAdded = categoriesConverted.map(item => addKeyOfTree(item, item => ({ url: "/category/" + item.id }), "children"))
-        console.log(6);
         // 获取站点信息
         const siteInfo = await fetchSiteInfoTransformed(undefined)
-        console.log(7);
         // 获取推荐文章
         const recommendedArticles = (await fetchRecommendedArticles()).data.result!
-        console.log(8);
         // 获取页面
         const pages = await fetchAllPagesTransformed(undefined)
-        console.log(9);
-
         return {
             ...appProps,
             theme: theme ?? THEME.LIGHT,

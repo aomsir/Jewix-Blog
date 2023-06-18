@@ -26,6 +26,7 @@ import { map } from "lodash";
 import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
 import { fetchWidthNormalizedResponse } from "../article";
 import EditCommentForm from "./components/EditCommentForm";
+import { tableConfig } from "/config/table";
 type CommentProps = HTMLAttributes<HTMLDivElement>;
 // 评论列表
 export default function Comment(props: CommentProps): ReactElement {
@@ -97,6 +98,7 @@ export default function Comment(props: CommentProps): ReactElement {
         pagination={{
           defaultPageSize: 10,
           showSizeChanger: true,
+          pageSizeOptions: tableConfig.pageSizes,
         }}
         actionRef={actionRef}
         request={fetchWidthNormalizedResponse(fetchComments)}

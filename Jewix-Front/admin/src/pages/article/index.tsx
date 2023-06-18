@@ -26,6 +26,7 @@ import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react
 import css from "./Article.module.scss";
 import EditArticleForm from "./components/EditArticleForm";
 import ProTableToolBar from "./components/ProTableToolBar";
+import { tableConfig } from "/config/table";
 type ArticleProps = HTMLAttributes<HTMLDivElement>;
 // 文章列表页面
 export default function Article({ className, ...rest }: ArticleProps): ReactElement {
@@ -94,7 +95,7 @@ export default function Article({ className, ...rest }: ArticleProps): ReactElem
         pagination={{
           defaultPageSize: 10,
           showSizeChanger: true,
-          pageSizeOptions: ["5", "10", "20", "50", "100"],
+          pageSizeOptions: tableConfig.pageSizes,
         }}
         // 批量操作
         rowSelection={selectionProps}

@@ -16,6 +16,7 @@ import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react
 import { fetchWidthNormalizedResponse } from "../article";
 import ProTableToolBar from "../article/components/ProTableToolBar";
 import EditForm from "./components/EditForm";
+import { tableConfig } from "/config/table";
 // import css from "./Tag.module.scss"
 type TagProps = HTMLAttributes<HTMLDivElement>;
 export default function Tag(props: TagProps): ReactElement {
@@ -68,6 +69,7 @@ export default function Tag(props: TagProps): ReactElement {
           pagination={{
             defaultPageSize: 10,
             showSizeChanger: true,
+            pageSizeOptions: tableConfig.pageSizes,
           }}
           actionRef={actionRef}
           request={fetchWidthNormalizedResponse(fetchTags)}

@@ -6,6 +6,7 @@ import { timestampToTime } from "@/utils";
 import { PageContainer, ProColumns, ProTable } from "@ant-design/pro-components";
 import { HTMLAttributes, ReactElement } from "react";
 import css from "./AuthMenu.module.scss";
+import { tableConfig } from "/config/table";
 type AuthMenuProps = HTMLAttributes<HTMLDivElement>;
 export default function AuthMenu(props: AuthMenuProps): ReactElement {
   const { ...rest } = props;
@@ -20,6 +21,7 @@ export default function AuthMenu(props: AuthMenuProps): ReactElement {
         pagination={{
           defaultPageSize: 10,
           showSizeChanger: true,
+          pageSizeOptions: tableConfig.pageSizes,
         }}
         expandable={{
           // 如果行数据中存在sonList且有值就是可展开行

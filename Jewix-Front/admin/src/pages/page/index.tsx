@@ -19,6 +19,7 @@ import { fetchWidthNormalizedResponse } from "../article";
 import ProTableToolBar from "../article/components/ProTableToolBar";
 import EditPageForm from "./components/EditPageForm";
 import css from "./index.module.scss";
+import { tableConfig } from "/config/table";
 
 type PageProps = HTMLAttributes<HTMLDivElement>;
 export default function Page(props: PageProps): ReactElement {
@@ -70,6 +71,7 @@ export default function Page(props: PageProps): ReactElement {
         pagination={{
           defaultPageSize: 10,
           showSizeChanger: true,
+          pageSizeOptions: tableConfig.pageSizes,
         }}
         actionRef={actionRef}
         request={fetchWidthNormalizedResponse(fetchPages)}

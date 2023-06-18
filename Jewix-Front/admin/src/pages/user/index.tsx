@@ -38,9 +38,9 @@ export default function User(props: UserProps): ReactElement {
 
   // columns[3].filter = (dom, entity) => <>操作</>;
   // 创建时间
-  columns[5].render = (dom, entity) => timestampToTime(Date.parse(entity.createTime));
+  columns[6].render = (dom, entity) => timestampToTime(Date.parse(entity.createTime));
   // 渲染操作列
-  columns[6].render = (dom, entity) => (
+  columns[7].render = (dom, entity) => (
     <Space>
       <HasOperation operation={OPERATIONS.UPDATE}>
         <a
@@ -80,8 +80,8 @@ export default function User(props: UserProps): ReactElement {
             onClick={async () => {
               try {
                 if (initialState?.currentUser?.user.id === entity.id) {
-                  message.warning("禁止禁用自己")
-                  return
+                  message.warning("禁止禁用自己");
+                  return;
                 }
                 await updateUserStatus({ uuid: entity.uuid, status: UserEnums.Status.禁用 });
                 message.success("禁用成功");
@@ -177,6 +177,11 @@ export default function User(props: UserProps): ReactElement {
 }
 
 const columns: ProColumns<API.FetchUserResponse>[] = [
+  {
+    title: "ID",
+    dataIndex: "id",
+    hideInSearch: true,
+  },
   {
     title: "昵称",
     dataIndex: "nickname",
