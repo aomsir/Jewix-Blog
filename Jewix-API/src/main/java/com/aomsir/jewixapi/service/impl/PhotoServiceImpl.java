@@ -51,7 +51,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     @Transactional
-    public int updatePhoto(MultipartFile file, Integer type) throws IOException, UpException {
+    public int updatePhoto(MultipartFile file, Integer type) {
         String originalFilename = file.getOriginalFilename();
 
         // 获取源文件后缀
@@ -86,7 +86,12 @@ public class PhotoServiceImpl implements PhotoService {
                 e.printStackTrace();
             }
         } else if (type == 1) {
-            response  = restManager.writeFile(location + fileName, file.getBytes(), null);
+            try {
+                response  = restManager.writeFile(location + fileName, file.getBytes(), null);
+            } catch (Exception e) {
+                throw new CustomerException("又拍云图片上传异常");
+            }
+
         } else if (type == 2) {
             // TODO: 上传到阿里云OSS
         } else if (type == 3) {
@@ -95,7 +100,8 @@ public class PhotoServiceImpl implements PhotoService {
 
         int role = 0;
         if (type == 1 && response != null && response.isSuccessful()) {
-            return this.photoMapper.insertPhoto(param);  // TODO:新增用户id字段
+            // TODO:新增用户id字段
+            return this.photoMapper.insertPhoto(param);
         } else if (type == 2) {
             // TODO
         } else if (type == 3) {
