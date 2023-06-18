@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -35,6 +36,20 @@ public class InfoWebConfigAddVo implements Serializable {
     @NotNull(message = "建站日期不允许为空")
     private Date buildDate;
 
-    @NotNull(message = "类型不能为空")
-    private Integer type;
+
+    /**
+     * ICP备案信息
+     */
+    private String icp;
+
+    /**
+     * 公安备案信息
+     */
+    private String police;
+
+    /**
+     * 社交信息
+     */
+    private HashMap<String, String> socialInfo;
+
 }

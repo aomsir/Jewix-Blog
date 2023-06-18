@@ -27,5 +27,5 @@ public interface RedisConstants {
     public static final String PAGE_LIST_KEY = "page:list";
     public static final Long PAGE_LIST_EXPIRE = 30L;
     public static final String WEB_CONFIG_KEY = "web:config";
-    public static final Long WEB_CONFIG_EXPIRE = 365L;
+    public static final Long WEB_CONFIG_EXPIRE = 1L;
 }

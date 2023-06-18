@@ -1,4 +1,4 @@
-package com.aomsir.jewixapi.pojo.vo;
+package com.aomsir.jewixapi.pojo.entity;
 
 import lombok.Data;
 
@@ -10,18 +10,14 @@ import java.util.List;
 
 /**
  * @Author: Aomsir
- * @Date: 2023/3/7
- * @Description: 网站通用信息修改VO实体类
+ * @Date: 2023/6/18
+ * @Description: 网站通用信息实体类
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @Data
-public class InfoWebConfigUpdateVo implements Serializable {
-
+public class WebInfo implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @NotNull(message = "id不允许为空")
-    private Integer id;
 
     @NotNull(message = "标题不允许为空")
     private String title;
@@ -37,6 +33,7 @@ public class InfoWebConfigUpdateVo implements Serializable {
 
     @NotNull(message = "建站日期不允许为空")
     private Date buildDate;
+
 
     /**
      * ICP备案信息

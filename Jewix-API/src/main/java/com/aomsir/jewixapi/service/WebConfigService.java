@@ -9,5 +9,5 @@ public interface WebConfigService {
 
     int updateWebConfig(InfoWebConfigUpdateVo infoWebConfigUpdateVo);
 
-    WebConfig searchInfoAllByType(Integer type);
+    WebConfig searchWebInfo();
 }

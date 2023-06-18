@@ -2,7 +2,9 @@ package com.aomsir.jewixapi.pojo.entity;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,5 +18,4 @@ import java.util.List;
 public class WebConfig extends BaseEntity{
     private Integer id;
     private String config;
-    private Integer type;
 }

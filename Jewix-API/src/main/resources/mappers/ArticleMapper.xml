@@ -367,7 +367,9 @@
     <select id="queryLastActive" resultType="Date">
         SELECT update_time
         FROM tb_article
-        ORDER BY update_time
+        WHERE is_delete = 0
+        AND status = 0
+        ORDER BY update_time DESC
         LIMIT 1
     </select>
 

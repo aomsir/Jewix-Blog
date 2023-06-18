@@ -229,6 +229,9 @@ public class CommentServiceImpl implements CommentService {
             assert article != null;
             this.redisTemplate.delete(ARTICLE_DETAIL_KEY + article.getUuid());
         }
+
+        // 删除网站全局通用信息
+        this.redisTemplate.delete(WEB_CONFIG_KEY);
         return this.commentMapper.insertComment(param);
     }
 
@@ -316,6 +319,9 @@ public class CommentServiceImpl implements CommentService {
                 this.redisTemplate.delete(ARTICLE_DETAIL_KEY + article.getUuid());
             }
         }
+
+        // 删除网站通用信息
+        this.redisTemplate.delete(WEB_CONFIG_KEY);
         return this.commentMapper.updateCommentStatus(param);
     }
 }

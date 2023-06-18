@@ -65,18 +65,12 @@ public class WebConfigController {
 
     /**
      * 获取网站设置信息
-     * @param type 类型ID
      * @return 对应的网站信息
      */
-    @PreAuthorize("hasAuthority('ADMIN_CONFIG_DETAIL')")
     @ApiOperation(value = "根据类型获取网站设置信息")
     @GetMapping("/admin/configs")
-    public R getInfoAll(@RequestParam Integer type) {
-        if (type == null || type < 1 || type > 3) {
-            throw new CustomerException("该类型不存在");
-        }
-
-        WebConfig webConfig = this.webConfigService.searchInfoAllByType(type);
+    public R getInfoAll() {
+        WebConfig webConfig = this.webConfigService.searchWebInfo();
         return R.ok()
                 .put("result",webConfig);
     }

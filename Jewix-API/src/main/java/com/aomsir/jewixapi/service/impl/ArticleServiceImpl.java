@@ -138,6 +138,7 @@ public class ArticleServiceImpl implements ArticleService {
             param.put("createTime", new Date());
             param.put("updateTime", new Date());
             param.put("views", 0);
+            param.put("is_delete", 0);
 
             this.articleMapper.insertArticle(param);
             BigInteger tempId = (BigInteger) param.get("id");

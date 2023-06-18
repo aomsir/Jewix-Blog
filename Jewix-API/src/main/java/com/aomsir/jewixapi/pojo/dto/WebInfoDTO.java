@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.pojo.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,6 +21,9 @@ public class WebInfoDTO implements Serializable {
     private String description;
     private Integer articleCount;
     private Integer commentCount;
-    private Map<String,Integer> runTime;
+    private Long runTime;
     private Integer lastActive;
+    private HashMap<String, String> socialInfo;
+    private String icp;
+    private String police;
 }

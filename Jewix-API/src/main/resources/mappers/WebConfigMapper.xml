@@ -6,21 +6,19 @@
 <mapper namespace="com.aomsir.jewixapi.mapper.WebConfigMapper">
 
     <insert id="insertWebConfig">
-        INSERT INTO tb_web_config(config, create_time, update_time, type)
+        INSERT INTO tb_web_config(config, create_time, update_time)
         VALUES (#{param.config},
-                #{param.create_time},
-                #{param.update_time},
-                #{param.type})
+                #{param.createTime},
+                #{param.updateTime})
     </insert>
 
-    <select id="queryWebConfigByType" resultType="WebConfig">
-        SELECT id, config, create_time, update_time, type
+    <select id="queryWebConfigInfo" resultType="WebConfig">
+        SELECT id, config, create_time, update_time
         FROM tb_web_config
-        WHERE type = #{type}
     </select>
 
     <select id="queryWebConfigById" resultType="WebConfig">
-        SELECT id, config, create_time, update_time, type
+        SELECT id, config, create_time, update_time
         FROM tb_web_config
         WHERE id = #{id}
     </select>
@@ -30,6 +28,5 @@
         SET config = #{param.config},
             update_time = #{param.updateTime}
         WHERE id = #{param.id}
-        AND type = #{param.type}
     </update>
 </mapper>

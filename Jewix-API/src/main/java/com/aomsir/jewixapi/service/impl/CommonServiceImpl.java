@@ -1,10 +1,13 @@
 package com.aomsir.jewixapi.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
 import com.aomsir.jewixapi.mapper.*;
 import com.aomsir.jewixapi.pojo.dto.ArticleArchiveInfoDTO;
 import com.aomsir.jewixapi.pojo.dto.WebInfoDTO;
 import com.aomsir.jewixapi.pojo.entity.User;
+import com.aomsir.jewixapi.pojo.entity.WebConfig;
+import com.aomsir.jewixapi.pojo.entity.WebInfo;
 import com.aomsir.jewixapi.service.CommonService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -59,11 +62,14 @@ public class CommonServiceImpl implements CommonService {
             return BeanUtil.toBean(configMap, WebInfoDTO.class);
         }
 
+        // 查询站长信息
         User user = this.userMapper.queryUserById(10000L);
         String nickname = user.getNickname();
         String email = user.getEmail();
         String description = user.getDescription();
 
+
+        // 查询文章数、评论数、最后活跃日期
         Integer articleCount = this.articleMapper.queryArticleCount();
         Integer commentCount = this.commentMapper.queryCommentCount();
         Date lastActive = this.articleMapper.queryLastActive();
@@ -71,11 +77,20 @@ public class CommonServiceImpl implements CommonService {
         // 将Date对象转换成LocalDate对象
         LocalDate date = new java.sql.Date(lastActive.getTime()).toLocalDate();
 
-        // 获取今天的LocalDate对象
+        // 获取今天的LocalDate对象、计算差值
         LocalDate today = LocalDate.now();
-
-        // 计算差值
         long daysBetween = ChronoUnit.DAYS.between(date, today);
+
+
+        // 计算运行天数
+        WebConfig webConfig = this.webConfigMapper.queryWebConfigInfo();
+        String configJSON = webConfig.getConfig();
+        WebInfo webInfo = JSONUtil.toBean(configJSON, WebInfo.class);
+        Date buildDate = webInfo.getBuildDate();
+        LocalDate date1 = new java.sql.Date(buildDate.getTime()).toLocalDate();
+        long runTime = ChronoUnit.DAYS.between(date1, today);
+
+
         WebInfoDTO webInfoDTO = new WebInfoDTO();
         webInfoDTO.setNickname(nickname);
         webInfoDTO.setEmail(email);
@@ -83,7 +98,11 @@ public class CommonServiceImpl implements CommonService {
         webInfoDTO.setArticleCount(articleCount);
         webInfoDTO.setCommentCount(commentCount);
         webInfoDTO.setLastActive(Math.toIntExact(daysBetween));
-        // TODO:设置运行天数
+        webInfoDTO.setRunTime(runTime);
+        webInfoDTO.setSocialInfo(webInfo.getSocialInfo());
+        webInfoDTO.setIcp(webInfoDTO.getIcp());
+        webInfoDTO.setPolice(webInfoDTO.getPolice());
+
 
         // 存入Redis
         this.redisTemplate.opsForHash()

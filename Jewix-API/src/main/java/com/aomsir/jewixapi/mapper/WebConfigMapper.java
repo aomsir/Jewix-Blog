@@ -10,7 +10,7 @@ import java.util.Map;
 public interface WebConfigMapper {
     int insertWebConfig(@Param("param") Map<String, Object> param);
 
-    WebConfig queryWebConfigByType(@Param("type") Integer type);
+    WebConfig queryWebConfigInfo();
 
     WebConfig queryWebConfigById(@Param("id") Integer id);
 

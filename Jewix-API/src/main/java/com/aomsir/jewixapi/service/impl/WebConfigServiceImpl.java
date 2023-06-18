@@ -14,6 +14,8 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import static com.aomsir.jewixapi.constant.WebConfigConstants.CONFIG_INFO_IS_NULL;
 import static com.aomsir.jewixapi.constant.WebConfigConstants.CONFIG_TYPE_HAS_EXISTED;
@@ -35,11 +37,21 @@ public class WebConfigServiceImpl implements WebConfigService {
     @Override
     @Transactional
     public int addWebConfig(InfoWebConfigAddVo infoWebConfigAddVo) {
-
-        Integer type = infoWebConfigAddVo.getType();
-        if (this.webConfigMapper.queryWebConfigByType(type) != null) {
-            throw new CustomerException(CONFIG_TYPE_HAS_EXISTED);
+        HashMap<String, String> socialInfo = infoWebConfigAddVo.getSocialInfo();
+        if (socialInfo.size() > 3) {
+            throw new CustomerException("最多只允许3个社交信息嗷");
         }
+
+        String regex = "(?i)^(http|https)://.*$";
+        Pattern pattern = Pattern.compile(regex);
+        Set<String> keySets = socialInfo.keySet();
+        for (String keySet : keySets) {
+            String url = socialInfo.get(keySet);
+            if (!pattern.matcher(url).matches()) {
+                throw new CustomerException("社交信息必须是链接");
+            }
+        }
+
 
         Date createTime = new Date();
         Date updateTime = new Date();
@@ -49,7 +61,7 @@ public class WebConfigServiceImpl implements WebConfigService {
             put("config",config);
             put("createTime",createTime);
             put("updateTime",updateTime);
-            put("type",type);
+
         }};
         return this.webConfigMapper.insertWebConfig(param);
     }
@@ -57,32 +69,44 @@ public class WebConfigServiceImpl implements WebConfigService {
     @Override
     @Transactional
     public int updateWebConfig(InfoWebConfigUpdateVo infoWebConfigUpdateVo) {
+        HashMap<String, String> socialInfo = infoWebConfigUpdateVo.getSocialInfo();
+        if (socialInfo.size() > 3) {
+            throw new CustomerException("最多只允许3个社交信息嗷");
+        }
 
-        Integer type = infoWebConfigUpdateVo.getType();
+        // 判断url是否正确
+        String regex = "(?i)^(http|https)://.*$";
+        Pattern pattern = Pattern.compile(regex);
+        Set<String> keySets = socialInfo.keySet();
+        for (String keySet : keySets) {
+            String url = socialInfo.get(keySet);
+            if (!pattern.matcher(url).matches()) {
+                throw new CustomerException("社交信息必须是链接");
+            }
+        }
+
+        // 查询网站设置信息
         Integer id = infoWebConfigUpdateVo.getId();
-
-        WebConfig webConfig_1 = this.webConfigMapper.queryWebConfigByType(type);
-        WebConfig webConfig_2 = this.webConfigMapper.queryWebConfigById(id);
-        if (webConfig_1 == null || webConfig_2 == null) {
+        WebConfig webConfig_1 = this.webConfigMapper.queryWebConfigById(id);
+        if (webConfig_1 == null) {
             throw new CustomerException(CONFIG_INFO_IS_NULL);
         }
 
         Date updateTime = new Date();
-        String config = JSONUtil.toJsonStr(infoWebConfigUpdateVo);
+        String configInfo = JSONUtil.toJsonStr(infoWebConfigUpdateVo);
 
         Map<String, Object> param = new HashMap<String, Object>(){{
             put("id",id);
-            put("config",config);
+            put("config",configInfo);
             put("updateTime",updateTime);
-            put("type",type);
         }};
 
         return this.webConfigMapper.updateWebConfig(param);
     }
 
     @Override
-    public WebConfig searchInfoAllByType(Integer type) {
-        WebConfig webConfig = this.webConfigMapper.queryWebConfigByType(type);
+    public WebConfig searchWebInfo() {
+        WebConfig webConfig = this.webConfigMapper.queryWebConfigInfo();
         if (webConfig == null) {
             throw new CustomerException(CONFIG_INFO_IS_NULL);
         }
