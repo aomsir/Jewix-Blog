@@ -55,7 +55,7 @@ export default function User(props: UserProps): ReactElement {
       {initialState?.currentUser?.user.id === entity.id ? (
         <a
           aria-disabled={initialState?.currentUser?.user.id === entity.id}
-          onClick={() => message.error("禁止删除自己")}
+          onClick={() => message.warning("禁止删除自己")}
         >
           删除
         </a>
@@ -79,6 +79,10 @@ export default function User(props: UserProps): ReactElement {
             style={{ color: "red" }}
             onClick={async () => {
               try {
+                if (initialState?.currentUser?.user.id === entity.id) {
+                  message.warning("禁止禁用自己")
+                  return
+                }
                 await updateUserStatus({ uuid: entity.uuid, status: UserEnums.Status.禁用 });
                 message.success("禁用成功");
                 actionRef.current?.reload();

@@ -15,7 +15,7 @@ const Settings: ProLayoutProps & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Jewix博客后台管理系统',
+  title: 'Jewix博客系统后台管理',
   pwa: true,
   logo: '/admin/favicon.ico',
   iconfontUrl: '',
