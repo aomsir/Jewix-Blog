@@ -2,7 +2,14 @@ package com.aomsir.jewixapi.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.exception.CustomerException;
+import com.aomsir.jewixapi.mapper.MenuMapper;
+import com.aomsir.jewixapi.mapper.ResourceMapper;
 import com.aomsir.jewixapi.mapper.RoleMapper;
+import com.aomsir.jewixapi.pojo.dto.MenuListPageDTO;
+import com.aomsir.jewixapi.pojo.dto.ResourceListPageDTO;
+import com.aomsir.jewixapi.pojo.dto.RoleOfMenuDTO;
+import com.aomsir.jewixapi.pojo.dto.RoleOfResourceDTO;
+import com.aomsir.jewixapi.pojo.entity.Menu;
 import com.aomsir.jewixapi.pojo.entity.Role;
 import com.aomsir.jewixapi.pojo.vo.RoleAddVo;
 import com.aomsir.jewixapi.pojo.vo.RoleUpdateVo;
@@ -28,6 +35,12 @@ import java.util.Map;
 public class RoleServiceImpl implements RoleService {
     @Resource
     private RoleMapper roleMapper;
+
+    @Resource
+    private MenuMapper menuMapper;
+
+    @Resource
+    private ResourceMapper resourceMapper;
 
 
     @Override
@@ -128,5 +141,73 @@ public class RoleServiceImpl implements RoleService {
             throw new CustomerException("角色不存在");
         }
         return role;
+    }
+
+    @Override
+    public RoleOfMenuDTO searchRoleOfMenu(Integer id) {
+        Role role = this.roleMapper.queryRoleById(id);
+        if (role == null) {
+            throw new CustomerException("角色不存在");
+        }
+
+        // 复制角色数据
+        RoleOfMenuDTO roleOfMenuDTO = new RoleOfMenuDTO();
+        BeanUtil.copyProperties(role, roleOfMenuDTO);
+
+        // 根据角色查询父级菜单数据封装
+        List<Menu> menus = this.menuMapper.queryMenuByRoleId(id,0);
+        List<MenuListPageDTO> menuListPageDTOS = new ArrayList<>();
+        for (Menu menu : menus) {
+            MenuListPageDTO menuListPageDTO = new MenuListPageDTO();
+            BeanUtil.copyProperties(menu, menuListPageDTO);
+            menuListPageDTOS.add(menuListPageDTO);
+        }
+
+        // 根据角色查询二级菜单并数据封装
+        for (Menu menu : menus) {
+            List<Menu> sonList = this.menuMapper.queryMenuByRoleId(id, menu.getId());
+            for (MenuListPageDTO menuListPageDTO : menuListPageDTOS) {
+                if (menuListPageDTO.getId().equals(menu.getId())) {
+                    menuListPageDTO.setSonList(sonList);
+                }
+            }
+        }
+
+        roleOfMenuDTO.setMenuListPageDTOs(menuListPageDTOS);
+        return roleOfMenuDTO;
+    }
+
+    @Override
+    public RoleOfResourceDTO searchRoleOfResource(Integer id) {
+        Role role = this.roleMapper.queryRoleById(id);
+        if (role == null) {
+            throw new CustomerException("角色不存在");
+        }
+
+        // 复制角色数据
+        RoleOfResourceDTO roleOfResourceDTO = new RoleOfResourceDTO();
+        BeanUtil.copyProperties(role, roleOfResourceDTO);
+
+        // 根据角色查询父级资源并数据封装
+        List<com.aomsir.jewixapi.pojo.entity.Resource> resources = this.resourceMapper.queryResourceByRoleId(id, 0);
+        List<ResourceListPageDTO> resourceListPageDTOS = new ArrayList<>();
+        for (com.aomsir.jewixapi.pojo.entity.Resource resource : resources) {
+            ResourceListPageDTO resourceListPageDTO = new ResourceListPageDTO();
+            BeanUtil.copyProperties(resource, resourceListPageDTO);
+            resourceListPageDTOS.add(resourceListPageDTO);
+        }
+
+        // 根据角色查询二级角色并数据封装
+        for (com.aomsir.jewixapi.pojo.entity.Resource resource : resources) {
+            List< com.aomsir.jewixapi.pojo.entity.Resource> sonList = this.resourceMapper.queryResourceByRoleId(id, resource.getId());
+            for (ResourceListPageDTO resourceListPageDTO : resourceListPageDTOS) {
+                if (resourceListPageDTO.getId().equals(resource.getId())) {
+                    resourceListPageDTO.setResourceSons(sonList);
+                }
+            }
+        }
+
+        roleOfResourceDTO.setResourceListPageDTOList(resourceListPageDTOS);
+        return roleOfResourceDTO;
     }
 }

@@ -28,4 +28,7 @@ public interface MenuMapper {
     List<MenuListPageDTO> queryParentMenuByUserId(@Param("userId") Long id);
 
     List<Menu> queryMenusByParentIdAndUserId(@Param("parentId") Integer id, @Param("userId") Long id1);
+
+    List<Menu> queryMenuByRoleId(@Param("roleId") Integer id,
+                                 @Param("parentId") Integer parentId);
 }

@@ -271,6 +271,36 @@ public class ArticleServiceImpl implements ArticleService {
         return articleDetailDTO;
     }
 
+    @Override
+    public ArticleDetailDTO queryArticleByUuid(String uuid) {
+        // 查询文章
+        Article article = this.articleMapper.queryBackendArticleByUuid(uuid);
+        if (article == null) {
+            throw new CustomerException(ARTICLE_IS_NULL);
+        }
+
+        // 数据复制
+        ArticleDetailDTO articleDetailDTO= new ArticleDetailDTO();
+        BeanUtil.copyProperties(article,articleDetailDTO);
+
+        // 查询文章所属标签、分类、用户名
+        List<String> categotyList = this.articleMapper.queryArticleCategoryNameList(article.getId());
+        List<String> tagList = this.articleMapper.queryArticleTagNameList(article.getId());
+        String userName = this.articleMapper.queryArticleUserName(article.getId());    // 根据文章id获取文章的作者名
+        articleDetailDTO.setCategories(categotyList);
+        articleDetailDTO.setTags(tagList);
+        articleDetailDTO.setUserName(userName);
+
+
+        // 封装tagIds和categoryIds
+        List<Long> tagIdList = this.articleMapper.queryArticleTagIdList(article.getId());
+        List<Long> categoryIdList = this.articleMapper.queryArticleCategoryIdList(article.getId());
+        articleDetailDTO.setTagIds(tagIdList);
+        articleDetailDTO.setCategoryIds(categoryIdList);
+
+        return articleDetailDTO;
+    }
+
     private void displayViews(HttpServletRequest request, String uuid2, Long id, Integer views, ArticleDetailDTO detailDTO) {
         String ip = this.netUtils.getRealIp(request);
 

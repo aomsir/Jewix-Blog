@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,6 +124,21 @@ public class ArticleController {
         ArticleDetailDTO articleDetailDTO = this.articleService.queryArticleByUuid(uuid,httpServletRequest);
         return R.ok()
                 .put("result",articleDetailDTO);
+    }
+
+
+    /**
+     * 后台根据uuid获取文章详情
+     * @param uuid 文章uuid
+     * @return 文章详情
+     */
+    @PreAuthorize("hasAuthority('ADMIN_ARTICLE_BACKEND_DETAIL')")
+    @ApiOperation(value = "后台根据uuid获取文章详情")
+    @GetMapping("/admin/articles/{uuid}")
+    public R getArticleBackendByUuid(@PathVariable("uuid") String uuid) {
+        ArticleDetailDTO articleDetailDTO = this.articleService.queryArticleByUuid(uuid);
+        return R.ok()
+                .put("result", articleDetailDTO);
     }
 
 

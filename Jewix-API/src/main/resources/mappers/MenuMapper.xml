@@ -66,6 +66,7 @@
         WHERE tu.id = #{userId}
         AND tm.parent_id = 0
     </select>
+
     <select id="queryMenusByParentIdAndUserId" resultType="Menu">
         SELECT tm.id, tm.parent_id, tm.component_path, tm.create_time, tm.icon_name, tm.name, tm.path, tm.type, tm.update_time
         FROM tb_menu AS tm
@@ -74,6 +75,15 @@
         LEFT JOIN tb_user_role AS tur ON tur.role_id = tr.id
         LEFT JOIN tb_user AS tu ON tu.id = tur.user_id
         WHERE tu.id = #{userId}
+        AND tm.parent_id = #{parentId}
+    </select>
+
+    <select id="queryMenuByRoleId" resultType="Menu">
+        SELECT tm.id, tm.parent_id, tm.component_path, tm.create_time, tm.icon_name, tm.name, tm.path, tm.type, tm.update_time
+        FROM tb_menu AS tm
+        LEFT JOIN tb_role_menu AS trm ON tm.id = trm.menu_id
+        LEFT JOIN tb_role AS tr ON tr.id = trm.role_id
+        WHERE tr.id = #{roleId}
         AND tm.parent_id = #{parentId}
     </select>
 

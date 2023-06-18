@@ -393,4 +393,10 @@
         LEFT JOIN tb_article_tag AS tag ON ta.id = tag.article_id
         WHERE tag.tag_id = #{tagId}
     </select>
+
+    <select id="queryBackendArticleByUuid" resultType="Article">
+        SELECT id, uuid, title, cover, content, description, type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        FROM tb_article
+        WHERE uuid = #{uuid}
+    </select>
 </mapper>

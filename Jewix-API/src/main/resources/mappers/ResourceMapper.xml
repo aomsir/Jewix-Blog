@@ -66,4 +66,13 @@
             (#{roleId}, #{resourceId})
         </foreach>
     </insert>
+
+    <select id="queryResourceByRoleId" resultType="Resource">
+        SELECT tr.id, tr.name, tr.label, tr.parent_id, tr.method, tr.route, tr.create_time
+        FROM tb_resource AS tr
+        LEFT JOIN tb_role_resource AS trr ON trr.resource_id = tr.id
+        LEFT JOIN tb_role AS tr2 ON tr2.id = trr.role_id
+        WHERE tr.parent_id = #{parentId}
+        AND tr2.id = #{id}
+    </select>
 </mapper>

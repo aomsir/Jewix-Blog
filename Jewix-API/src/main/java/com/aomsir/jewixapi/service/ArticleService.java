@@ -21,6 +21,8 @@ public interface ArticleService {
 
     ArticleDetailDTO queryArticleByUuid(String uuid, HttpServletRequest request);
 
+    ArticleDetailDTO queryArticleByUuid(String uuid);
+
     int deleteArticleByArchive(List<Long> ids);
 
     int deleteArticleByPhysics(List<Long> ids);

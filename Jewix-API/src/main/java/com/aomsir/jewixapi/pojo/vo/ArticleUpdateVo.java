@@ -13,7 +13,6 @@ import java.util.List;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-// TODO:添加字段校验
 @Data
 public class ArticleUpdateVo implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -27,6 +26,7 @@ public class ArticleUpdateVo implements Serializable {
     private String originUrl;
     private Integer views;
     private Integer isTop;
+    private Integer status;
     private Integer isDelete;
     private List<Long> tagIds;
     private List<Long> categoryIds;

@@ -23,4 +23,7 @@ public interface ResourceMapper {
     int deleteResourcesByRoleId(@Param("roleId") Integer roleId);
 
     int insertResourceForRole(@Param("roleId") Integer roleId, @Param("resourceIds") List<Integer> resourceIds);
+
+    List<Resource> queryResourceByRoleId(@Param("id") Integer id,
+                                         @Param("parentId") Integer parentId);
 }

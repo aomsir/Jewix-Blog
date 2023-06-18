@@ -1,5 +1,7 @@
 package com.aomsir.jewixapi.service;
 
+import com.aomsir.jewixapi.pojo.dto.RoleOfMenuDTO;
+import com.aomsir.jewixapi.pojo.dto.RoleOfResourceDTO;
 import com.aomsir.jewixapi.pojo.entity.Role;
 import com.aomsir.jewixapi.pojo.vo.RoleAddVo;
 import com.aomsir.jewixapi.pojo.vo.RoleUpdateVo;
@@ -18,4 +20,8 @@ public interface RoleService {
     int deleteRoles(List<Integer> roleIds);
 
     Role searchRoleById(Integer id);
+
+    RoleOfMenuDTO searchRoleOfMenu(Integer id);
+
+    RoleOfResourceDTO searchRoleOfResource(Integer id);
 }

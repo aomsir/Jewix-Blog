@@ -2,6 +2,8 @@ package com.aomsir.jewixapi.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.annotation.OperateLog;
+import com.aomsir.jewixapi.pojo.dto.RoleOfMenuDTO;
+import com.aomsir.jewixapi.pojo.dto.RoleOfResourceDTO;
 import com.aomsir.jewixapi.pojo.entity.Role;
 import com.aomsir.jewixapi.pojo.vo.RoleAddVo;
 import com.aomsir.jewixapi.pojo.vo.RolePageVo;
@@ -112,6 +114,34 @@ public class RoleController {
         Role role = this.roleService.searchRoleById(id);
         return R.ok()
                 .put("result", role);
+    }
+
+    /**
+     * 根据角色id获取菜单列表
+     * @param id 角色id
+     * @return 角色对应的菜单信息
+     */
+    @PreAuthorize("hasAuthority('ADMIN_ROLE_MENU_LIST')")
+    @ApiOperation(value = "根据角色id获取菜单列表")
+    @GetMapping("/admin/roles/menu")
+    public R getMenusInfoByRoleId(Integer id) {
+        RoleOfMenuDTO roleOfMenuDTO = this.roleService.searchRoleOfMenu(id);
+        return R.ok()
+                .put("result", roleOfMenuDTO);
+    }
+
+    /**
+     * 根据角色id获取资源列表
+     * @param id 角色id
+     * @return 角色对应的资源信息
+     */
+    @PreAuthorize("hasAuthority('ADMIN_ROLE_RESOURCE_LIST')")
+    @ApiOperation(value = "根据角色id获取资源列表")
+    @GetMapping("/admin/roles/resource")
+    public R getResourcesInfoByRoleId(Integer id) {
+        RoleOfResourceDTO roleOfResourceDTO = this.roleService.searchRoleOfResource(id);
+        return R.ok()
+                .put("result", roleOfResourceDTO);
     }
 
 }
