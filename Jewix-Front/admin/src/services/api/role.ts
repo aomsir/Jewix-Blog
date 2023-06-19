@@ -8,5 +8,5 @@ export const deleteRoles = deleteFactory<API.DeleteRolesParams>("/admin/roles");
 
 export const upsertRoleMenus = insertFactory<API.UpsertRoleMenusBody>("/admin/menus/doAssign");
 export const upsertRoleResources = insertFactory<API.UpsertRoleResourcesBody>(
-  "/admin/resources/doAssign",
+    "/admin/resources/doAssign",
 );
