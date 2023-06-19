@@ -11,146 +11,154 @@
  * @doc https://umijs.org/docs/guides/routes
  */
 export default [
-  {
-    path: "/article",
-    name: "文章管理",
-    icon: "BookOutlined",
-    component: "./article",
-    access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
-  },
-  {
-    path: "/comment",
-    name: "评论管理",
-    icon: "Comment",
-    component: "./comment",
-    access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
-  },
-  {
-    path: "/page",
-    name: "页面管理",
-    icon: "Book",
-    component: "./page",
-    access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
-  },
-  {
-    path: "/blogroll",
-    name: "友链管理",
-    icon: "TeamOutlined",
-    component: "./blogroll",
-    access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
-  },
-  {
-    path: "/category",
-    name: "分类管理",
-    icon: "PicCenterOutlined",
-    component: "./category",
-    access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
-  },
-  {
-    path: "/tag",
-    name: "标签管理",
-    icon: "Tag",
-    component: "./tag",
-    access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
-  },
-  {
-    path: "/photo",
-    name: "相册管理",
-    icon: "FolderOpenOutlined",
-    component: "./photo",
-    access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
-  },
-  {
-    path: "/user",
-    name: "用户管理",
-    icon: "User",
-    component: "./user",
-    access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
-  },
+    {
+        path: "/article",
+        name: "文章管理",
+        icon: "BookOutlined",
+        component: "./article",
+        access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
+    },
+    {
+        // 不使用layout会绕过权限系统，需要自行处理
+        layout: false,
+        hideInMenu: true, // 将该路由项隐藏在菜单中
+        path: "/article/edit",
+        name: "文章编辑",
+        component: "./article/edit",
+    },
+    {
+        path: "/comment",
+        name: "评论管理",
+        icon: "Comment",
+        component: "./comment",
+        access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
+    },
+    {
+        path: "/page",
+        name: "页面管理",
+        icon: "Book",
+        component: "./page",
+        access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
+    },
+    {
+        path: "/blogroll",
+        name: "友链管理",
+        icon: "TeamOutlined",
+        component: "./blogroll",
+        access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
+    },
+    {
+        path: "/category",
+        name: "分类管理",
+        icon: "PicCenterOutlined",
+        component: "./category",
+        access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
+    },
+    {
+        path: "/tag",
+        name: "标签管理",
+        icon: "Tag",
+        component: "./tag",
+        access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
+    },
+    {
+        path: "/photo",
+        name: "相册管理",
+        icon: "FolderOpenOutlined",
+        component: "./photo",
+        access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
+    },
+    {
+        path: "/user",
+        name: "用户管理",
+        icon: "User",
+        component: "./user",
+        access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
+    },
 
-  {
-    path: "/account",
-    hideInMenu: true, // 将该路由项隐藏在菜单中
-    name: "",
-    routes: [
-      {
-        path: "/account/settings",
-        name: "profileSettings",
-        component: "./account/settings",
-      },
-    ],
-  },
-  {
-    path: "/auth",
-    name: "权限管理",
-    icon: "SecurityScanOutlined",
-    access: "normalRouteFilter",
-    routes: [
-      {
-        path: "/auth/menu",
-        name: "菜单管理",
-        icon: "MenuOutlined",
-        component: "./auth/menu",
-      },
-      {
-        path: "/auth/resource",
-        name: "资源管理",
-        icon: "ApiOutlined",
-        component: "./auth/resource",
+    {
+        path: "/account",
+        hideInMenu: true, // 将该路由项隐藏在菜单中
+        name: "",
+        routes: [
+            {
+                path: "/account/settings",
+                name: "profileSettings",
+                component: "./account/settings",
+            },
+        ],
+    },
+    {
+        path: "/auth",
+        name: "权限管理",
+        icon: "SecurityScanOutlined",
         access: "normalRouteFilter",
-      },
-      {
-        path: "/auth/role",
-        name: "角色管理",
-        icon: "IdcardOutlined",
-        component: "./auth/role",
+        routes: [
+            {
+                path: "/auth/menu",
+                name: "菜单管理",
+                icon: "MenuOutlined",
+                component: "./auth/menu",
+            },
+            {
+                path: "/auth/resource",
+                name: "资源管理",
+                icon: "ApiOutlined",
+                component: "./auth/resource",
+                access: "normalRouteFilter",
+            },
+            {
+                path: "/auth/role",
+                name: "角色管理",
+                icon: "IdcardOutlined",
+                component: "./auth/role",
+                access: "normalRouteFilter",
+            },
+        ],
+    },
+    {
+        path: "/log",
+        name: "日志管理",
+        icon: "FileTextOutlined",
         access: "normalRouteFilter",
-      },
-    ],
-  },
-  {
-    path: "/log",
-    name: "日志管理",
-    icon: "FileTextOutlined",
-    access: "normalRouteFilter",
-    routes: [
-      {
-        path: "/log/operation",
-        name: "操作日志",
-        icon: "AuditOutlined",
-        component: "./log/operation",
-        access: "normalRouteFilter",
-      },
-      {
-        path: "/log/login",
-        name: "登录日志",
-        icon: "LoginOutlined",
-        component: "./log/login",
-        access: "normalRouteFilter",
-      },
-    ],
-  },
-  // {
-  //   path: '/setting',
-  //   name: 'setting',
-  //   icon: 'setting',
-  //   component: './setting',
-  // },
-  {
-    path: "/login",
-    name: "login",
-    layout: false,
-    component: "./login",
-  },
-  {
-    path: "/",
-    name: "",
-    redirect: "/article",
-  },
-  {
-    path: "*",
-    name: "",
-    layout: false,
-    component: "./404",
-  },
+        routes: [
+            {
+                path: "/log/operation",
+                name: "操作日志",
+                icon: "AuditOutlined",
+                component: "./log/operation",
+                access: "normalRouteFilter",
+            },
+            {
+                path: "/log/login",
+                name: "登录日志",
+                icon: "LoginOutlined",
+                component: "./log/login",
+                access: "normalRouteFilter",
+            },
+        ],
+    },
+    // {
+    //   path: '/setting',
+    //   name: 'setting',
+    //   icon: 'setting',
+    //   component: './setting',
+    // },
+    {
+        path: "/login",
+        name: "login",
+        layout: false,
+        component: "./login",
+    },
+    {
+        path: "/",
+        name: "",
+        redirect: "/article",
+    },
+    {
+        path: "*",
+        name: "",
+        layout: false,
+        component: "./404",
+    },
 ] as const;

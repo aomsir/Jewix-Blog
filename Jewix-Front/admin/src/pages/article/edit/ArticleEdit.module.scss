@@ -1,0 +1,53 @@
+.ArticleEdit {
+    padding: 20px;
+
+    :global {
+        .title {
+            width: 100%;
+            padding-bottom: 15px;
+            font-size: 24px;
+            border: none;
+            border-bottom: 1px solid #efefef;
+            outline: none;
+        }
+
+        .footer {
+            display: grid;
+            margin-top: 40px;
+            padding-top: 20px;
+
+            .ant-form-item {
+                .ant-row {
+                    gap: 30px;
+                    .ant-form-item-label {
+                        width: 100px;
+                    }
+                    @media screen and (max-width: 575px) {
+                        gap: 0;
+                    }
+                }
+            }
+
+            .uploadImage {
+                display: flex;
+                gap: 10px;
+                align-items: flex-end;
+                .ant-upload-picture-card-wrapper {
+                    width: auto;
+                }
+                .desc {
+                    color: #8d8585;
+                    translate: 0 -10px;
+                }
+            }
+        }
+    }
+
+    // 最后一个div
+    form > div:last-child {
+        position: fixed;
+        right: 10px;
+        bottom: 10px;
+        justify-content: flex-end;
+    }
+}

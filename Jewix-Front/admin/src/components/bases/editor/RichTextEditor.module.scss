@@ -1,16 +1,16 @@
 .rich-text-editor {
-  :global {
-    .tox-tinymce {
-      overflow: visible !important;
-      .tox-editor-container {
-        overflow: visible !important;
+    :global {
+        .tox-tinymce {
+            overflow: visible !important;
+            .tox-editor-container {
+                overflow: visible !important;
 
-        .tox-editor-header {
-          position: sticky;
-          top: -15px;
-          padding-right: 150px;
+                .tox-editor-header {
+                    position: sticky;
+                    top: 0px;
+                    padding-right: 150px;
+                }
+            }
         }
-      }
     }
-  }
 }
