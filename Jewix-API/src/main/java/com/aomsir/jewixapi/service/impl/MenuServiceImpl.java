@@ -82,6 +82,10 @@ public class MenuServiceImpl implements MenuService {
         // 删除当前角色的菜单
         this.menuMapper.deleteMenusByRoleId(roleId);
 
+        if (menuIds.isEmpty() ) {
+            return 0;
+        }
+
         // 新增当前角色菜单
         return this.menuMapper.insertResourcesForRole(roleId, menuIds);
     }

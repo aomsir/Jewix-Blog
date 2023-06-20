@@ -97,6 +97,10 @@ public class ResourceServiceImpl implements ResourceService {
         // 删除当前角色的资源
         this.resourceMapper.deleteResourcesByRoleId(roleId);
 
+        if (resourceIds.isEmpty()) {
+            return 0;
+        }
+
         // 新增当前角色资源
         return this.resourceMapper.insertResourceForRole(roleId, resourceIds);
     }
