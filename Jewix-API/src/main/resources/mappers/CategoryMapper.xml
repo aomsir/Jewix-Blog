@@ -79,28 +79,6 @@
         </foreach>
     </select>
 
-
-
-
-<!--    <resultMap id="CategoryListMap" type="com.aomsir.jewixapi.pojo.dto.CategoryListDTO">-->
-<!--        <id property="id" column="id" />-->
-<!--        <result property="categoryName" column="category_name" />-->
-<!--        <result-->
-<!--    </resultMap>-->
-
-    <!--TODO:待完成-->
-    <select id="queryCategoryList" resultType="com.aomsir.jewixapi.pojo.dto.CategoryListDTO">
-#         SELECT id, category_name, parent_id
-#         FROM tb_category
-#         WHERE parent_id = 0
-#         AND id IN (
-#             SELECT parent_id
-#             FROM tb_category
-#             WHERE parent_id != 0
-#         )
-
-    </select>
-
     <select id="queryArticleCommentCountsById" resultType="Integer">
         SELECT COUNT(id)
         FROM tb_comment

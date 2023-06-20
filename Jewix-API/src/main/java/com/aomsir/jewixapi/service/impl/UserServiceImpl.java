@@ -292,6 +292,9 @@ public class UserServiceImpl implements UserService {
         if (user_1.getId() == 10000L) {
             this.redisTemplate.delete(WEB_CONFIG_KEY);
         }
+
+        this.redisTemplate.delete(USER_INFO_KEY + user_1.getId());
+        this.redisTemplate.delete(USER_TOKEN_KEY + user_1.getId());
         return this.userMapper.updateUser(param);
     }
 }

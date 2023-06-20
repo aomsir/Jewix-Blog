@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-// TODO: 进行整合测试
 @Deprecated
 public class ReteLimitFilter extends OncePerRequestFilter {
 
