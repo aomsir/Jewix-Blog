@@ -4,6 +4,13 @@
 import { ArticleEnums, BlogrollEnums, PageEnums, PhotoEnums, UserEnums } from "@/config/enums";
 // 与后端约定的响应数据格式
 declare namespace API {
+    type FetchWebSiteSetting = {
+        config: string;
+        createTime: string;
+        id: number;
+        status: number;
+        updateTime: string;
+    };
     type FetchRoleMenuResponse = {
         id: number;
         menuListPageDTOs: API.FetchMenuResponse[];

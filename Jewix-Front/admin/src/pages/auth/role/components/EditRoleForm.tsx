@@ -21,6 +21,7 @@ export default function EditRoleForm(props: EditRoleFormProps): ReactElement {
                 <Col span={12}>
                     <Form.Item label="菜单权限" name="menuIds">
                         <Tree
+                            checkStrictly
                             key={menuIds}
                             defaultCheckedKeys={menuIds}
                             checkable
@@ -29,7 +30,7 @@ export default function EditRoleForm(props: EditRoleFormProps): ReactElement {
                             onCheck={(checkedKeys, info) => {
                                 formRef.current?.setFieldsValue({
                                     // @ts-ignore
-                                    menuIds: [...checkedKeys, ...info.halfCheckedKeys],
+                                    menuIds: checkedKeys.checked,
                                 });
                             }}
                         />
@@ -38,6 +39,7 @@ export default function EditRoleForm(props: EditRoleFormProps): ReactElement {
                 <Col span={12}>
                     <Form.Item label="资源权限" name="resourceIds">
                         <Tree
+                            checkStrictly
                             checkable
                             key={resourceIds}
                             defaultCheckedKeys={resourceIds}
@@ -46,7 +48,7 @@ export default function EditRoleForm(props: EditRoleFormProps): ReactElement {
                             onCheck={(checkedKeys, info) => {
                                 formRef.current?.setFieldsValue({
                                     // @ts-ignore
-                                    resourceIds: [...checkedKeys, ...info.halfCheckedKeys],
+                                    resourceIds: checkedKeys.checked,
                                 });
                             }}
                         />

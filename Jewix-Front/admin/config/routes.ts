@@ -138,12 +138,13 @@ export default [
             },
         ],
     },
-    // {
-    //   path: '/setting',
-    //   name: 'setting',
-    //   icon: 'setting',
-    //   component: './setting',
-    // },
+    {
+        path: "/setting",
+        name: "网站配置",
+        icon: "SettingOutlined",
+        component: "./setting",
+        access: "normalRouteFilter", // 会调用 src/access.ts 中返回的 normalRouteFilter 进行鉴权
+    },
     {
         path: "/login",
         name: "login",

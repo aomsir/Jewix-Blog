@@ -169,7 +169,6 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
                         API.UpsertRoleMenusBody &
                         API.UpsertRoleResourcesBody,
                 ) => {
-                    console.log(formData);
                     // 新增
                     if (!initialValues) {
                         await insertRole(formData);
@@ -177,18 +176,14 @@ export default function AuthRole(props: AuthRoleProps): ReactElement {
                     } else {
                         // 更改
                         await updateRole(formData as API.UpdateRoleBody);
-                        if (formData.menuIds.length) {
-                            await upsertRoleMenus({
-                                menuIds: formData.menuIds,
-                                roleId: (formData as API.UpdateRoleBody).id,
-                            });
-                        }
-                        if (formData.resourceIds?.length) {
-                            await upsertRoleResources({
-                                resourceIds: formData.resourceIds,
-                                roleId: (formData as API.UpdateRoleBody).id,
-                            });
-                        }
+                        await upsertRoleMenus({
+                            menuIds: formData.menuIds,
+                            roleId: (formData as API.UpdateRoleBody).id,
+                        });
+                        await upsertRoleResources({
+                            resourceIds: formData.resourceIds,
+                            roleId: (formData as API.UpdateRoleBody).id,
+                        });
                         message.success("更新成功");
                     }
                     actionRef.current?.reload();
