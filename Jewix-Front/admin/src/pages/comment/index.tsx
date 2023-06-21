@@ -5,23 +5,24 @@ import { CommentEnums } from "@/config/enums";
 import { useModelVisionModalForm } from "@/hooks/props";
 import { API } from "@/services/ant-design-pro/typings";
 import {
-  deleteComment,
-  fetchComments,
-  insertComment,
-  updateComment,
-  updateCommentStatus,
+    deleteComment,
+    fetchComments,
+    insertComment,
+    updateComment,
+    updateCommentStatus,
 } from "@/services/api";
 import { halfStart } from "@/utils/array";
+import { getAvatarUrlByEmail } from "@/utils/avatar";
 import { timestampToTime } from "@/utils/convert";
+import { getIcon } from "@/utils/icon";
 import {
-  ActionType,
-  ModalForm,
-  PageContainer,
-  ProColumns,
-  ProTable,
+    ActionType,
+    ModalForm,
+    PageContainer,
+    ProList,
+    ProListMetas,
 } from "@ant-design/pro-components";
-import { useAccess, useRouteProps } from "@umijs/max";
-import { message, Select, Space, Table } from "antd";
+import { Image, message, Space, Table } from "antd";
 import { map } from "lodash";
 import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
 import { fetchWidthNormalizedResponse } from "../article";
@@ -30,228 +31,221 @@ import { tableConfig } from "/config/table";
 type CommentProps = HTMLAttributes<HTMLDivElement>;
 // 评论列表
 export default function Comment(props: CommentProps): ReactElement {
-  const { ...rest } = props;
-  const { modalVisionState, modalVisionProps } = useModelVisionModalForm();
-  const actionRef = useRef<ActionType>();
-  const [initialValues, setInitialValues] = useState<API.UpdateCommentParams>();
+    const { ...rest } = props;
+    const { modalVisionState, modalVisionProps } = useModelVisionModalForm();
+    const actionRef = useRef<ActionType>();
+    const [initialValues, setInitialValues] = useState<API.UpdateCommentParams>();
 
-  // 评论类型
-  columns[6].render = (dom, entity) => CommentEnums.Type[entity.type] ?? "未知";
-  // 评论状态
-  columns[7].render = (dom, entity, _, action) => {
-    const { operationFilter } = useAccess();
-    const routeProps = useRouteProps();
+    metas.content!.render = (_dom, entity, _index, _action, _schema) => {
+        return (
+            <>
+                <p>
+                    {timestampToTime(Date.parse(entity.createTime))}&nbsp;于&nbsp;
+                    <span style={{ color: "rgb(134, 160, 175)" }}>
+                        {CommentEnums.Type[entity.type]}
+                    </span>
+                </p>
+                <p>{entity.content}</p>
+                <Space>
+                    {entity.status !== CommentEnums.Status.开放 ? (
+                        <a
+                            onClick={async () => {
+                                try {
+                                    await updateCommentStatus({
+                                        id: entity.id,
+                                        status: CommentEnums.Status.开放,
+                                    });
+                                    message.success("修改成功");
+                                    actionRef.current?.reload();
+                                } catch (error) {}
+                            }}
+                        >
+                            通过
+                        </a>
+                    ) : (
+                        <span>通过</span>
+                    )}
+                    {entity.status !== CommentEnums.Status.待审核 ? (
+                        <a
+                            onClick={async () => {
+                                try {
+                                    await updateCommentStatus({
+                                        id: entity.id,
+                                        status: CommentEnums.Status.待审核,
+                                    });
+                                    message.success("修改成功");
+                                    actionRef.current?.reload();
+                                } catch (error) {}
+                            }}
+                        >
+                            待审核
+                        </a>
+                    ) : (
+                        <span>待审核</span>
+                    )}
+                    {entity.status !== CommentEnums.Status.垃圾 ? (
+                        <a
+                            onClick={async () => {
+                                try {
+                                    await updateCommentStatus({
+                                        id: entity.id,
+                                        status: CommentEnums.Status.垃圾,
+                                    });
+                                    message.success("修改成功");
+                                    actionRef.current?.reload();
+                                } catch (error) {}
+                            }}
+                        >
+                            垃圾
+                        </a>
+                    ) : (
+                        <span>垃圾</span>
+                    )}
+                    <HasOperation operation={OPERATIONS.UPDATE}>
+                        <a
+                            onClick={() => {
+                                modalVisionState.setOpen(true);
+                                setInitialValues(entity);
+                            }}
+                            style={{ color: "green" }}
+                        >
+                            编辑
+                        </a>
+                    </HasOperation>
+                    <HasOperation operation={OPERATIONS.DELETE}>
+                        <PopConfirmDelete
+                            onConfirm={async () => {
+                                try {
+                                    await deleteComment({ ids: [entity.id] });
+                                    message.success("删除成功");
+                                    actionRef.current?.reload();
+                                } catch (error) {}
+                            }}
+                        >
+                            <a style={{ color: "red" }}>删除</a>
+                        </PopConfirmDelete>
+                    </HasOperation>
+                </Space>
+            </>
+        );
+    };
 
-    const access = operationFilter(routeProps, "更新状态");
+    useEffect(() => {
+        if (!modalVisionState.open) {
+            setInitialValues(undefined);
+        }
+    }, [modalVisionState.open]);
+
     return (
-      <span
-        style={{ cursor: access ? "pointer" : "" }}
-        onClick={() => access && action?.startEditable(entity.id)}
-      >
-        {dom}
-      </span>
+        <PageContainer className={rest.className ?? ""} {...rest}>
+            <ProList<API.FetchCommentResponse, API.PaginationResponse>
+                metas={metas}
+                pagination={{
+                    defaultPageSize: 10,
+                    showSizeChanger: true,
+                    pageSizeOptions: tableConfig.pageSizes,
+                }}
+                actionRef={actionRef}
+                request={fetchWidthNormalizedResponse(fetchComments)}
+                // 批量操作
+                rowSelection={{
+                    // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
+                    // 注释该行则默认不显示下拉选项
+                    selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
+                }}
+                // 批量删除
+                tableAlertOptionRender={({ selectedRowKeys }) => {
+                    return (
+                        <HasOperation operation={OPERATIONS.DELETE}>
+                            <PopConfirmDelete
+                                onConfirm={async () => {
+                                    try {
+                                        await deleteComment({ ids: selectedRowKeys });
+                                        actionRef.current?.reload();
+                                    } catch (error) {}
+                                }}
+                            />
+                        </HasOperation>
+                    );
+                }}
+            />
+            <ModalForm
+                width={800}
+                title="编辑评论"
+                {...modalVisionProps}
+                /* 下面两个属性，为了更新initialValues */
+                modalProps={{
+                    destroyOnClose: true,
+                }}
+                preserve={false}
+                initialValues={initialValues}
+                onFinish={async (formData: API.InsertCommentParams | API.UpdateCommentParams) => {
+                    // 新增
+                    if (!initialValues) {
+                        await insertComment({
+                            ...formData,
+                            // @ts-ignore
+                            parentId: formData.parentId ?? 0,
+                        } as API.InsertCommentParams);
+                        message.success("新增成功");
+                    } else {
+                        // 更改
+                        await updateComment(formData as API.UpdateCommentParams);
+                        message.success("更新成功");
+                    }
+                    actionRef.current?.reload();
+                    return true;
+                }}
+            >
+                <EditCommentForm isUpdateForm={!!initialValues} />
+            </ModalForm>
+        </PageContainer>
     );
-  };
-  // 创建时间
-  columns[9].render = (dom, entity) => timestampToTime(Date.parse(entity.createTime)); // 渲染操作列
-  // 操作
-  columns[10].render = (dom, entity) => (
-    <Space>
-      <HasOperation operation={OPERATIONS.UPDATE}>
-        <a
-          onClick={() => {
-            modalVisionState.setOpen(true);
-            setInitialValues(entity);
-          }}
-        >
-          编辑
-        </a>
-      </HasOperation>
-      <HasOperation operation={OPERATIONS.DELETE}>
-        <PopConfirmDelete
-          onConfirm={async () => {
-            try {
-              await deleteComment({ ids: [entity.id] });
-              message.success("删除成功");
-              actionRef.current?.reload();
-            } catch (error) {}
-          }}
-        />
-      </HasOperation>
-    </Space>
-  );
-
-  useEffect(() => {
-    if (!modalVisionState.open) {
-      setInitialValues(undefined);
-    }
-  }, [modalVisionState.open]);
-
-  return (
-    <PageContainer className={rest.className ?? ""} {...rest}>
-      <ProTable<API.FetchCommentResponse, API.PaginationResponse>
-        scroll={{ x: 1300 }}
-        search={false}
-        columns={columns}
-        rowKey="id"
-        defaultSize="small"
-        pagination={{
-          defaultPageSize: 10,
-          showSizeChanger: true,
-          pageSizeOptions: tableConfig.pageSizes,
-        }}
-        actionRef={actionRef}
-        request={fetchWidthNormalizedResponse(fetchComments)}
-        expandable={{
-          expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.content}</p>,
-        }}
-        // 编辑评论状态
-        editable={{
-          onSave: async (_, data) => {
-            await updateCommentStatus({
-              id: data.id,
-              status: data.status,
-            });
-            message.success("更新成功");
-            actionRef.current?.reload();
-          },
-          // 编辑时显示的操作
-          actionRender: (row, config, dom) => [dom.save, dom.cancel],
-        }}
-        // 批量操作
-        rowSelection={{
-          // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
-          // 注释该行则默认不显示下拉选项
-          selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
-        }}
-        // 批量删除
-        tableAlertOptionRender={({ selectedRowKeys }) => {
-          return (
-            <HasOperation operation={OPERATIONS.DELETE}>
-              <PopConfirmDelete
-                onConfirm={() => (
-                  deleteComment({ ids: selectedRowKeys }), actionRef.current?.reload()
-                )}
-              />
-            </HasOperation>
-          );
-        }}
-      ></ProTable>
-      <ModalForm
-        width={800}
-        title="编辑评论"
-        {...modalVisionProps}
-        /* 下面两个属性，为了更新initialValues */
-        modalProps={{
-          destroyOnClose: true,
-        }}
-        preserve={false}
-        initialValues={initialValues}
-        onFinish={async (formData: API.InsertCommentParams | API.UpdateCommentParams) => {
-          // 新增
-          if (!initialValues) {
-            await insertComment({
-              ...formData,
-              // @ts-ignore
-              parentId: formData.parentId ?? 0,
-            } as API.InsertCommentParams);
-            message.success("新增成功");
-          } else {
-            // 更改
-            await updateComment(formData as API.UpdateCommentParams);
-            message.success("更新成功");
-          }
-          actionRef.current?.reload();
-          return true;
-        }}
-      >
-        <EditCommentForm isUpdateForm={!!initialValues} />
-      </ModalForm>
-    </PageContainer>
-  );
 }
 
 export const statusOptions = halfStart(
-  map(CommentEnums.Status, (value, key) => ({
-    label: value,
-    value: parseInt(key),
-  })),
+    map(CommentEnums.Status, (value, key) => ({
+        label: value,
+        value: parseInt(key),
+    })),
 );
-
-const columns: ProColumns<API.FetchCommentResponse>[] = [
-  {
-    title: "评论者",
-    dataIndex: "author",
-    ellipsis: true,
-    width: 70,
-    tip: "评论者名称过长会自动收缩",
-    editable: false,
-  },
-  Table.EXPAND_COLUMN,
-  {
-    title: "评论内容",
-    dataIndex: "content",
-    ellipsis: true,
-    width: 100,
-    tip: "评论内容过长会自动收缩",
-    editable: false,
-  },
-  {
-    title: "评论者邮箱",
-    dataIndex: "email",
-    width: 110,
-    editable: false,
-  },
-  {
-    title: "评论者ip",
-    dataIndex: "ip",
-    width: 100,
-    editable: false,
-  },
-  {
-    title: "评论者地址",
-    dataIndex: "location",
-    width: 100,
-    editable: false,
-  },
-
-  {
-    title: "评论类型",
-    dataIndex: "type",
-    width: 100,
-    editable: false,
-  },
-  {
-    title: "评论状态",
-    dataIndex: "status",
-    width: 110,
-    valueEnum: {
-      0: { text: "待审核", status: "Processing" },
-      1: { text: "开放", status: "Success" },
-      2: { text: "垃圾", status: "Error" },
+const metas: ProListMetas<API.FetchCommentResponse> = {
+    title: {
+        dataIndex: "author",
     },
-    // 默认选择框, 枚举类型的值是字符串 "0","1","2"，需要重写
-    renderFormItem() {
-      return <Select options={statusOptions} />;
+    avatar: {
+        render(dom, entity, index, action, schema) {
+            return (
+                <Image
+                    width={40}
+                    height={40}
+                    src={getAvatarUrlByEmail(entity.email)}
+                    fallback="/admin/notFound.png"
+                    style={{ borderRadius: "50%" }}
+                />
+            );
+        },
     },
-  },
-  {
-    title: "UA",
-    dataIndex: "agent",
-    width: 300,
-    editable: false,
-  },
-  {
-    title: "创建时间",
-    dataIndex: "createTime",
-    width: 150,
-    editable: false,
-  },
-  {
-    title: "操作",
-    width: 100,
-    // 这个属性使表单编辑时显示保存删除取消按钮
-    valueType: "option",
-    fixed: "right",
-  },
-];
+    subTitle: {
+        render(dom, entity, index, action, schema) {
+            const agent = JSON.parse(entity.agent);
+            return (
+                <Space>
+                    {getIcon(agent.browser, "browser")}
+                    {getIcon(agent.os, "os")}
+                </Space>
+            );
+        },
+    },
+    description: {
+        render(dom, entity, index, action, schema) {
+            return (
+                <>
+                    <p style={{ color: "rgb(134, 160, 175)" }}>{entity.email}</p>
+                    <p>{entity.ip}</p>
+                </>
+            );
+        },
+    },
+    content: {},
+};
