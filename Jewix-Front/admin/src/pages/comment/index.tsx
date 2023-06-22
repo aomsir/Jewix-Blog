@@ -41,7 +41,7 @@ export default function Comment(props: CommentProps): ReactElement {
             <>
                 <p>
                     {timestampToTime(Date.parse(entity.createTime))}&nbsp;于&nbsp;
-                    <span style={{ color: "rgb(134, 160, 175)" }}>
+                    <span style={{ color: "rgb(134, 160, 175)", fontWeight: "bold" }}>
                         {CommentEnums.Type[entity.type]}
                     </span>
                 </p>
@@ -139,6 +139,7 @@ export default function Comment(props: CommentProps): ReactElement {
     return (
         <PageContainer className={rest.className ?? ""} {...rest}>
             <ProList<API.FetchCommentResponse, API.PaginationResponse>
+                headerTitle="评论列表"
                 metas={metas}
                 pagination={{
                     defaultPageSize: 10,
@@ -241,8 +242,9 @@ const metas: ProListMetas<API.FetchCommentResponse> = {
         render(dom, entity, index, action, schema) {
             return (
                 <>
-                    <p style={{ color: "rgb(134, 160, 175)" }}>{entity.email}</p>
-                    <p>{entity.ip}</p>
+                    <span style={{ color: "rgb(134, 160, 175)" }}>{entity.email}</span>
+                    <br />
+                    <span>{entity.ip}</span>
                 </>
             );
         },

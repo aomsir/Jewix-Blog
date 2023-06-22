@@ -1,6 +1,13 @@
 import { ArticleEnums, CommentEnums, PageEnums } from "@/configs/enums"
 
 export namespace API {
+    type FetchWebSiteSetting = {
+        config: string;
+        createTime: string;
+        id: number;
+        status: number;
+        updateTime: string;
+    };
     export type ResponseStructure<Result = any> = {
         code: number
         result?: Result

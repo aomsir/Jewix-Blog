@@ -7,7 +7,7 @@ import {
     ProFormText,
     ProFormTextArea,
 } from "@ant-design/pro-components";
-import { Button, Form, Input, Row } from "antd";
+import { Button, Form, Input, message, Row } from "antd";
 import { HTMLAttributes, ReactElement, useEffect, useState } from "react";
 import css from "./WebSiteConfig.module.scss";
 type WebSiteConfigProps = HTMLAttributes<HTMLDivElement>;
@@ -19,7 +19,16 @@ export default function WebSiteConfig(props: WebSiteConfigProps): ReactElement {
     useEffect(() => {
         (async () => {
             const config = await fetchWebSiteSetting();
-            setInitialValues(JSON.parse(config.result!.config));
+            const obj = JSON.parse(config.result!.config);
+            // 修改socialInfo数据结构成数组
+            setInitialValues({
+                id: config.result?.id ?? 1,
+                ...obj,
+                socialInfo: Object.keys(obj.socialInfo).map((key) => ({
+                    label: key,
+                    url: obj.socialInfo[key],
+                })),
+            });
         })();
     }, []);
     return (
@@ -28,14 +37,24 @@ export default function WebSiteConfig(props: WebSiteConfigProps): ReactElement {
                 key={initialValues}
                 initialValues={initialValues}
                 onFinish={async (formData) => {
-                    updateWebSiteSetting(formData);
+                    try {
+                        // 修改socialInfo数据结构成对象
+                        await updateWebSiteSetting({
+                            ...formData,
+                            socialInfo: formData.socialInfo.reduce((pre: any, cur: any) => {
+                                pre[cur.label] = cur.url;
+                                return pre;
+                            }, {}),
+                        });
+                        message.success("保存成功");
+                    } catch (error) {}
                 }}
             >
                 <h2>SEO</h2>
                 <ProFormText label="首页标题" name="title" />
                 <ProFormTextArea label="首页描述" name="description" />
                 <p style={{ marginBottom: "5px" }}>关键词</p>
-                <Form.List name="keywords">
+                <Form.List name="keyword">
                     {(fields, { add, remove }) => (
                         <Row style={{ marginBottom: "20px", gap: "20px" }}>
                             {fields.map((field) => (
@@ -56,7 +75,7 @@ export default function WebSiteConfig(props: WebSiteConfigProps): ReactElement {
                     )}
                 </Form.List>
                 <h2>基础</h2>
-                <ProFormText label="网站图标" name="favicon" placeholder="请输入图片url地址" />
+                {/* <ProFormText label="网站图标" name="favicon" placeholder="请输入图片url地址" />
                 <ProForm.Group labelLayout="inline">
                     <ProFormText
                         label="亮色LOGO"
@@ -68,11 +87,11 @@ export default function WebSiteConfig(props: WebSiteConfigProps): ReactElement {
                         name={["logo", "dark"]}
                         placeholder="请输入图片url地址"
                     />
-                </ProForm.Group>
+                </ProForm.Group> */}
                 <ProFormDatePicker name="buildDate" label="创建时间" />
                 <ProFormText name="webSite" label="网站链接" />
                 <p style={{ marginBottom: "5px" }}>社交链接</p>
-                <Form.List name="links">
+                <Form.List name="socialInfo">
                     {(fields, { add, remove }) => (
                         <Row style={{ marginBottom: "20px", gap: "20px" }}>
                             {fields.map((field) => (
@@ -103,13 +122,17 @@ export default function WebSiteConfig(props: WebSiteConfigProps): ReactElement {
                         </Row>
                     )}
                 </Form.List>
-                <p style={{ marginBottom: "5px" }}>赞赏码</p>
+                {/* <p style={{ marginBottom: "5px" }}>赞赏码</p>
                 <Row style={{ gap: "10px" }}>
                     <ProFormText name={["reward", "alipay"]} placeholder="支付宝图片url" />
                     <ProFormText name={["reward", "wechat"]} placeholder="微信图片url" />
-                </Row>
+                </Row> */}
                 <h2>备案信息</h2>
-                <p style={{ marginBottom: "5px" }}>ICP</p>
+                <ProForm.Group>
+                    <ProFormText label="ICP" name="icp" />
+                    <ProFormText label="公安网" name="police" />
+                </ProForm.Group>
+                {/* <p style={{ marginBottom: "5px" }}>ICP</p>
                 <ProForm.Group>
                     <ProFormText name={["record", "ICP", "icon"]} placeholder="图标url" />
                     <ProFormText name={["record", "ICP", "province"]} placeholder="省（简）" />
@@ -122,7 +145,8 @@ export default function WebSiteConfig(props: WebSiteConfigProps): ReactElement {
                     <ProFormText name={["record", "公网安", "province"]} placeholder="省（简）" />
                     <ProFormText name={["record", "公网安", "number"]} placeholder="备案号" />
                     <ProFormText name={["record", "公网安", "url"]} placeholder="链接" />
-                </ProForm.Group>
+                </ProForm.Group> */}
+                <ProFormText name="id" />
             </ProForm>
         </PageContainer>
     );
