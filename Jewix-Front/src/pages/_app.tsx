@@ -92,7 +92,7 @@ export default function MyApp(props: _AppProps) {
         <>
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <meta name="keywords" content={webSiteConfig.keywords.join(",")} />
+                <meta name="keywords" content={layoutProps.siteInfo.keywords.join(",")} />
             </Head>
             <ColorThemeProvider initialTheme={theme} onChange={setLocalTheme}>
                 <DefaultLayout isPhone={isPhone} {...layoutProps} hiddenModules={hiddenModules}>
