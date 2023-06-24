@@ -111,7 +111,8 @@ export default function Menu({ className, menuData, activeIndexes, ...rest }: Me
                 {menuData.map((item, index) => (
                     /* 一级菜单项 */
                     <li key={item.id} className={`subMenuHidden ${isSelected(index)}`}>
-                        <MenuItemLabel href={item.url} label={item.label} children={item.children} total={item.total} onClick={toggle} target={item.target} />
+                        {/* 特定状况，非通用 */}
+                        {!!item.children?.length && <MenuItemLabel href={item.url} label={item.label} children={item.children} total={item.total} onClick={toggle} target={item.target} />} 
                         {item.children && (
                             <ul style={{ "--depth": 1 } as any}>
                                 {item.children.map((item1, index1) => (
