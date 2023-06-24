@@ -17,7 +17,7 @@ import { fetchAllGlobalBlogroll } from "@/servers/api/blogroll"
 import { convertKey, convertKeyOfDeepArray } from "@/utils/convert"
 import { fetchAllCategories } from "@/servers/api/category"
 import { addKeyOfTree } from "@/utils/transform"
-import { fetchSiteInfoTransformed } from "@/servers/api/common"
+import { fetchSiteInfoTransformed, SiteInfo } from "@/servers/api/common"
 import { AsideProps } from "@/layouts/default/aside/Aside"
 import { fetchRecommendedArticles } from "@/servers/api"
 import siteConfig from "~/site.config"
@@ -32,7 +32,7 @@ export type _AppProps = AppProps & {
     layoutProps: {
         links: LinksProps["links"]
         menu: MenuProps["menuData"]
-        siteInfo: AsideProps["siteInfo"]
+        siteInfo: SiteInfo
         recommendedArticles: AsideProps["recommendedArticles"]
         hiddenModules: MainLayoutProps["hiddenModules"]
     }
@@ -96,7 +96,7 @@ export default function MyApp(props: _AppProps) {
             </Head>
             <ColorThemeProvider initialTheme={theme} onChange={setLocalTheme}>
                 <DefaultLayout isPhone={isPhone} {...layoutProps} hiddenModules={hiddenModules}>
-                    <Component {...pageProps} categories={layoutProps.menu[0]} globalBlogroll={layoutProps.menu[2].children} />
+                    <Component {...pageProps} categories={layoutProps.menu[0]} globalBlogroll={layoutProps.menu[2].children} settings={layoutProps.siteInfo}/>
                 </DefaultLayout>
             </ColorThemeProvider>
         </>
@@ -146,7 +146,7 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
             theme: theme ?? THEME.LIGHT,
             isMobile,
             layoutProps: {
-                links: siteConfig.links,
+                links: siteInfo.links,
                 menu: [
                     {
                         id: "999",

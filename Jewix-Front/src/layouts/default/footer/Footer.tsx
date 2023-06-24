@@ -1,10 +1,15 @@
-import { ReactElement } from "react"
+import { SiteInfo } from "@/servers/api/common"
+import { API } from "@/servers/api/typings"
+import { HTMLAttributes, HTMLProps, ReactElement } from "react"
 import webSiteConfig from "~/site.config"
+import { AsideProps } from "../aside/Aside"
 import css from "./Footer.module.scss"
-
-export default function Footer({ className, ...rest }: { [key: string]: any }): ReactElement {
+type FooterProps =  HTMLAttributes<HTMLDivElement> &  {
+    siteInfo: SiteInfo
+}
+export default function Footer({ siteInfo,className, ...rest }: FooterProps): ReactElement {
     return (
-        <footer className={`${css.footer} ${className}`} {...rest}>
+        <footer className={`${css.footer} ${className}`} >
             <p>
                 <span>本网站由</span>
                 <img src="/layer1.png" />
@@ -14,13 +19,15 @@ export default function Footer({ className, ...rest }: { [key: string]: any }): 
             <p>
                 <img src={webSiteConfig.record.ICP.icon} />{" "}
                 <a href={webSiteConfig.record.ICP.url} target="_blank">
-                    {webSiteConfig.record.ICP.province}ICP备{webSiteConfig.record.ICP.number}
+                    {/* {webSiteConfig.record.ICP.province}ICP备{webSiteConfig.record.ICP.number} */}
+                    {siteInfo.icp}
                 </a>
             </p>
             <p>
                 <img src={webSiteConfig.record.公网安.icon} />
                 <a href={webSiteConfig.record.公网安.url} target="_blank">
-                    {webSiteConfig.record.公网安.province}公网安备{webSiteConfig.record.公网安.number}
+                    {/* {webSiteConfig.record.公网安.province}公网安备{webSiteConfig.record.公网安.number} */}
+                    {siteInfo.police}
                 </a>
             </p>
         </footer>

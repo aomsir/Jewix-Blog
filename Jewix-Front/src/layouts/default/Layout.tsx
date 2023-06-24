@@ -7,11 +7,13 @@ import Banner from "@/components/bases/banner/Banner"
 import Small from "./small/Small"
 import { LinksProps } from "./header/links/links"
 import { MenuProps } from "./header/menu/Menu"
+import { API } from "@/servers/api/typings"
+import { SiteInfo } from "@/servers/api/common"
 export type MainLayoutProps = {
     isPhone: boolean
     links: LinksProps["links"]
     menu: MenuProps["menuData"]
-    siteInfo: AsideProps["siteInfo"]
+    siteInfo: SiteInfo
     recommendedArticles: AsideProps["recommendedArticles"]
     hiddenModules: ["banner"] | string[]
 }
@@ -31,7 +33,7 @@ export default function DefaultLayout({
     //手机视图布局
     if (isPhone) {
         return (
-            <Small links={links} menuData={menu} hiddenModules={hiddenModules}>
+            <Small links={links} menuData={menu} hiddenModules={hiddenModules} siteInfo={siteInfo}>
                 {children}
             </Small>
         )
@@ -41,13 +43,13 @@ export default function DefaultLayout({
         <div className={css.layout}>
             <Header className={css.header} menuData={menu} links={links} />
             {hiddenModules.includes("banner") || (
-                <Banner className="banner" image="/banner.png" title="Hi！I‘m Aomsir" desc="人生伟业的建立，不在能知，乃在能行" />
+                <Banner className="banner" image="/banner.png" title={`Hi！I‘m ${siteInfo.name}`} desc={siteInfo.desc}/>
             )}
             <main className={css.main}>
                 <div className={css.content}>{children}</div>
                 <Aside className={css.aside} siteInfo={siteInfo} recommendedArticles={recommendedArticles} />
             </main>
-            <Footer className={css.footer} />
+            <Footer className={css.footer} siteInfo={siteInfo}/>
         </div>
     )
 }

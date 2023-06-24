@@ -18,9 +18,16 @@ export const fetchSiteInfoTransformed = fetchTransformerFactory(fetchSiteInfo, r
                 ["运行天数", source.runTime?.toString()],
                 ["最后活动", `${source.lastActive}天前`],
             ],
+            links: Object.keys(source.socialInfo).map(key => ({
+                label: key,
+                url: source.socialInfo[key],
+            }))
         })
     )
 })
+
+type PromiseType<T extends Promise<unknown>> = T extends Promise<infer U> ? U: never
+export type SiteInfo = PromiseType<ReturnType<typeof fetchSiteInfoTransformed>>
 
 export const fetchArchiveInfo = fetchRowFactory<API.FetchArchiveInfoResponse>("commons/articles/archiveInfo")
 export const fetchArchiveInfoTransformed = fetchTransformerFactory(fetchArchiveInfo, result =>
@@ -31,3 +38,4 @@ export const fetchArchiveInfoTransformed = fetchTransformerFactory(fetchArchiveI
         commentCount: "totalCommentCount",
     } as const)
 )
+

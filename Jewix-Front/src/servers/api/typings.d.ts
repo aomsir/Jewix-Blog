@@ -94,6 +94,12 @@ export namespace API {
         commentCount: number
         runTime: string
         lastActive: number
+        keywords: string[]
+        socialInfo: Record<string, string>
+        title: string,
+        webDescription: string,
+        police: string
+        icp: string
     }
     export type FetchRecommendedArticlesResponse = {
         id: number
