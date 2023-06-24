@@ -9,6 +9,8 @@ import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.entity.WebConfig;
 import com.aomsir.jewixapi.pojo.entity.WebInfo;
 import com.aomsir.jewixapi.service.CommonService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +34,7 @@ import static com.aomsir.jewixapi.constant.RedisConstants.WEB_CONFIG_KEY;
 @Service
 public class CommonServiceImpl implements CommonService {
 
+    private static final Logger log = LoggerFactory.getLogger(CommonServiceImpl.class);
     @Resource
     private UserMapper userMapper;
 
@@ -100,11 +103,11 @@ public class CommonServiceImpl implements CommonService {
         webInfoDTO.setLastActive(Math.toIntExact(daysBetween));
         webInfoDTO.setRunTime(runTime);
         webInfoDTO.setSocialInfo(webInfo.getSocialInfo());
-        webInfoDTO.setIcp(webInfoDTO.getIcp());
-        webInfoDTO.setPolice(webInfoDTO.getPolice());
+        webInfoDTO.setIcp(webInfo.getIcp());
+        webInfoDTO.setPolice(webInfo.getPolice());
         webInfoDTO.setWebDescription(webInfo.getDescription());
         webInfoDTO.setKeywords(webInfo.getKeyword());
-        webInfoDTO.setTitle(webInfoDTO.getTitle());
+        webInfoDTO.setTitle(webInfo.getTitle());
 
 
         // 存入Redis
