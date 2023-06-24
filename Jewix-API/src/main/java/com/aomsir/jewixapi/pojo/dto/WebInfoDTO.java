@@ -28,8 +28,6 @@ public class WebInfoDTO implements Serializable {
     private HashMap<String, String> socialInfo;
     private String icp;
     private String police;
-
-
     private String title;
     private String webDescription;
     private List<String> keywords;

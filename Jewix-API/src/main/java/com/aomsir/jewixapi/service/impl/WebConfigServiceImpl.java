@@ -7,6 +7,7 @@ import com.aomsir.jewixapi.pojo.entity.WebConfig;
 import com.aomsir.jewixapi.pojo.vo.InfoWebConfigAddVo;
 import com.aomsir.jewixapi.pojo.vo.InfoWebConfigUpdateVo;
 import com.aomsir.jewixapi.service.WebConfigService;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import static com.aomsir.jewixapi.constant.RedisConstants.WEB_CONFIG_KEY;
 import static com.aomsir.jewixapi.constant.WebConfigConstants.CONFIG_INFO_IS_NULL;
 import static com.aomsir.jewixapi.constant.WebConfigConstants.CONFIG_TYPE_HAS_EXISTED;
 
@@ -33,6 +35,9 @@ public class WebConfigServiceImpl implements WebConfigService {
 
     @Resource
     private WebConfigMapper webConfigMapper;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     @Transactional
@@ -101,6 +106,7 @@ public class WebConfigServiceImpl implements WebConfigService {
             put("updateTime",updateTime);
         }};
 
+        this.redisTemplate.delete(WEB_CONFIG_KEY);
         return this.webConfigMapper.updateWebConfig(param);
     }
 
