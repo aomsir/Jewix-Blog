@@ -6,10 +6,12 @@ import com.aomsir.jewixapi.mapper.ArticleMapper;
 import com.aomsir.jewixapi.mapper.CommentMapper;
 import com.aomsir.jewixapi.mapper.PageMapper;
 import com.aomsir.jewixapi.mapper.UserMapper;
+import com.aomsir.jewixapi.pojo.dto.CommentBackendDTO;
 import com.aomsir.jewixapi.pojo.dto.CommentDTO;
 import com.aomsir.jewixapi.pojo.dto.CurrentUserDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.entity.Comment;
+import com.aomsir.jewixapi.pojo.entity.Page;
 import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.vo.CommentAddVo;
 import com.aomsir.jewixapi.pojo.vo.CommentUpdateStatusVo;
@@ -73,15 +75,35 @@ public class CommentServiceImpl implements CommentService {
         Integer count = this.commentMapper.queryCommentBackendCount(param);
 
         ArrayList<Comment> list = null;
+        ArrayList<CommentBackendDTO> dtoList = new ArrayList<>();
         if (count > 0) {
+            // 查询评论列表
             list = this.commentMapper.queryCommentBackendPageList(param);
-        } else {
-            list = new ArrayList<>();
+
+            // 遍历查询评论引用的文章或页面(无法使用多表连查)
+            for (Comment comment : list) {
+                CommentBackendDTO commentBackendDTO = new CommentBackendDTO();
+                BeanUtil.copyProperties(comment, commentBackendDTO);
+                if (comment.getType().equals(1)) {
+                    Article article = this.articleMapper.queryArticleById(comment.getTargetId());
+                    commentBackendDTO.setQuoteId(article.getId());
+                    commentBackendDTO.setQuoteName(article.getTitle());
+                    commentBackendDTO.setQuoteUuid(article.getUuid());
+                } else {
+                    Page page = this.pageMapper.queryPageById(comment.getTargetId());
+                    commentBackendDTO.setQuoteUuid(page.getUuid());
+                    commentBackendDTO.setQuoteId(page.getId());
+                    commentBackendDTO.setQuoteName(page.getTitle());
+                }
+
+                // 加入到列表中
+                dtoList.add(commentBackendDTO);
+            }
         }
 
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        return new PageUtils(list,count,start,length);
+        return new PageUtils(dtoList,count,start,length);
     }
 
 

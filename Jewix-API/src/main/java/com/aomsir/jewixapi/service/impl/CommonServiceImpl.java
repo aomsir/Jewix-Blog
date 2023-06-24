@@ -102,6 +102,9 @@ public class CommonServiceImpl implements CommonService {
         webInfoDTO.setSocialInfo(webInfo.getSocialInfo());
         webInfoDTO.setIcp(webInfoDTO.getIcp());
         webInfoDTO.setPolice(webInfoDTO.getPolice());
+        webInfoDTO.setWebDescription(webInfo.getDescription());
+        webInfoDTO.setKeywords(webInfo.getKeyword());
+        webInfoDTO.setTitle(webInfoDTO.getTitle());
 
 
         // 存入Redis

@@ -86,4 +86,10 @@
         FROM tb_page
         WHERE id = #{targetId}
     </select>
+
+    <select id="queryPageById" resultType="Page">
+        SELECT id, uuid, user_id, title, content, description, omit, views, type, create_time, update_time
+        FROM tb_page
+        WHERE id = #{id}
+    </select>
 </mapper>

@@ -29,4 +29,6 @@ public interface PageMapper {
     Page queryPageByOmit(@Param("omit") String omit);
 
     Long queryPageUserIdByPageId(@Param("targetId") Long targetId);
+
+    Page queryPageById(@Param("id") Long targetId);
 }

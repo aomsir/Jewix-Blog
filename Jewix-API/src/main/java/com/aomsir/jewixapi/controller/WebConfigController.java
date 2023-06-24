@@ -1,7 +1,6 @@
 package com.aomsir.jewixapi.controller;
 
 import com.aomsir.jewixapi.annotation.OperateLog;
-import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.pojo.entity.WebConfig;
 import com.aomsir.jewixapi.pojo.vo.InfoWebConfigAddVo;
 import com.aomsir.jewixapi.pojo.vo.InfoWebConfigUpdateVo;
