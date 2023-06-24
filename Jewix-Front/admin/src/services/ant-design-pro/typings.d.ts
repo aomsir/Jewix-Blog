@@ -232,6 +232,7 @@ declare namespace API {
         type: number;
         updateTime: string;
         url: string;
+        quoteName: string;
     };
     type InsertCommentParams = {
         author: string;

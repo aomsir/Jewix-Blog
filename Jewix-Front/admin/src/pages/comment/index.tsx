@@ -42,7 +42,7 @@ export default function Comment(props: CommentProps): ReactElement {
                 <p>
                     {timestampToTime(Date.parse(entity.createTime))}&nbsp;于&nbsp;
                     <span style={{ color: "rgb(134, 160, 175)", fontWeight: "bold" }}>
-                        {CommentEnums.Type[entity.type]}
+                        {entity.quoteName}
                     </span>
                 </p>
                 <p>{entity.content}</p>

@@ -116,9 +116,11 @@ export default function WebSiteConfig(props: WebSiteConfigProps): ReactElement {
                                     />
                                 </Row>
                             ))}
-                            <Button type="dashed" onClick={() => add()} icon={<PlusOutlined />}>
-                                添加
-                            </Button>
+                            {fields.length < 3 && (
+                                <Button type="dashed" onClick={() => add()} icon={<PlusOutlined />}>
+                                    添加
+                                </Button>
+                            )}
                         </Row>
                     )}
                 </Form.List>
@@ -146,7 +148,7 @@ export default function WebSiteConfig(props: WebSiteConfigProps): ReactElement {
                     <ProFormText name={["record", "公网安", "number"]} placeholder="备案号" />
                     <ProFormText name={["record", "公网安", "url"]} placeholder="链接" />
                 </ProForm.Group> */}
-                <ProFormText name="id" />
+                <ProFormText hidden name="id" />
             </ProForm>
         </PageContainer>
     );
