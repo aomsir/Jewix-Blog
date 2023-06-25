@@ -17,8 +17,20 @@ public class RolePageVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * page
+     */
     private Integer page;
+
+    /**
+     * length
+     */
     private Integer length;
+
+    /**
+     * 角色名
+     */
     private String roleName;
 
 }

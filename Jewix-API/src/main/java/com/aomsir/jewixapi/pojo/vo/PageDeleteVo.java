@@ -19,10 +19,18 @@ public class PageDeleteVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * 页面id
+     */
     @NotNull(message = "页面ID不能为空")
     @Range(min = 1, message = "页面ID不合法")
     private Integer id;
 
+
+    /**
+     * 路径
+     */
     @NotNull(message = "路径不能为空")
     @Range(min = 1, max = 4,message = "路径不合法")
     private Integer omit;

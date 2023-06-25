@@ -19,6 +19,10 @@ public class PhotoUpdateVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * 类型
+     */
     @NotNull(message = "type不允许为空")
     @Range(min = 0,max = 3)
     private Integer type;

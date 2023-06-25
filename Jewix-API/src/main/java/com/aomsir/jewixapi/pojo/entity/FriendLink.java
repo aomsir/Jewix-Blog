@@ -12,10 +12,34 @@ import lombok.Data;
 
 @Data
 public class FriendLink extends BaseEntity{
+
+    /**
+     * 主键id
+     */
     private Integer id;
+
+    /**
+     * 友链标题
+     */
     private String title;
+
+    /**
+     * 友链链接
+     */
     private String link;
+
+    /**
+     * 友链图
+     */
     private String photo;
+
+    /**
+     * 描述
+     */
     private String description;
+
+    /**
+     * 友链位置
+     */
     private Integer location;
 }

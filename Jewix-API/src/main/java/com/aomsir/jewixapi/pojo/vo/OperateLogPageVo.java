@@ -15,14 +15,24 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class OperateLogPageVo {
+
+    /**
+     * page
+     */
     @NotNull(message = "page不能为空")
     @Min(value = 1, message = "page不能小于1")
     private Integer page;
 
 
+    /**
+     * length
+     */
     @NotNull(message = "length不能为空")
     @Range(min = 10, max = 50, message = "length必须为10~50之间")
     private Integer length;
 
+    /**
+     * 操作模块
+     */
     private String optModule;
 }

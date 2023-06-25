@@ -17,6 +17,14 @@ import java.util.List;
 public class CurrentUserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * 用户
+     */
     private User user;
+
+    /**
+     * 菜单分页列表
+     */
     private List<MenuListPageDTO> menuListPageDTO;
 }

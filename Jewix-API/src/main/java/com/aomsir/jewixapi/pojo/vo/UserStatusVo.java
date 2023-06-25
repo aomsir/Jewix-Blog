@@ -19,9 +19,16 @@ public class UserStatusVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * 用户uuid
+     */
     @NotNull(message = "uuid不能为空")
     private String uuid;
 
+    /**
+     * 状态
+     */
     @NotNull(message = "status不能为空")
     @Range(min = 1,max = 2,message = "status应在1-2之间")
     private Integer status;

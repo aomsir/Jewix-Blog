@@ -14,5 +14,9 @@ import java.util.List;
  */
 @Data
 public class ResourceListPageDTO extends Resource {
+
+    /**
+     * 子接口资源列表
+     */
     private List<Resource> resourceSons;
 }

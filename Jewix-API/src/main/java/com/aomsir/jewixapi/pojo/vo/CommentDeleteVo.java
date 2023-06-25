@@ -18,6 +18,9 @@ import java.util.ArrayList;
 public class CommentDeleteVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 评论id列表
+     */
     @NotNull(message = "ids不允许为空")
     private ArrayList<Long> ids;
 }

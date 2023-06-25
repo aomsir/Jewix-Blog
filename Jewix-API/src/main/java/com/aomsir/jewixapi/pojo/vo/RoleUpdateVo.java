@@ -15,13 +15,24 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class RoleUpdateVo {
+
+    /**
+     * 角色id
+     */
     @NotNull(message = "角色ID不允许为空")
     @Min(value = 1)
     private Integer id;
 
+    /**
+     * 角色名
+     */
     @NotNull(message = "角色名不允许为空")
     private String roleName;
 
+
+    /**
+     * 角色标签
+     */
     @NotNull(message = "角色标签不允许为空")
     private String roleLabel;
 

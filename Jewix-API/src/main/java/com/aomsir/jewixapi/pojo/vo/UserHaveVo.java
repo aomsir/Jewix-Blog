@@ -18,8 +18,15 @@ public class UserHaveVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 用户昵称
+     */
     private String nickname;
 
+
+    /**
+     * 用户邮箱
+     */
     @Pattern(regexp = "^([A-Za-z0-9_\\-\\.\\u4e00-\\u9fa5])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,8})$",message = "邮箱格式不对嗷")
     private String email;
 }

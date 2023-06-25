@@ -12,7 +12,19 @@ import lombok.Data;
  */
 @Data
 public class CommentBackendDTO extends Comment {
+
+    /**
+     * 引用uuid
+     */
     private String quoteUuid;
+
+    /**
+     * 引用id
+     */
     private Long quoteId;
+
+    /**
+     * 引用名
+     */
     private String quoteName;
 }

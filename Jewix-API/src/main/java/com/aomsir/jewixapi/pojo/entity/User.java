@@ -30,14 +30,49 @@ import java.util.List;
 public class User extends BaseEntity implements UserDetails, Serializable {
     private static final long serialVersionUID = 123456789L;
 
+    /**
+     * 主键id
+     */
     private Long id;
+
+    /**
+     * 用户uuid
+     */
     private String uuid;
+
+    /**
+     * 用户昵称
+     */
     private String nickname;
+
+    /**
+     * 用户邮箱
+     */
     private String email;
+
+    /**
+     * 加密盐
+     */
     private String salt;
+
+    /**
+     * 描述
+     */
     private String description;
+
+    /**
+     * 用户密码
+     */
     private String password;
+
+    /**
+     * 用户网站
+     */
     private String webSite;
+
+    /**
+     * 权限列表
+     */
     private ArrayList<SimpleGrantedAuthority> authorities;
 
 

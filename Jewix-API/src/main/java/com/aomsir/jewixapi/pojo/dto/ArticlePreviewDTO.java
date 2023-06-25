@@ -12,11 +12,38 @@ import lombok.Data;
  */
 @Data
 public class ArticlePreviewDTO extends BaseEntity {
+    /**
+     * 主键id
+     */
     private Long id;
+
+    /**
+     * 文章uuid
+     */
     private String uuid;
+
+    /**
+     * 文章标题
+     */
     private String title;
+
+    /**
+     * 文章封面
+     */
     private String cover;
+
+    /**
+     * 文章描述
+     */
     private String description;
+
+    /**
+     * 文章浏览量
+     */
     private Integer views;
+
+    /**
+     * 是否置顶
+     */
     private Integer isTop;
 }

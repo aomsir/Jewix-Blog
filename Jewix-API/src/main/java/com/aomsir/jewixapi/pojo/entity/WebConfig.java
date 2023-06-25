@@ -16,6 +16,14 @@ import java.util.List;
  */
 @Data
 public class WebConfig extends BaseEntity{
+
+    /**
+     * 主键id
+     */
     private Integer id;
+
+    /**
+     * 配置信息
+     */
     private String config;
 }

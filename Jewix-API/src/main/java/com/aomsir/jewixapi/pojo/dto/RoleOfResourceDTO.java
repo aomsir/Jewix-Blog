@@ -15,8 +15,24 @@ import java.util.List;
 @Data
 public class RoleOfResourceDTO implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键id
+     */
     private Integer id;
+
+    /**
+     * 角色名
+     */
     private String roleName;
+
+    /**
+     * 角色标签
+     */
     private String roleLabel;
+
+    /**
+     * 角色对应接口资源列表
+     */
     private List<ResourceListPageDTO> resourceListPageDTOList;
 }

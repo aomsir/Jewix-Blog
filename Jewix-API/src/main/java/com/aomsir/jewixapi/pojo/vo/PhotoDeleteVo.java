@@ -19,9 +19,17 @@ public class PhotoDeleteVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * 文件名
+     */
     @NotNull(message = "文件名不允许为空")
     private String fileName;
 
+
+    /**
+     * 类型
+     */
     @NotNull(message = "类型不允许为空")
     @Range(min = 0, max = 3)
     private Integer type;
