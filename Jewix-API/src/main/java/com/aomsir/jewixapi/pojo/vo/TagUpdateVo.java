@@ -19,10 +19,18 @@ public class TagUpdateVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * 主键id
+     */
     @NotNull(message = "id不能为空")
     @Min(value = 1, message = "id不能小于1")
     private Long id;
 
+
+    /**
+     * 标签名
+     */
     @NotNull(message = "length不能为空")
     private String tagName;
 }

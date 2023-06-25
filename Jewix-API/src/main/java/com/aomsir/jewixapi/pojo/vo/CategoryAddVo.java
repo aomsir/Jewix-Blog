@@ -19,9 +19,16 @@ import java.io.Serializable;
 public class CategoryAddVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 分类名
+     */
     @NotNull(message = "分类名不能为空")
     private String categoryName;
 
+
+    /**
+     * 父分类id
+     */
     @NotNull(message = "父类id不能为空")
     @Min(value = 0)
     private Long parentId;

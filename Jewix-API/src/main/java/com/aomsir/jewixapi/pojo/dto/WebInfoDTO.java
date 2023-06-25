@@ -18,18 +18,69 @@ import java.util.Map;
 @Data
 public class WebInfoDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String nickname;   //   站长昵称
-    private String email;      //   站长邮箱
+    /**
+     * 站长昵称
+     */
+    private String nickname;
+
+    /**
+     * 站长邮箱
+     */
+    private String email;
+
+    /**
+     * 描述
+     */
     private String description;
+
+    /**
+     * 文章数量
+     */
     private Integer articleCount;
+
+    /**
+     * 评论数量
+     */
     private Integer commentCount;
+
+    /**
+     * 运行天数
+     */
     private Long runTime;
+
+    /**
+     * 上次活跃
+     */
     private Integer lastActive;
+
+    /**
+     * 社交信息
+     */
     private HashMap<String, String> socialInfo;
+
+    /**
+     * icp备案信息
+     */
     private String icp;
+
+    /**
+     * 公安备案信息
+     */
     private String police;
+
+    /**
+     * 站点标题
+     */
     private String title;
+
+    /**
+     * 网站描述
+     */
     private String webDescription;
+
+    /**
+     * 网站关键词
+     */
     private List<String> keywords;
 
 }

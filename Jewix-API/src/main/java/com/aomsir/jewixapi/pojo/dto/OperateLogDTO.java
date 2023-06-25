@@ -12,5 +12,9 @@ import lombok.Data;
  */
 @Data
 public class OperateLogDTO extends OperatedLog {
+
+    /**
+     * 用户昵称
+     */
     private String nickname;
 }

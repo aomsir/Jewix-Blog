@@ -20,8 +20,19 @@ public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 创建时间
+     */
     public Date createTime;
+
+    /**
+     * 更新时间
+     */
     public Date updateTime;
+
+    /**
+     * 状态
+     */
     public Integer status;
 
 }

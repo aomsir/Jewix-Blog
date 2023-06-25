@@ -18,10 +18,17 @@ import java.util.List;
 public class RoleOfMenusAddVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 角色id
+     */
     @NotNull(message = "角色id不允许为空")
     @Min(value = 1)
     private Integer roleId;
 
+
+    /**
+     * 菜单id列表
+     */
     @NotNull(message = "菜单列表不允许为空")
     private List<Integer> menuIds;
 }

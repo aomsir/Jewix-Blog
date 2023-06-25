@@ -18,14 +18,24 @@ import java.io.Serializable;
 @Data
 public class ArticleTagVo implements Serializable {
 
+    /**
+     * 标签名
+     */
     @NotNull
     private String tagName;
 
+
+    /**
+     * page
+     */
     @NotNull(message = "page不能为空")
     @Min(value = 1, message = "page不能小于1")
     private Integer page;
 
 
+    /**
+     * length
+     */
     @NotNull(message = "length不能为空")
     @Range(min = 10, max = 50, message = "length必须为10~50之间")
     private Integer length;

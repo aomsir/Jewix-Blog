@@ -17,7 +17,19 @@ import java.util.List;
 @Data
 public class CategoryListDTO implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键id
+     */
     private Long id;
+
+    /**
+     * 分类名
+     */
     private String categoryName;
+
+    /**
+     * 子分类列表
+     */
     private List<Category> sonList;
 }

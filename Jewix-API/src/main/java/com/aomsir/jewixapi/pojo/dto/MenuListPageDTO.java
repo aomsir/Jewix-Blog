@@ -14,5 +14,9 @@ import java.util.List;
  */
 @Data
 public class MenuListPageDTO extends Menu {
+
+    /**
+     * 子菜单列表
+     */
     private List<Menu> sonList;
 }

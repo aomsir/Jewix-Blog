@@ -16,5 +16,9 @@ import java.util.ArrayList;
 @Data
 public class CommentDTO extends Comment {
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 子评论列表
+     */
     private ArrayList<Comment> childList;
 }

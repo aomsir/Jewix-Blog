@@ -18,10 +18,18 @@ import java.util.List;
 public class RoleOfResourcesAddVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * 角色id
+     */
     @NotNull(message = "角色id不允许为空")
     @Min(value = 1)
     private Integer roleId;
 
+
+    /**
+     * 资源id列表
+     */
     @NotNull(message = "资源列表不允许为空")
     private List<Integer> resourceIds;
 }

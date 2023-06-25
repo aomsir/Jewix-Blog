@@ -15,9 +15,29 @@ import java.io.Serializable;
 @Data
 public class UserConfigDTO implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键id
+     */
     private Long id;
+
+    /**
+     * 用户uuid
+     */
     private String uuid;
+
+    /**
+     * 用户昵称
+     */
     private String nickname;
+
+    /**
+     * 用户描述
+     */
     private String description;
+
+    /**
+     * 用户站点
+     */
     private String webSite;
 }

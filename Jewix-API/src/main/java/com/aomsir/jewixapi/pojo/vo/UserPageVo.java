@@ -19,20 +19,31 @@ public class UserPageVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * page
+     */
     @NotNull(message = "page不能为空")
     @Min(value = 1, message = "page不能小于1")
     private Integer page;
 
 
+    /**
+     * length
+     */
     @NotNull(message = "length不能为空")
     @Range(min = 10, max = 50, message = "length必须为10~50之间")
     private Integer length;
 
+    /**
+     * 状态
+     */
     @NotNull(message = "状态不能为空")
     @Range(min = 0, max = 3, message = "length必须为0-3之间")
     private Integer status;
 
-
+    /**
+     * 用户邮箱
+     */
     private String email;
 
 }

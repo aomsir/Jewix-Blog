@@ -12,8 +12,19 @@ import lombok.Data;
 
 @Data
 public class Category extends BaseEntity{
+
+    /**
+     * 主键id
+     */
     private Long id;
+
+    /**
+     * 分类名
+     */
     private String categoryName;
 
+    /**
+     * 父分类id
+     */
     private Long parentId;
 }

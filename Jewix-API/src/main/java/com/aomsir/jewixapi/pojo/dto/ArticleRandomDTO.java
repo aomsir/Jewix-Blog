@@ -14,8 +14,24 @@ import java.io.Serializable;
 @Data
 public class ArticleRandomDTO implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键id
+     */
     private Long id;
+
+    /**
+     * 文章标题
+     */
     private String title;
+
+    /**
+     * 文章封面
+     */
     String cover;
+
+    /**
+     * 文章uuid
+     */
     private String uuid;
 }

@@ -12,17 +12,69 @@ import lombok.Data;
 
 @Data
 public class Comment extends BaseEntity {
+    /**
+     * 主键id
+     */
     private Long id;
+
+    /**
+     * 评论作者名
+     */
     private String author;
-    private String content;     // 评论内容
-    private String email;       // 评论邮箱
-    private String url;         // 评论者个人网站链接
-    private String ip;          // 评论者ip
-    private String location;    // 评论者地理位置
-    private String agent;       // 评论者设备Agent
-    private Integer type;       // 评论类型 - 1-文章、21-时光机、22-友人账、23-留言板、24-关于
-    private Long targetId;      // 文章id或者页面id
-    private Long parentId;      // 父级id,0为根评论
-    private Long permId;        // 一级评论id,0为根评论
+
+    /**
+     * 评论内容
+     */
+    private String content;
+
+    /**
+     * 评论邮箱
+     */
+    private String email;
+
+    /**
+     * 评论者个人网站链接
+     */
+    private String url;
+
+    /**
+     * 评论者ip
+     */
+    private String ip;
+
+    /**
+     * 评论者地理位置
+     */
+    private String location;
+
+
+    /**
+     * 评论者设备Agent
+     */
+    private String agent;
+
+    /**
+     * 评论类型 - 1-文章、21-时光机、22-友人账、23-留言板、24-关于
+     */
+    private Integer type;
+
+    /**
+     * 目标id
+     */
+    private Long targetId;
+
+    /**
+     * 父级id,0为根评论
+     */
+    private Long parentId;
+
+    /**
+     * 一级评论id,0为根评论
+     */
+    private Long permId;
+
+    /**
+     * 是否是博主
+     */
     private boolean isBlogger;
 }

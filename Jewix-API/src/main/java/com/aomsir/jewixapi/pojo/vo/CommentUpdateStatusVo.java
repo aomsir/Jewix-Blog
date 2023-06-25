@@ -18,9 +18,17 @@ public class CommentUpdateStatusVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * 主键id
+     */
     @NotNull(message = "评论id不能为空")
     private Long id;
 
+
+    /**
+     * 状态
+     */
     @NotNull(message = "评论状态不能为空")
     @Min(value = 0,message = "评论状态不合法")
     private Integer status;

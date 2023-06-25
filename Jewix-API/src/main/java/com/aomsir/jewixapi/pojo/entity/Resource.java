@@ -15,12 +15,39 @@ import java.util.Date;
 @Data
 public class Resource implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键id
+     */
     private Integer id;
+
+    /**
+     * 资源名
+     */
     private String name;
+
+    /**
+     * 资源标签
+     */
     private String label;
 
+    /**
+     * 父级id
+     */
     private Integer parentId;
+
+    /**
+     * 方法
+     */
     private String method;
+
+    /**
+     * 路由
+     */
     private String route;
+
+    /**
+     * 创建时间
+     */
     private Date createTime;
 }

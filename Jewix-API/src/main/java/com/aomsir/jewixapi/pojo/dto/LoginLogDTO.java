@@ -12,5 +12,9 @@ import lombok.Data;
  */
 @Data
 public class LoginLogDTO extends LoginLog {
+
+    /**
+     * 用户昵称
+     */
     private String nickname;
 }

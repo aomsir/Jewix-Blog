@@ -17,6 +17,10 @@ public class TagAddVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @NotNull
+
+    /**
+     * 标签名
+     */
+    @NotNull(message = "标签名不允许为空")
     private String tagName;
 }
