@@ -16,13 +16,13 @@ export default function Footer({ siteInfo,className, ...rest }: FooterProps): Re
                 <img src="/layer2.png" style={{ height: "13px" }} />
                 <span>提供CDN加速/云储存服务</span>
             </p>
-            <p>
+            {!!siteInfo.icp && <p>
                 <img src={webSiteConfig.record.ICP.icon} />{" "}
                 <a href={webSiteConfig.record.ICP.url} target="_blank">
                     {/* {webSiteConfig.record.ICP.province}ICP备{webSiteConfig.record.ICP.number} */}
                     {siteInfo.icp}
                 </a>
-            </p>
+            </p>}
             {!!siteInfo.police && <p>
                 <img src={webSiteConfig.record.公网安.icon} />
                 <a href={webSiteConfig.record.公网安.url} target="_blank">
