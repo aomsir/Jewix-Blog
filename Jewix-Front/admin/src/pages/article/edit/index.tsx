@@ -108,6 +108,7 @@ export default function ArticleEdit(props: ArticleEditProps): ReactElement {
                             await updateArticle(_article as API.UpdateArticleBody);
                             message.success("修改成功");
                         }
+                        history.back();
                         return true;
                     } catch (error) {
                         return false;

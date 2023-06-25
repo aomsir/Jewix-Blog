@@ -1,0 +1,25 @@
+.comment {
+    :global {
+        .ant-pro-list-row-content {
+            flex-grow: 3;
+        }
+        .ant-pro-list-row-header-title {
+            align-items: flex-start;
+        }
+        .ant-pro-list-row-title {
+            font-size: 16px;
+            line-height: 1;
+        }
+        .ant-list-item {
+            .operations {
+                visibility: hidden;
+            }
+
+            &:hover {
+                .operations {
+                    visibility: visible;
+                }
+            }
+        }
+    }
+}

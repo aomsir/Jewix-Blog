@@ -27,6 +27,7 @@ import { map } from "lodash";
 import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
 import { fetchWidthNormalizedResponse } from "../article";
 import EditCommentForm from "./components/EditCommentForm";
+import css from "./index.module.scss";
 import { tableConfig } from "/config/table";
 type CommentProps = HTMLAttributes<HTMLDivElement>;
 // 评论列表
@@ -46,7 +47,7 @@ export default function Comment(props: CommentProps): ReactElement {
                     </span>
                 </p>
                 <p>{entity.content}</p>
-                <Space>
+                <Space className="operations">
                     {entity.status !== CommentEnums.Status.开放 ? (
                         <a
                             onClick={async () => {
@@ -137,7 +138,7 @@ export default function Comment(props: CommentProps): ReactElement {
     }, [modalVisionState.open]);
 
     return (
-        <PageContainer className={rest.className ?? ""} {...rest}>
+        <PageContainer className={css.comment} {...rest}>
             <ProList<API.FetchCommentResponse, API.PaginationResponse>
                 headerTitle="评论列表"
                 metas={metas}
@@ -222,7 +223,6 @@ const metas: ProListMetas<API.FetchCommentResponse> = {
                     height={40}
                     src={getAvatarUrlByEmail(entity.email)}
                     fallback="/admin/notFound.png"
-                    style={{ borderRadius: "50%" }}
                 />
             );
         },
