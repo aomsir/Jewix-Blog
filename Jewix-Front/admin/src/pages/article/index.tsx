@@ -1,9 +1,15 @@
 import { OPERATIONS } from "@/access";
 import HasOperation from "@/components/bases/hasOperation/hasOperation";
 import PopConfirmDelete from "@/components/bases/popConfirmDelete/PopConfirmDelete";
+import { ArticleEnums } from "@/config/enums";
 import { useSelection } from "@/hooks/props";
 import { API } from "@/services/ant-design-pro/typings";
-import { deleteArticles, fetchArticleByUUID, fetchArticles } from "@/services/api/article";
+import {
+    deleteArticles,
+    fetchArticleByUUID,
+    fetchArticles,
+    softDeleteArticles,
+} from "@/services/api/article";
 import { ActionType, PageContainer, ProList, ProListMetas } from "@ant-design/pro-components";
 import { history } from "@umijs/max";
 import { Image, message, Space } from "antd";
@@ -20,29 +26,45 @@ export default function Article({ className, ...rest }: ArticleProps): ReactElem
     metas.actions!.render = (dom, entity) => {
         return (
             <Space>
-                <HasOperation operation={OPERATIONS.UPDATE}>
-                    <a
-                        onClick={async () => {
-                            try {
-                                const data = await fetchArticleByUUID(entity.uuid);
-                                history.push(`/article/edit?uuid=${entity.uuid}`);
-                            } catch (error) {}
-                        }}
-                    >
-                        编辑
-                    </a>
-                </HasOperation>
-                <HasOperation operation={OPERATIONS.DELETE}>
-                    <PopConfirmDelete
-                        onConfirm={async () => {
-                            try {
-                                await deleteArticles({ ids: [entity.id] });
-                                message.success("删除成功");
-                                actionRef.current?.reload();
-                            } catch (error) {}
-                        }}
-                    />
-                </HasOperation>
+                {entity.isDelete === ArticleEnums.IsDelete.是 ? (
+                    <HasOperation operation={OPERATIONS.DELETE}>
+                        <PopConfirmDelete
+                            onConfirm={async () => {
+                                try {
+                                    await deleteArticles({ ids: [entity.id] });
+                                    message.success("删除成功");
+                                    actionRef.current?.reload();
+                                } catch (error) {}
+                            }}
+                        />
+                    </HasOperation>
+                ) : (
+                    <>
+                        <HasOperation operation={OPERATIONS.UPDATE}>
+                            <a
+                                onClick={async () => {
+                                    try {
+                                        const data = await fetchArticleByUUID(entity.uuid);
+                                        history.push(`/article/edit?uuid=${entity.uuid}`);
+                                    } catch (error) {}
+                                }}
+                            >
+                                编辑
+                            </a>
+                        </HasOperation>
+                        <HasOperation operation={OPERATIONS.DELETE}>
+                            <PopConfirmDelete
+                                onConfirm={async () => {
+                                    try {
+                                        await softDeleteArticles({ ids: [entity.id] });
+                                        message.success("删除成功");
+                                        actionRef.current?.reload();
+                                    } catch (error) {}
+                                }}
+                            />
+                        </HasOperation>
+                    </>
+                )}
             </Space>
         );
     };
@@ -75,14 +97,14 @@ export default function Article({ className, ...rest }: ArticleProps): ReactElem
                             <PopConfirmDelete
                                 onConfirm={async () => {
                                     try {
-                                        await deleteArticles({ ids: selectedRowKeys });
+                                        await softDeleteArticles({ ids: selectedRowKeys });
                                         message.success("删除成功");
                                         onCleanSelected();
                                         actionRef.current?.reload();
                                     } catch (error) {}
                                 }}
                             >
-                                批量删除
+                                <a>批量删除</a>
                             </PopConfirmDelete>
                         </HasOperation>
                     </Space>
