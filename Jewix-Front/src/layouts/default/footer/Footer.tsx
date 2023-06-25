@@ -23,13 +23,13 @@ export default function Footer({ siteInfo,className, ...rest }: FooterProps): Re
                     {siteInfo.icp}
                 </a>
             </p>
-            <p>
+            {!!siteInfo.police && <p>
                 <img src={webSiteConfig.record.公网安.icon} />
                 <a href={webSiteConfig.record.公网安.url} target="_blank">
                     {/* {webSiteConfig.record.公网安.province}公网安备{webSiteConfig.record.公网安.number} */}
                     {siteInfo.police}
                 </a>
-            </p>
+            </p>}
         </footer>
     )
 }

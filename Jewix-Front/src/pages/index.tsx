@@ -16,8 +16,6 @@ export interface HomeProps {
  * @returns 首页
  */
 export default function Home({ initialBlogs,settings }: HomeProps) {
-    console.log(settings);
-    
     return (
         <div className={css["home-page"]}>
             <Head>
