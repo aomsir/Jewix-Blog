@@ -76,7 +76,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN_USER_DETAIL')")
     @ApiOperation(value = "后台根据UUID获取用户个人详细信息")
     @GetMapping("/admin/users/{uuid}")
-    public R getBackendUserByUUID(@PathVariable String uuid) {
+    public R getBackendUserByUuid(@PathVariable String uuid) {
         User user = this.userService.searchUserByUUID(uuid);
         return R.ok()
                 .put("result", user);

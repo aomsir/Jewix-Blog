@@ -12,7 +12,7 @@
     </select>
 
 
-    <select id="queryUserByUUID" resultType="User">
+    <select id="queryUserByUuid" resultType="User">
         SELECT id, uuid, nickname, email, description, web_site, create_time, update_time, status
         FROM tb_user
         WHERE uuid = #{uuid}

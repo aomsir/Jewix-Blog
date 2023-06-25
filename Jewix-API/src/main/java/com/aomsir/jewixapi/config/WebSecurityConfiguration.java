@@ -3,7 +3,6 @@ package com.aomsir.jewixapi.config;
 import com.aomsir.jewixapi.handler.*;
 import com.aomsir.jewixapi.service.LogService;
 import com.aomsir.jewixapi.service.MenuService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -68,8 +67,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Resource
     private MenuService menuService;
 
-    @Value("${server.servlet.context-path}")
-    private String prefix;
 
     @Bean
     public PasswordEncoder bcryptPasswordEncoder() {
@@ -110,7 +107,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 
-        // http.addFilterBefore(this.tokenVerifyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(this.tokenVerifyFilter, FilterSecurityInterceptor.class);
         http.addFilterAfter(new EmailPasswordAuthenticationFilter(authenticationManager(),redisTemplate,logService,menuService),
                 PerTokenVerifyFilter.class);

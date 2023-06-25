@@ -3,6 +3,7 @@ package com.aomsir.jewixapi.pojo.vo;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -19,13 +20,13 @@ public class CommentAddVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @NotNull(message = "作者不允许为空")
+    @NotBlank(message = "作者不允许为空")
     private String author;
 
-    @NotNull(message = "内容不允许为空")
+    @NotBlank(message = "内容不允许为空")
     private String content;
 
-    @NotNull(message = "邮箱不允许为空")
+    @NotBlank(message = "邮箱不允许为空")
     private String email;
 
     private String url;

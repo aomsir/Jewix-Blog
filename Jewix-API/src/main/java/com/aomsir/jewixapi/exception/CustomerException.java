@@ -2,6 +2,7 @@ package com.aomsir.jewixapi.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @Author: Aomsir
@@ -10,8 +11,10 @@ import lombok.Data;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
+
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class CustomerException extends RuntimeException{
     public CustomerException(String message) {
         super(message);

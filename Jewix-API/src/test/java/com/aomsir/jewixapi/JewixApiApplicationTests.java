@@ -69,11 +69,4 @@ class JewixApiApplicationTests {
 		String ip = "194.99.79.36";
 		System.out.println("this.netUtils.getLocationInfo(ip) = " + this.netUtils.getLocationInfo(ip));
 	}
-
-	@Test
-	public void testCategoryList() {
-		List<CategoryListDTO> categoryListDTOS =
-				this.categoryMapper.queryCategoryList();
-		System.out.println("categoryListDTOS = " + categoryListDTOS);
-	}
 }

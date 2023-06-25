@@ -15,14 +15,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * @Author: Aomsir
  * @Date: 2023/2/21
- * @Description: Swagger2配置类
+ * @Description: Swagger2配置类(测试环境下可访问)
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-
 @Configuration
 @EnableSwagger2
-@Profile("dev")      // 测试环境下可访问
+@Profile("dev")
 public class Swagger2Configuration {
     @Bean
     public Docket webApiConfig(){

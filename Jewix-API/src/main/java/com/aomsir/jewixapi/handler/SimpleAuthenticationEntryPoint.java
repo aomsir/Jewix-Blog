@@ -29,8 +29,6 @@ public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     private static final Logger log = LoggerFactory.getLogger(SimpleAuthenticationEntryPoint.class);
 
-    public SimpleAuthenticationEntryPoint() {
-    }
 
     @Override
     public void commence(HttpServletRequest req,

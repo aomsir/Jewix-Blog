@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
             throw new CustomerException(PARAMETER_ERROR);
         }
 
-        User user = this.userMapper.queryUserByUUID(uuid);
+        User user = this.userMapper.queryUserByUuid(uuid);
 
         return user;
     }
@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int updateUser(UserUpdateVo userUpdateVo) {
-        User user_1 = this.userMapper.queryUserByUUID(userUpdateVo.getUuid());
+        User user_1 = this.userMapper.queryUserByUuid(userUpdateVo.getUuid());
 
         if (user_1 == null) {
             throw new CustomerException(USER_IS_NULL);
@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int updateStatus(UserStatusVo userStatusVo) {
-        User user = this.userMapper.queryUserByUUID(userStatusVo.getUuid());
+        User user = this.userMapper.queryUserByUuid(userStatusVo.getUuid());
         if (user == null) {
             throw new CustomerException(USER_IS_NULL);
         }
@@ -256,7 +256,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int updateUserByMyself(UserUpdateVo userUpdateVo) {
-        User user_1 = this.userMapper.queryUserByUUID(userUpdateVo.getUuid());
+        User user_1 = this.userMapper.queryUserByUuid(userUpdateVo.getUuid());
         if (user_1 == null) {
             throw new CustomerException(USER_IS_NULL);
         }

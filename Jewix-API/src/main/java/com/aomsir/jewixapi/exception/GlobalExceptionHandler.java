@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
      * @return 响应数据
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public R ParamsException(ConstraintViolationException e) {
+    public R paramsException(ConstraintViolationException e) {
         log.error("ParamsException is invoke...");
         e.printStackTrace();
 
@@ -123,7 +123,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({SQLException.class,
             IbatisException.class,})
-    public R SQLException(Exception e) {
+    public R sqlException(Exception e) {
         log.error("{}", e.getMessage());
         return R.error(DATABASE_EXCEPTION);
     }

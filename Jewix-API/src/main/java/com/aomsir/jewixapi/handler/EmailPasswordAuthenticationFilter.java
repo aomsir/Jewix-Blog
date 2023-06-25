@@ -44,11 +44,11 @@ import static com.aomsir.jewixapi.constant.SecurityConstants.*;
  */
 public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private RedisTemplate<String,Object> redisTemplate;
+    private final RedisTemplate<String,Object> redisTemplate;
 
-    private LogService logService;
+    private final LogService logService;
 
-    private MenuService menuService;
+    private final MenuService menuService;
 
 
     public EmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager,

@@ -23,6 +23,14 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * @Author: Aomsir
+ * @Date: 2023/4/15
+ * @Description: 操作日志记录切面类
+ * @Email: info@say521.cn
+ * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
+ */
+
 @Aspect
 @Component
 public class OperateLogAspect {

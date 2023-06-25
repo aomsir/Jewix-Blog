@@ -28,7 +28,9 @@ public class UpyunConfiguration {
     @Bean
     public RestManager restManager() {
         RestManager restManager = new RestManager(this.bucket,this.operatorName,this.operatorPwd);
-        restManager.setApiDomain(RestManager.ED_AUTO);    // 自定选择最优接入点
+
+        // 自定选择最优接入点
+        restManager.setApiDomain(RestManager.ED_AUTO);
         return restManager;
     }
 }
