@@ -1,5 +1,6 @@
 import Banner from "@/components/bases/banner/Banner"
 import { MenuToggleRef } from "@/components/bases/menu-toggle/MenuToggle"
+import { SiteInfo } from "@/servers/api/common"
 import { PropsWithChildren, ReactElement, useRef } from "react"
 import { HTMLAttributes } from "react"
 import { AsideProps } from "../aside/Aside"
@@ -14,7 +15,7 @@ interface SmallProps extends HTMLAttributes<HTMLDivElement> {
     menuData: MenuProps["menuData"]
     links: LinksProps["links"]
     hiddenModules: MainLayoutProps["hiddenModules"]
-    siteInfo: API.FetchSiteInfoResponse
+    siteInfo: SiteInfo
 }
 export default function Small({ links, menuData, className, children, hiddenModules,siteInfo, ...rest }: PropsWithChildren<SmallProps>): ReactElement {
     const menuToggleRef = useRef<MenuToggleRef>(null)
@@ -33,7 +34,7 @@ export default function Small({ links, menuData, className, children, hiddenModu
                 <Banner className="banner" image="/banner.png" title={`Hi！I‘m ${siteInfo.name}`} desc={siteInfo.desc}/>
             )}
             <main>{children}</main>
-            <Footer className="small-footer" />
+            <Footer className="small-footer" siteInfo={siteInfo} />
         </div>
     )
 }
