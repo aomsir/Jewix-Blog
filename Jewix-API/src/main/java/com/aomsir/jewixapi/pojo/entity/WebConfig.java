@@ -2,10 +2,6 @@ package com.aomsir.jewixapi.pojo.entity;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * @Author: Aomsir

@@ -11,8 +11,6 @@ import com.aomsir.jewixapi.service.LogService;
 import com.aomsir.jewixapi.util.NetUtils;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static com.aomsir.jewixapi.constant.CommonConstants.JSON_PARSE_ERROR;
+import static com.aomsir.jewixapi.constant.CommonConstants.PARAMETER_ERROR;
 
 /**
  * @Author: Aomsir
@@ -33,7 +34,6 @@ import java.util.Map;
 @Service
 public class LogServiceImpl implements LogService {
 
-    private static final Logger log = LoggerFactory.getLogger(LogServiceImpl.class);
     @Resource
     private NetUtils netUtils;
 
@@ -44,10 +44,17 @@ public class LogServiceImpl implements LogService {
     private UserMapper userMapper;
 
     @Override
-    @Transactional
-    public void insertLoginLog(HttpServletRequest req,Long userId) throws JsonProcessingException {
+    @Transactional(rollbackFor = Exception.class)
+    public void insertLoginLog(HttpServletRequest req,Long userId) {
         String ip = this.netUtils.getRealIp(req);
-        String location = this.netUtils.getLocationInfo(ip);
+
+
+        String location = null;
+        try {
+            location = this.netUtils.getLocationInfo(ip);
+        } catch (JsonProcessingException e) {
+            throw new CustomerException(JSON_PARSE_ERROR);
+        }
 
         LoginLog loginLog = new LoginLog();
         loginLog.setUserId(userId);
@@ -99,19 +106,19 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteLoginLogs(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
-            throw new CustomerException("参数异常");
+            throw new CustomerException(PARAMETER_ERROR);
         }
         return this.logMapper.deleteLoginLogs(ids);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteOperateLogs(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
-            throw new CustomerException("参数异常");
+            throw new CustomerException(PARAMETER_ERROR);
         }
         return this.logMapper.deleteOperateLogs(ids);
     }

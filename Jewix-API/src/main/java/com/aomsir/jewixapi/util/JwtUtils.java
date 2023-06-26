@@ -41,8 +41,8 @@ public class JwtUtils {
 
     /**
      * 获取token中payload
-     * @param token
-     * @return
+     * @param token token
+     * @return token解析对象
      */
     public static DecodedJWT getToken(String token){
         return JWT.require(Algorithm.HMAC256(TOKEN))

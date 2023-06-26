@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.aomsir.jewixapi.constant.ResourceConstants.RESOURCE_NOT_FOUND;
+import static com.aomsir.jewixapi.constant.RoleConstants.ROLE_NOT_FOUND;
 import static com.aomsir.jewixapi.constant.UserConstants.USER_IS_NULL;
 
 /**
@@ -76,13 +78,13 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    @Transactional
-    public int insertReaourceForRole(RoleOfResourcesAddVo addVo) {
+    @Transactional(rollbackFor = Exception.class)
+    public int insertResourceForRole(RoleOfResourcesAddVo addVo) {
         // 查询角色
         Integer roleId = addVo.getRoleId();
         Role role = this.roleMapper.queryRoleById(roleId);
         if (role == null) {
-            throw new CustomerException("角色不存在");
+            throw new CustomerException(ROLE_NOT_FOUND);
         }
 
         // 查询资源
@@ -90,7 +92,7 @@ public class ResourceServiceImpl implements ResourceService {
         for (Integer resourceId : resourceIds) {
             Resource resource = this.resourceMapper.queryResourceById(resourceId);
             if (resource == null) {
-                throw new CustomerException("资源不存在");
+                throw new CustomerException(RESOURCE_NOT_FOUND);
             }
         }
 

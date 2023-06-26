@@ -15,17 +15,17 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserHolder {
-    private static final ThreadLocal<Long> users = new ThreadLocal<>();
+    private static final ThreadLocal<Long> user = new ThreadLocal<>();
 
     public void setUserId(Long id) {
-        users.set(id);
+        user.set(id);
     }
 
     public Long getUserId() {
-        return users.get();
+        return user.get();
     }
 
     public void clear() {
-        users.remove();
+        user.remove();
     }
 }

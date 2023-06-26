@@ -33,13 +33,13 @@ public class NetUtils {
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${jewix.tencent-location-api-key}")
-    private String gaodeApiKey;
+    private String tencentApiKey;
 
 
     /**
      * 获取用户真实IP
-     * @param request
-     * @return
+     * @param request request请求对象
+     * @return 用户真实ip
      */
     public String getRealIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Real-IP");
@@ -72,26 +72,23 @@ public class NetUtils {
 
     /**
      * 获取用户城市所在地
-     * @param ip
-     * @return
-     * @throws JsonProcessingException
+     * @param ip ip
+     * @return 所在地
+     * @throws JsonProcessingException 异常
      */
     public String getLocationInfo(String ip) throws JsonProcessingException {
-        String finalLocation = "";
+        String finalLocation = "未知";
         if (this.isLocalIp(ip)) {
-            finalLocation = "未知";
             return finalLocation;
         } else if ("".equals(ip)) {
-            finalLocation = "未知";
             return finalLocation;
         }
 
         String url = "https://apis.map.qq.com/ws/location/v1/ip";
-        String key = this.gaodeApiKey;
+        String key = this.tencentApiKey;
         url = String.format("%s?ip=%s&key=%s", url, ip,key);
         String response =  this.restTemplate.getForObject(url, String.class);
 
-        // TODO:解析json
         JsonNode parentNode = this.objectMapper.readTree(response);
         JsonNode sonNode = parentNode.get("result").get("ad_info");
 
@@ -139,8 +136,8 @@ public class NetUtils {
 
     /**
      * 解析用户浏览器代理
-     * @param userAgent
-     * @return
+     * @param userAgent 用户代理
+     * @return 代理解析数据
      */
     public Map<String, String> parseUserAgent(String userAgent) {
         UserAgent agent = UserAgent.parseUserAgentString(userAgent);
@@ -153,10 +150,9 @@ public class NetUtils {
     /**
      * 查询是否是本地IP
      * @param ip 查询IP
-     * @return
+     * @return 是否是本地
      */
     private boolean isLocalIp(String ip) {
-        String localIpPattern = "^(10\\.|172\\.(1[6-9]|2[0-9]|3[0-1])\\.|192\\.168\\.).*";
         if (ip == null || ip.isEmpty()) {
             return false;
         }
@@ -164,7 +160,6 @@ public class NetUtils {
             InetAddress address = InetAddress.getByName(ip);
             return address.isSiteLocalAddress() || address.isLoopbackAddress();
         } catch (UnknownHostException e) {
-            // TODO
             e.printStackTrace();
             return false;
         }

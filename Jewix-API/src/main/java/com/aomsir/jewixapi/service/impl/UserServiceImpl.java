@@ -13,8 +13,6 @@ import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.UserService;
 import com.aomsir.jewixapi.util.UserHolder;
 import com.aomsir.jewixapi.util.PageUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,7 +37,6 @@ import static com.aomsir.jewixapi.constant.UserConstants.*;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Resource
     private UserMapper userMapper;
 
@@ -57,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User searchUserByUUID(String uuid) {
+    public User searchUserByUuid(String uuid) {
         if (uuid == null) {
             throw new CustomerException(PARAMETER_ERROR);
         }
@@ -93,16 +90,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int addUser(UserAddVo userAddVo) {
-        User user_1 = this.userMapper.queryUserByEmail(userAddVo.getEmail());
-        User user_2 = this.userMapper.queryUserByNickname(userAddVo.getNickname());
+        User user1 = this.userMapper.queryUserByEmail(userAddVo.getEmail());
+        User user2 = this.userMapper.queryUserByNickname(userAddVo.getNickname());
 
-        if (user_1 != null) {
+        if (user1 != null) {
             throw new CustomerException(USER_EMAIL_HAS_EXISTED);
         }
 
-        if (user_2 != null) {
+        if (user2 != null) {
             throw new CustomerException(USER_NAME_HAS_EXISTED);
         }
 
@@ -122,16 +119,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateUser(UserUpdateVo userUpdateVo) {
-        User user_1 = this.userMapper.queryUserByUuid(userUpdateVo.getUuid());
+        User user1 = this.userMapper.queryUserByUuid(userUpdateVo.getUuid());
 
-        if (user_1 == null) {
+        if (user1 == null) {
             throw new CustomerException(USER_IS_NULL);
         }
 
         // 邮箱已被使用(提交邮箱与库中该用户不一致才可)
-        if (!Objects.equals(user_1.getEmail(), userUpdateVo.getEmail())) {
+        if (!Objects.equals(user1.getEmail(), userUpdateVo.getEmail())) {
             User user = this.userMapper.queryUserByEmail(userUpdateVo.getEmail());
             if (user != null) {
                 throw new CustomerException(USER_EMAIL_HAS_EXISTED);
@@ -139,7 +136,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 用户名已被使用
-        if (!Objects.equals(user_1.getNickname(),userUpdateVo.getNickname())) {
+        if (!Objects.equals(user1.getNickname(),userUpdateVo.getNickname())) {
             User user = this.userMapper.queryUserByNickname(userUpdateVo.getNickname());
             if (user != null) {
                 throw new CustomerException(USER_NAME_HAS_EXISTED);
@@ -154,7 +151,7 @@ public class UserServiceImpl implements UserService {
         param.put("updateTime",new Date());
 
         // 删除缓存
-        if (user_1.getId() == 10000L) {
+        if (user1.getId() == 10000L) {
             this.redisTemplate.delete(WEB_CONFIG_KEY);
         }
         return this.userMapper.updateUser(param);
@@ -171,7 +168,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateStatus(UserStatusVo userStatusVo) {
         User user = this.userMapper.queryUserByUuid(userStatusVo.getUuid());
         if (user == null) {
@@ -179,7 +176,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (user.getId().equals(this.userHolder.getUserId())) {
-            throw new CustomerException("不允许修改自己的状态");
+            throw new CustomerException(USER_CAN_NOT_UPDATE_STATUS_THEMSELVES);
         }
 
         return this.userMapper.updateUserStatus(userStatusVo);
@@ -194,7 +191,7 @@ public class UserServiceImpl implements UserService {
         Map<Object, Object> userMap = this.redisTemplate.opsForHash()
                 .entries(USER_INFO_KEY + userId);
 
-        if (userMap == null || userMap.isEmpty()) {
+        if (userMap.isEmpty()) {
             this.redisTemplate.delete(USER_TOKEN_KEY + userId);
             throw new CustomerException(TICKET_ERROR);
         }
@@ -203,7 +200,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteUserByArchive(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
              throw new CustomerException(PARAMETER_ERROR);
@@ -228,7 +225,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteUserByPhysics(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             throw new CustomerException(PARAMETER_ERROR);
@@ -246,7 +243,7 @@ public class UserServiceImpl implements UserService {
             // 查询是有是自己
             User user = this.userMapper.queryUserById(id);
             if (user.getId().equals(this.userHolder.getUserId())) {
-                throw new CustomerException("不允许删除自己");
+                throw new CustomerException(USER_CAN_NOT_DELETE_THEMSELVES);
             }
         }
 
@@ -254,19 +251,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateUserByMyself(UserUpdateVo userUpdateVo) {
-        User user_1 = this.userMapper.queryUserByUuid(userUpdateVo.getUuid());
-        if (user_1 == null) {
+        User user1 = this.userMapper.queryUserByUuid(userUpdateVo.getUuid());
+        if (user1 == null) {
             throw new CustomerException(USER_IS_NULL);
         }
 
-        if (!Objects.equals(user_1.getId(), this.userHolder.getUserId())) {
+        if (!Objects.equals(user1.getId(), this.userHolder.getUserId())) {
             throw new CustomerException(USER_IS_NOT_CURRENT);
         }
 
         // 邮箱已被使用(提交邮箱与库中该用户不一致才可)
-        if (!Objects.equals(user_1.getEmail(), userUpdateVo.getEmail())) {
+        if (!Objects.equals(user1.getEmail(), userUpdateVo.getEmail())) {
             User user = this.userMapper.queryUserByEmail(userUpdateVo.getEmail());
             if (user != null) {
                 throw new CustomerException(USER_EMAIL_HAS_EXISTED);
@@ -274,7 +271,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 用户名已被使用
-        if (!Objects.equals(user_1.getNickname(),userUpdateVo.getNickname())) {
+        if (!Objects.equals(user1.getNickname(),userUpdateVo.getNickname())) {
             User user = this.userMapper.queryUserByNickname(userUpdateVo.getNickname());
             if (user != null) {
                 throw new CustomerException(USER_NAME_HAS_EXISTED);
@@ -289,12 +286,12 @@ public class UserServiceImpl implements UserService {
         param.put("updateTime",new Date());
 
         // 删除缓存
-        if (user_1.getId() == 10000L) {
+        if (user1.getId() == 10000L) {
             this.redisTemplate.delete(WEB_CONFIG_KEY);
         }
 
-        this.redisTemplate.delete(USER_INFO_KEY + user_1.getId());
-        this.redisTemplate.delete(USER_TOKEN_KEY + user_1.getId());
+        this.redisTemplate.delete(USER_INFO_KEY + user1.getId());
+        this.redisTemplate.delete(USER_TOKEN_KEY + user1.getId());
         return this.userMapper.updateUser(param);
     }
 }

@@ -24,6 +24,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.aomsir.jewixapi.constant.CommonConstants.PARAMETER_ERROR;
+import static com.aomsir.jewixapi.constant.RoleConstants.*;
+
 /**
  * @Author: Aomsir
  * @Date: 2023/6/8
@@ -59,16 +62,16 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int addRole(RoleAddVo roleAddVo) {
-        Role role_1 = this.roleMapper.queryRoleByRoleName(roleAddVo.getRoleName());
-        if (role_1 != null) {
-            throw new CustomerException("角色名已存在");
+        Role role1 = this.roleMapper.queryRoleByRoleName(roleAddVo.getRoleName());
+        if (role1 != null) {
+            throw new CustomerException(ROLE_NAME_HAS_EXISTED);
         }
 
-        Role role_2 = this.roleMapper.queryRoleByRoleLabel(roleAddVo.getRoleLabel());
-        if (role_2 != null) {
-            throw new CustomerException("角色标签已存在");
+        Role role2 = this.roleMapper.queryRoleByRoleLabel(roleAddVo.getRoleLabel());
+        if (role2 != null) {
+            throw new CustomerException(ROLE_LABEL_HAS_EXISTED);
         }
 
         Map<String, Object> param = BeanUtil.beanToMap(roleAddVo);
@@ -79,21 +82,21 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateRoleInfo(RoleUpdateVo roleUpdateVo) {
-        Role role_1 = this.roleMapper.queryRoleById(roleUpdateVo.getId());
-        if (role_1 == null) {
-            throw new CustomerException("角色不存在");
+        Role role1 = this.roleMapper.queryRoleById(roleUpdateVo.getId());
+        if (role1 == null) {
+            throw new CustomerException(ROLE_NOT_FOUND);
         }
 
-        Role role_2 = this.roleMapper.queryRoleByRoleName(roleUpdateVo.getRoleName());
-        if (role_2 != null && !role_2.getId().equals(roleUpdateVo.getId())) {
-            throw new CustomerException("角色名已存在");
+        Role role2 = this.roleMapper.queryRoleByRoleName(roleUpdateVo.getRoleName());
+        if (role2 != null && !role2.getId().equals(roleUpdateVo.getId())) {
+            throw new CustomerException(ROLE_NAME_HAS_EXISTED);
         }
 
-        Role role_3 = this.roleMapper.queryRoleByRoleLabel(roleUpdateVo.getRoleLabel());
-        if (role_3 != null && !role_3.getId().equals(roleUpdateVo.getId())) {
-            throw new CustomerException("角色标签已存在");
+        Role role3 = this.roleMapper.queryRoleByRoleLabel(roleUpdateVo.getRoleLabel());
+        if (role3 != null && !role3.getId().equals(roleUpdateVo.getId())) {
+            throw new CustomerException(ROLE_LABEL_HAS_EXISTED);
         }
 
         Map<String, Object> param = BeanUtil.beanToMap(roleUpdateVo);
@@ -105,18 +108,18 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public int deleteRoles(List<Integer> roleIds) {
         if (roleIds == null || roleIds.isEmpty()) {
-            throw new CustomerException("待删除列表为空");
+            throw new CustomerException(ROLE_LIST_IS_NULL);
         }
 
         for (Integer roleId : roleIds) {
             Role role = this.roleMapper.queryRoleById(roleId);
             if (role == null) {
-                throw new CustomerException("待删除角色不存在");
+                throw new CustomerException(ROLE_DELETE_IS_NULL);
             }
 
             int counts = this.roleMapper.queryUserCountsByRoleId(roleId);
             if (counts > 0) {
-                throw new CustomerException("所选角色下有用户");
+                throw new CustomerException(ROLE_HAS_USER);
             }
         }
 
@@ -133,12 +136,12 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role searchRoleById(Integer id) {
         if (id == null) {
-            throw new CustomerException("参数异常");
+            throw new CustomerException(PARAMETER_ERROR);
         }
 
         Role role = this.roleMapper.queryRoleById(id);
         if (role == null) {
-            throw new CustomerException("角色不存在");
+            throw new CustomerException(ROLE_NOT_FOUND);
         }
         return role;
     }
@@ -147,7 +150,7 @@ public class RoleServiceImpl implements RoleService {
     public RoleOfMenuDTO searchRoleOfMenu(Integer id) {
         Role role = this.roleMapper.queryRoleById(id);
         if (role == null) {
-            throw new CustomerException("角色不存在");
+            throw new CustomerException(ROLE_NOT_FOUND);
         }
 
         // 复制角色数据
@@ -181,7 +184,7 @@ public class RoleServiceImpl implements RoleService {
     public RoleOfResourceDTO searchRoleOfResource(Integer id) {
         Role role = this.roleMapper.queryRoleById(id);
         if (role == null) {
-            throw new CustomerException("角色不存在");
+            throw new CustomerException(ROLE_NOT_FOUND);
         }
 
         // 复制角色数据

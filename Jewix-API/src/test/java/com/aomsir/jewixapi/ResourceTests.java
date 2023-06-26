@@ -30,6 +30,6 @@ public class ResourceTests {
         resourceIds.add(2);
         resourceIds.add(3);
         roleOfResourcesAddVo.setResourceIds(resourceIds);
-        this.resourceService.insertReaourceForRole(roleOfResourcesAddVo);
+        this.resourceService.insertResourceForRole(roleOfResourcesAddVo);
     }
 }

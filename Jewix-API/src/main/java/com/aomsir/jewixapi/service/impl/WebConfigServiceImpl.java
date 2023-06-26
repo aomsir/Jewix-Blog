@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 
 import static com.aomsir.jewixapi.constant.RedisConstants.WEB_CONFIG_KEY;
 import static com.aomsir.jewixapi.constant.WebConfigConstants.CONFIG_INFO_IS_NULL;
-import static com.aomsir.jewixapi.constant.WebConfigConstants.CONFIG_TYPE_HAS_EXISTED;
 
 /**
  * @Author: Aomsir
@@ -40,7 +39,7 @@ public class WebConfigServiceImpl implements WebConfigService {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int addWebConfig(InfoWebConfigAddVo infoWebConfigAddVo) {
         HashMap<String, String> socialInfo = infoWebConfigAddVo.getSocialInfo();
         if (socialInfo.size() > 3) {
@@ -72,7 +71,7 @@ public class WebConfigServiceImpl implements WebConfigService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateWebConfig(InfoWebConfigUpdateVo infoWebConfigUpdateVo) {
         HashMap<String, String> socialInfo = infoWebConfigUpdateVo.getSocialInfo();
         if (socialInfo.size() > 3) {

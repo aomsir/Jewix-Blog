@@ -9,8 +9,6 @@ import com.aomsir.jewixapi.pojo.entity.Tag;
 import com.aomsir.jewixapi.pojo.vo.TagUpdateVo;
 import com.aomsir.jewixapi.service.TagService;
 import com.aomsir.jewixapi.util.PageUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +53,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int addTagByName(String tagName) {
         Tag respTag = this.tagMapper.queryTagByName(tagName);
         if (respTag != null) {
@@ -71,23 +69,22 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateTagById(TagUpdateVo updateVo) {
         Tag tag = this.tagMapper.queryTagById(updateVo.getId());
         if (tag == null) {
             throw new CustomerException(TAG_IS_NULL);
         }
 
-        Tag tag_1 = this.tagMapper.queryTagByName(updateVo.getTagName());
-        if (tag_1 != null) {
+        Tag tag1 = this.tagMapper.queryTagByName(updateVo.getTagName());
+        if (tag1 != null) {
             throw new CustomerException(TAG_HAS_EXISTED);
         }
 
         tag.setTagName(updateVo.getTagName());
         tag.setUpdateTime(new Date());
 
-        int role = this.tagMapper.updateTagById(tag);
-        return role;
+        return this.tagMapper.updateTagById(tag);
     }
 
     @Override
@@ -122,7 +119,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteTags(List<Long> tagIds) {
         if (tagIds == null || tagIds.isEmpty()) {
             throw new CustomerException(PARAMETER_ERROR);

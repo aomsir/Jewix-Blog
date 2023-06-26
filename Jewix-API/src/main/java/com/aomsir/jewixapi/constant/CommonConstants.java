@@ -13,4 +13,7 @@ public interface CommonConstants {
     String TICKET_ERROR = "登录状态失效,请重新登录";
     String NONE_EXCEPTION = "未知异常,请联系网站管理员";
     String LOGIN_METHOD = "POST";
+    String JSON_PARSE_ERROR = "JSON解析异常";
+
+    String UUID_NOT_FOUND = "UUID为空";
 }

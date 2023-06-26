@@ -41,15 +41,15 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     @Override
     public PageUtils searchFriendLinkListByPage(Map<String, Object> param) {
         // 缓存命中则直接返回
-        int start_1 = (int) param.get("start");
+        int start1 = (int) param.get("start");
 
-        int type_1 = 0;
+        int type1 = 0;
         if (param.get("location") != null) {
-            type_1 = (int) param.get("location");
+            type1 = (int) param.get("location");
         }
 
 
-        if (start_1 == 0 && type_1 == 1) {
+        if (start1 == 0 && type1 == 1) {
             PageUtils pageUtils = (PageUtils) this.redisTemplate.opsForValue().get(FRIEND_LINK_LIST_KEY);
             if (pageUtils != null) {
                 return pageUtils;
@@ -70,7 +70,7 @@ public class FriendLinkServiceImpl implements FriendLinkService {
         PageUtils pageUtils = new PageUtils(list, count, start, length);
 
         // 封装进Redis
-        if (start_1 == 0 && type_1 == 1) {
+        if (start1 == 0 && type1 == 1) {
             this.redisTemplate.opsForValue()
                     .set(FRIEND_LINK_LIST_KEY, pageUtils, FRIEND_LINK_LIST_EXPIRE, TimeUnit.DAYS);
         }
@@ -78,16 +78,16 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int addFriendLink(Map<String, Object> param) {
-        FriendLink friendLink_1 = this.friendLinkMapper.queryFriendLinkByTitle((String) param.get("title"));
-        FriendLink friendLink_2 = this.friendLinkMapper.queryFriendLinkByLink((String) param.get("link"));
+        FriendLink friendLink1 = this.friendLinkMapper.queryFriendLinkByTitle((String) param.get("title"));
+        FriendLink friendLink2 = this.friendLinkMapper.queryFriendLinkByLink((String) param.get("link"));
 
-        if (friendLink_1 != null) {
+        if (friendLink1 != null) {
             throw new CustomerException(FRIEND_LINK_NAME_HAS_EXISTED);
         }
 
-        if (friendLink_2 != null) {
+        if (friendLink2 != null) {
             throw new CustomerException(FRIEND_LINK_LINK_HAS_EXISTED);
         }
 
@@ -100,7 +100,7 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateFriendLink(Map<String, Object> param) {
         FriendLink friendLink = this.friendLinkMapper.queryFriendLinkById((Integer) param.get("id"));
         if (friendLink == null) {
@@ -124,9 +124,9 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteFriendLinks(List<Integer> ids) {
-        if (ids == null || ids.size() == 0) {
+        if (ids == null || ids.isEmpty()) {
             throw new CustomerException(PARAMETER_ERROR);
         }
 

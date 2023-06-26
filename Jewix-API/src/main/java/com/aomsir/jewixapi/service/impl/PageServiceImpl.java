@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static com.aomsir.jewixapi.constant.CommonConstants.UUID_NOT_FOUND;
 import static com.aomsir.jewixapi.constant.PageConstants.*;
 import static com.aomsir.jewixapi.constant.RedisConstants.PAGE_LIST_EXPIRE;
 import static com.aomsir.jewixapi.constant.RedisConstants.PAGE_LIST_KEY;
@@ -102,7 +103,7 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int addPage(PageAddVo pageAddVo) {
         // 如果是1-4,校验一下
         Set<Integer> containKey = new HashSet<>(Arrays.asList(1, 2, 3, 4));
@@ -138,7 +139,7 @@ public class PageServiceImpl implements PageService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updatePage(PageUpdateVo pageUpdateVo) {
         String title = pageUpdateVo.getTitle();
         Page page = this.pageMapper.queryPageByTitle(title);
@@ -167,10 +168,10 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deletePage(String uuid) {
         if (uuid == null) {
-            throw new CustomerException("uuid为空");
+            throw new CustomerException(UUID_NOT_FOUND);
         }
 
         Page page = this.pageMapper.queryPageByUuid(uuid);

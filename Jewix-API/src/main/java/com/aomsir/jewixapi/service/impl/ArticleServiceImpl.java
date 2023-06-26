@@ -81,7 +81,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public PageUtils searchFrontArticleListByPage(Map<String, Object> param) {
         PageUtils pageUtils;
-        if ((String) param.get("title") == null || ((String) param.get("title")).isEmpty()) {
+        if (param.get("title") == null || ((String) param.get("title")).isEmpty()) {
             pageUtils= (PageUtils) this.redisTemplate.opsForValue()
                     .get(ARTICLE_FRONT_LIST_KEY);
             if (pageUtils != null && (int) param.get("start") == 0) {
@@ -102,7 +102,7 @@ public class ArticleServiceImpl implements ArticleService {
         pageUtils = new PageUtils(list, count, start, length);
 
 
-        if ((String) param.get("title") == null || ((String) param.get("title")).isEmpty()) {
+        if (param.get("title") == null || ((String) param.get("title")).isEmpty()) {
             if ((int) param.get("start") == 0) {
                 this.redisTemplate.opsForValue()
                         .set(ARTICLE_FRONT_LIST_KEY, pageUtils, ARTICLE_FRONT_LIST_EXPIRE, TimeUnit.DAYS);
@@ -114,7 +114,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int addArticle(ArticleAddVo articleAddVo) {
         if (articleAddVo.getType() == 2 && articleAddVo.getOriginUrl() == null) {
             throw new CustomerException(ORIGIN_ADDRESS_IS_NULL);
@@ -172,14 +172,14 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateArticle(ArticleUpdateVo articleUpdateVo) {
         Long id = articleUpdateVo.getId();
         String uuid = articleUpdateVo.getUuid();
-        Article article_1 = this.articleMapper.queryArticleByUuid(uuid);
-        Article article_2 = this.articleMapper.queryArticleById(id);
+        Article article1 = this.articleMapper.queryArticleByUuid(uuid);
+        Article article2 = this.articleMapper.queryArticleById(id);
 
-        if (article_1 == null || article_2 == null ) {
+        if (article1 == null || article2 == null ) {
             throw new CustomerException(ARTICLE_IS_NULL);
         }
 
@@ -241,7 +241,9 @@ public class ArticleServiceImpl implements ArticleService {
         // 查询文章所属标签、分类、用户名
         List<String> categotyList = this.articleMapper.queryArticleCategoryNameList(article.getId());
         List<String> tagList = this.articleMapper.queryArticleTagNameList(article.getId());
-        String userName = this.articleMapper.queryArticleUserName(article.getId());    // 根据文章id获取文章的作者名
+
+        // 根据文章id获取文章的作者名
+        String userName = this.articleMapper.queryArticleUserName(article.getId());
         articleDetailDTO.setCategories(categotyList);
         articleDetailDTO.setTags(tagList);
         articleDetailDTO.setUserName(userName);
@@ -287,7 +289,9 @@ public class ArticleServiceImpl implements ArticleService {
         // 查询文章所属标签、分类、用户名
         List<String> categotyList = this.articleMapper.queryArticleCategoryNameList(article.getId());
         List<String> tagList = this.articleMapper.queryArticleTagNameList(article.getId());
-        String userName = this.articleMapper.queryArticleUserName(article.getId());    // 根据文章id获取文章的作者名
+
+        // 根据文章id获取文章的作者名
+        String userName = this.articleMapper.queryArticleUserName(article.getId());
         articleDetailDTO.setCategories(categotyList);
         articleDetailDTO.setTags(tagList);
         articleDetailDTO.setUserName(userName);
@@ -329,7 +333,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteArticleByArchive(List<Long> ids) {
         if (Objects.isNull(ids) || ids.isEmpty()) {
             throw new CustomerException(ARTICLE_CHECKED);
@@ -356,7 +360,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteArticleByPhysics(List<Long> ids) {
         if (Objects.isNull(ids) || ids.isEmpty()) {
             throw new CustomerException(ARTICLE_CHECKED);
@@ -408,7 +412,9 @@ public class ArticleServiceImpl implements ArticleService {
         List<Long> randomList;
         if (articleIds.size() >= 5) {
             size = 5;
-            Collections.shuffle(articleIds);   // 对list进行随机化
+
+            // 对list进行随机化
+            Collections.shuffle(articleIds);
             randomList = articleIds.subList(0, size);
         } else {
             randomList = articleIds;

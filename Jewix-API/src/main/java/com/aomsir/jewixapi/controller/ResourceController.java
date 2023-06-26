@@ -64,7 +64,7 @@ public class ResourceController {
     @PostMapping("/admin/resources/doAssign")
     public R doAssignResourceForRole(@RequestBody @Validated RoleOfResourcesAddVo addVo) {
 
-        int role = this.resourceService.insertReaourceForRole(addVo);
+        int role = this.resourceService.insertResourceForRole(addVo);
         return R.ok()
                 .put("role", role);
     }

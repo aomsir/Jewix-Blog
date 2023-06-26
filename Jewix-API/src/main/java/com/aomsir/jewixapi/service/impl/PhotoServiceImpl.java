@@ -7,10 +7,7 @@ import com.aomsir.jewixapi.pojo.vo.PhotoDeleteVo;
 import com.aomsir.jewixapi.service.PhotoService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.upyun.RestManager;
-import com.upyun.UpException;
 import okhttp3.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +21,7 @@ import java.util.*;
 
 import static com.aomsir.jewixapi.constant.CommonConstants.PARAMETER_ERROR;
 import static com.aomsir.jewixapi.constant.PhotoConstants.PHOTO_DELETE_FAILED;
+import static com.aomsir.jewixapi.constant.PhotoConstants.UPYUN_UPLOAD_ERROR;
 
 /**
  * @Author: Aomsir
@@ -36,7 +34,7 @@ import static com.aomsir.jewixapi.constant.PhotoConstants.PHOTO_DELETE_FAILED;
 @Service
 public class PhotoServiceImpl implements PhotoService {
 
-    private static final Logger log = LoggerFactory.getLogger(PhotoServiceImpl.class);
+
     @Resource
     private RestManager restManager;
 
@@ -50,7 +48,7 @@ public class PhotoServiceImpl implements PhotoService {
     private String basePath;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updatePhoto(MultipartFile file, Integer type) {
         String originalFilename = file.getOriginalFilename();
 
@@ -60,11 +58,14 @@ public class PhotoServiceImpl implements PhotoService {
             suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
 
-        String fileName = UUID.randomUUID() + suffix;   // 文件名
+        // 文件名
+        String fileName = UUID.randomUUID() + suffix;
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
         Date date = new Date();
-        String location = format.format(date);   // 文件位置
+
+        // 文件位置
+        String location = format.format(date);
         location = "/" + location + "/";
 
         Map<String, Object> param = new HashMap<>();
@@ -89,7 +90,7 @@ public class PhotoServiceImpl implements PhotoService {
             try {
                 response  = restManager.writeFile(location + fileName, file.getBytes(), null);
             } catch (Exception e) {
-                throw new CustomerException("又拍云图片上传异常");
+                throw new CustomerException(UPYUN_UPLOAD_ERROR);
             }
 
         } else if (type == 2) {
@@ -145,8 +146,8 @@ public class PhotoServiceImpl implements PhotoService {
 
 
     @Override
-    @Transactional
-    public int deletePhoto(PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
+    @Transactional(rollbackFor = Exception.class)
+    public int deletePhoto(PhotoDeleteVo photoDeleteVo)  {
         if (Objects.isNull(photoDeleteVo.getFileName()) || Objects.isNull(photoDeleteVo.getType())) {
             throw new CustomerException(PARAMETER_ERROR);
         }
@@ -162,7 +163,9 @@ public class PhotoServiceImpl implements PhotoService {
         }};
 
         int role = 0;
-        role = this.photoMapper.deletePhoto(param);   // 先删数据库,数据库没问题再删具体文件,以免会回滚
+
+        // 先删数据库,数据库没问题再删具体文件,以免会回滚
+        role = this.photoMapper.deletePhoto(param);
 
         // 数据库成功删除再删文件
         if (0 == role) {
@@ -177,6 +180,8 @@ public class PhotoServiceImpl implements PhotoService {
                     if (!response.isSuccessful()) {
                         throw new CustomerException(PHOTO_DELETE_FAILED);
                     }
+                } catch (Exception e) {
+                    throw new CustomerException(PHOTO_DELETE_FAILED);
                 }
             } else if (type == 2) {
                 // TODO

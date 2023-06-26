@@ -5,7 +5,6 @@ import cn.hutool.core.bean.BeanUtil;
 import com.aomsir.jewixapi.exception.CustomerException;
 import com.aomsir.jewixapi.mapper.MenuMapper;
 import com.aomsir.jewixapi.mapper.RoleMapper;
-import com.aomsir.jewixapi.pojo.dto.CurrentUserDTO;
 import com.aomsir.jewixapi.pojo.dto.MenuListPageDTO;
 import com.aomsir.jewixapi.pojo.entity.Menu;
 import com.aomsir.jewixapi.pojo.entity.Role;
@@ -19,6 +18,9 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.aomsir.jewixapi.constant.MenuConstants.MENU_NOT_FOUND;
+import static com.aomsir.jewixapi.constant.RoleConstants.ROLE_NOT_FOUND;
 
 /**
  * @Author: Aomsir
@@ -67,7 +69,7 @@ public class MenuServiceImpl implements MenuService {
         Integer roleId = roleOfMenusAddVo.getRoleId();
         Role role = this.roleMapper.queryRoleById(roleId);
         if (role == null) {
-            throw new CustomerException("角色不存在");
+            throw new CustomerException(ROLE_NOT_FOUND);
         }
 
         // 查询菜单
@@ -75,7 +77,7 @@ public class MenuServiceImpl implements MenuService {
         for (Integer menuId : menuIds) {
             Menu menu = this.menuMapper.queryMenuById(menuId);
             if (menu == null) {
-                throw new CustomerException("菜单不存在");
+                throw new CustomerException(MENU_NOT_FOUND);
             }
         }
 

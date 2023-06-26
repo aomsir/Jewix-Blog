@@ -10,8 +10,6 @@ import com.aomsir.jewixapi.pojo.vo.CategoryAddVo;
 import com.aomsir.jewixapi.pojo.vo.CategoryUpdateVo;
 import com.aomsir.jewixapi.service.CategoryService;
 import com.aomsir.jewixapi.util.PageUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,6 @@ import static com.aomsir.jewixapi.constant.RedisConstants.*;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    private static final Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
     @Resource
     private CategoryMapper categoryMapper;
 
@@ -109,7 +106,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int addCategory(CategoryAddVo categoryAddVo) {
         //  根据子分类名与父类id去查询是否已经存在
         Category category = this.categoryMapper.queryCategoryByNameAndParentId(categoryAddVo.getCategoryName(), categoryAddVo.getParentId());
@@ -121,33 +118,33 @@ public class CategoryServiceImpl implements CategoryService {
 
         // 非一级分类的情况
         if (categoryAddVo.getParentId() != 0) {
-            Category category_1 = this.categoryMapper.queryCategoryByParentId(categoryAddVo.getParentId());
+            Category category1 = this.categoryMapper.queryCategoryByParentId(categoryAddVo.getParentId());
 
-            if (category_1 == null) {
+            if (category1 == null) {
                 throw new CustomerException(FIRST_CATEGORY_HAS_EXISTED);
             }
 
-            if (category_1.getParentId() != 0) {
+            if (category1.getParentId() != 0) {
                 throw new CustomerException(CATEGORY_IS_NOT_FIRST);
             }
 
             // 再次保证a子分类可以出现在多个父分类下
             List<Category> list = this.categoryMapper.queryCategoryListByParentId(categoryAddVo.getParentId());
-            for (Category category1 : list) {
-                if (category1.getCategoryName().equals(categoryAddVo.getCategoryName())) {
-                    throw new CustomerException(category_1.getCategoryName() + "分类下已有 "+categoryAddVo.getCategoryName()+" 分类");
+            for (Category category11 : list) {
+                if (category11.getCategoryName().equals(categoryAddVo.getCategoryName())) {
+                    throw new CustomerException(category1.getCategoryName() + "分类下已有 "+categoryAddVo.getCategoryName()+" 分类");
                 }
             }
         }
 
-        Category category_2 = new Category();
-        category_2.setCategoryName(categoryAddVo.getCategoryName());
-        category_2.setParentId(categoryAddVo.getParentId());
-        category_2.setCreateTime(new Date());
-        category_2.setUpdateTime(new Date());
+        Category category2 = new Category();
+        category2.setCategoryName(categoryAddVo.getCategoryName());
+        category2.setParentId(categoryAddVo.getParentId());
+        category2.setCreateTime(new Date());
+        category2.setUpdateTime(new Date());
 
         this.deleteCache();
-        return this.categoryMapper.insertCategory(category_2);
+        return this.categoryMapper.insertCategory(category2);
     }
 
 
@@ -159,8 +156,8 @@ public class CategoryServiceImpl implements CategoryService {
             throw new CustomerException(CATEGORY_IS_NULL);
         }
 
-        Category category_1 = this.categoryMapper.queryCategoryId(categoryId);
-        if (category_1 == null) {
+        Category category1 = this.categoryMapper.queryCategoryId(categoryId);
+        if (category1 == null) {
             throw new CustomerException(CATEGORY_IS_NULL);
         }
 
@@ -207,7 +204,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateCategory(CategoryUpdateVo categoryUpdateVo) {
         if (this.categoryMapper.queryCategoryId(categoryUpdateVo.getId()) == null) {
             throw new CustomerException(CATEGORY_IS_NULL);
@@ -224,7 +221,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteCategories(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             throw new CustomerException(PARAMETER_ERROR);

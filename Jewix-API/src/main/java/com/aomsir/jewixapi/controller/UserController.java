@@ -77,7 +77,7 @@ public class UserController {
     @ApiOperation(value = "后台根据UUID获取用户个人详细信息")
     @GetMapping("/admin/users/{uuid}")
     public R getBackendUserByUuid(@PathVariable String uuid) {
-        User user = this.userService.searchUserByUUID(uuid);
+        User user = this.userService.searchUserByUuid(uuid);
         return R.ok()
                 .put("result", user);
     }

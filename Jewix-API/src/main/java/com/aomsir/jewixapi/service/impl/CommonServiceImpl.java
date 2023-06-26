@@ -9,8 +9,6 @@ import com.aomsir.jewixapi.pojo.entity.User;
 import com.aomsir.jewixapi.pojo.entity.WebConfig;
 import com.aomsir.jewixapi.pojo.entity.WebInfo;
 import com.aomsir.jewixapi.service.CommonService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +32,6 @@ import static com.aomsir.jewixapi.constant.RedisConstants.WEB_CONFIG_KEY;
 @Service
 public class CommonServiceImpl implements CommonService {
 
-    private static final Logger log = LoggerFactory.getLogger(CommonServiceImpl.class);
     @Resource
     private UserMapper userMapper;
 
@@ -87,8 +84,8 @@ public class CommonServiceImpl implements CommonService {
 
         // 计算运行天数
         WebConfig webConfig = this.webConfigMapper.queryWebConfigInfo();
-        String configJSON = webConfig.getConfig();
-        WebInfo webInfo = JSONUtil.toBean(configJSON, WebInfo.class);
+        String configJson = webConfig.getConfig();
+        WebInfo webInfo = JSONUtil.toBean(configJson, WebInfo.class);
         Date buildDate = webInfo.getBuildDate();
         LocalDate date1 = new java.sql.Date(buildDate.getTime()).toLocalDate();
         long runTime = ChronoUnit.DAYS.between(date1, today);

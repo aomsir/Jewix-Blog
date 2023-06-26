@@ -9,4 +9,6 @@ package com.aomsir.jewixapi.constant;
  */
 public interface PhotoConstants {
     String PHOTO_DELETE_FAILED = "照片删除失败";
+
+    String UPYUN_UPLOAD_ERROR = "又拍云图片上传异常";
 }

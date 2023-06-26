@@ -11,7 +11,8 @@
       <img style="display: inline-block;" src="https://img.shields.io/badge/TypeScript-4.9.5-blue"/>
       <img style="display: inline-block;" src="https://img.shields.io/badge/SpringBoot-2.5.6-green"/>
       <img style="display: inline-block;" src="https://img.shields.io/badge/Mybatis-2.2.2-red"/>
-      <img style="display: inline-block;" src="https://img.shields.io/badge/React-18.0.2-blue"/>
+      <img style="display: inline-block;" src="https://img.shields.io/badge/React-18.2.0-blue"/>
+      <img style="display: inline-block;" src="https://img.shields.io/badge/Next.js-13.1.6-orange"/>
       <img style="display: inline-block;" src="https://img.shields.io/badge/Antd-5.2.2-pink"/>
       <img style="display: inline-block;" src="https://img.shields.io/badge/Redis-6.0-red"/>
       <img style="display: inline-block;" src="https://img.shields.io/badge/Docker-24.0.2-blue"/>
@@ -22,7 +23,7 @@
 # Jewix-Blog-System
 Jewix - 一款简约、高效、多样化的前后端分离博客系统
 
-# 特性
+# 项目特性
 - <b>编辑器选择</b>：支持富文本编辑器和 Markdown 编辑器，让用户可根据个人喜好选择适合自己的编辑器
 - <b>权限管理</b>：使用 Spring Security 实现 RBAC 权限管理，确保安全性和稳定性
 - <b>分类与标签分类</b>：提供多种分类方式和标签分类功能，方便对文章进行管理、查找和分类
@@ -43,15 +44,32 @@ Jewix - 一款简约、高效、多样化的前后端分离博客系统
 - 后端：SpringBoot、SpringMVC、SpringSecurity、Jasypt、JWT、Mybatis等
 - 中间件：MySQL、Redis、ElasticSearch(计划)、RocketMQ(计划)
 - 运维：Rocky Linux、Docker
+- 其他：又拍云存储、OSS、COS、腾讯地图
 
-# 使用
+# 快速开始
 - 方式一：克隆项目，进入Jewix-Deploy构建Docker镜像启动即可
 - 方式二：克隆项目，手动编译，分别启动前后端项目即可
-- 注意：记得修改IP、SpringBoot配置文件等
+- 注意：
+  - 记得修改IP、SpringBoot配置文件等
+  - 前端启动使用 npm run server
+  - 后台默认账号：admin@say521.cn
+  - 后台默认密码：123456
 - TODO：后续会发布wiki，有问题先提issue
 
+# 后续计划
+- 优化后端性能
+- 优化前端样式
+- 接入Elasticsearch中间件
+- 接入RocketMQ中间件
+- 接入ChatGPT
 
-# 注意
+
+# 注意事项
 - Jewix使用 [GPL V3.0](https://github.com/aomsir/jewix-blog/blob/master/LICENSE)协议开源。请遵守此协议进行二次开发等
 - Jewix1.0版本存在些许问题，等待后续版本的优化扩充
 - 欢迎大家踊跃提出Pull Request
+
+# 联系我们
+> - 添加好友，备注Jewix进微信交流群
+
+![联系我们](./assests/connect.jpg)

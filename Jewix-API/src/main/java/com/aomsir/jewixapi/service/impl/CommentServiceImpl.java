@@ -8,7 +8,6 @@ import com.aomsir.jewixapi.mapper.PageMapper;
 import com.aomsir.jewixapi.mapper.UserMapper;
 import com.aomsir.jewixapi.pojo.dto.CommentBackendDTO;
 import com.aomsir.jewixapi.pojo.dto.CommentDTO;
-import com.aomsir.jewixapi.pojo.dto.CurrentUserDTO;
 import com.aomsir.jewixapi.pojo.entity.Article;
 import com.aomsir.jewixapi.pojo.entity.Comment;
 import com.aomsir.jewixapi.pojo.entity.Page;
@@ -19,14 +18,9 @@ import com.aomsir.jewixapi.pojo.vo.CommentUpdateVo;
 import com.aomsir.jewixapi.service.CommentService;
 import com.aomsir.jewixapi.util.NetUtils;
 import com.aomsir.jewixapi.util.PageUtils;
-import com.aomsir.jewixapi.util.UserHolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,18 +30,17 @@ import java.util.*;
 
 import static com.aomsir.jewixapi.constant.ArticleConstants.ARTICLE_IS_NULL;
 import static com.aomsir.jewixapi.constant.CommentConstants.*;
+import static com.aomsir.jewixapi.constant.CommonConstants.JSON_PARSE_ERROR;
 import static com.aomsir.jewixapi.constant.RedisConstants.*;
-import static com.aomsir.jewixapi.constant.UserConstants.ARTICLE_USER_IS_NULL;
-import static com.aomsir.jewixapi.constant.UserConstants.USER_IS_NULL;
 
 /**
  * @Author: Aomsir
  * @Date: 2023/3/16
  * @Description: 评论业务实现类
+ * @TODO：部分业务采用递归实现
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-// TODO：部分业务采用递归实现
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -112,7 +105,8 @@ public class CommentServiceImpl implements CommentService {
         Long targetId = (Long) param.get("targetId");
         Integer type = (Integer) param.get("type");
 
-        Integer count = this.commentMapper.queryCommentFrontParentCount(param);    // 查询的一级评论的数量
+        // 查询的一级评论的数量
+        Integer count = this.commentMapper.queryCommentFrontParentCount(param);
         ArrayList<Comment> list = null;
         List<CommentDTO> commentDTOList = null;
         if (count > 0) {
@@ -130,7 +124,8 @@ public class CommentServiceImpl implements CommentService {
             }
 
             // 查询评论
-            list = this.commentMapper.queryCommentFrontPageList(param);     // 当前文章下所有的评论(已开放)
+            // 当前文章下所有的评论(已开放)
+            list = this.commentMapper.queryCommentFrontPageList(param);
             commentDTOList = new ArrayList<>();
 
 
@@ -177,13 +172,18 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    @Transactional
-    public int addComment(CommentAddVo commentAddVo, HttpServletRequest request) throws JsonProcessingException {
+    @Transactional(rollbackFor = Exception.class)
+    public int addComment(CommentAddVo commentAddVo, HttpServletRequest request) {
         Map<String, Object> param = BeanUtil.beanToMap(commentAddVo);
 
-        Long parentId = commentAddVo.getParentId();    // 父级评论id
-        Long targetId = commentAddVo.getTargetId();    // 文章/页面id
-        Long permId = commentAddVo.getPermId();        // 一级评论id
+        // 父级评论id
+        Long parentId = commentAddVo.getParentId();
+
+        // 文章/页面id
+        Long targetId = commentAddVo.getTargetId();
+
+        // 一级评论id
+        Long permId = commentAddVo.getPermId();
 
 
         // 处理目标文章/页面
@@ -235,14 +235,22 @@ public class CommentServiceImpl implements CommentService {
         String userAgent = request.getHeader("User-Agent");
 
         Map<String, String> userAgentMap = this.netUtils.parseUserAgent(userAgent);
-        String userAgentString = new ObjectMapper().writeValueAsString(userAgentMap);    // 将userAgentMap转换为json
-        String locationString = this.netUtils.getLocationInfo(realIp);
+        // 将userAgentMap转换为json
+        String userAgentString = null;
+        String locationString = null;
+        try {
+            userAgentString = new ObjectMapper().writeValueAsString(userAgentMap);
+            locationString = this.netUtils.getLocationInfo(realIp);
+        } catch (JsonProcessingException e) {
+            throw new CustomerException(JSON_PARSE_ERROR);
+        }
 
         param.put("ip",realIp);
         param.put("agent",userAgentString);
         param.put("location",locationString);
 
-        param.put("status",0);    // 0-待审核
+        // 0-待审核
+        param.put("status",0);
         param.put("createTime",new Date());
         param.put("updateTime",new Date());
 
@@ -258,7 +266,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateComment(CommentUpdateVo commentUpdateVo) {
         Comment comment = this.commentMapper.queryCommentById(commentUpdateVo.getId());
         if (Objects.isNull(comment)) {
@@ -281,7 +289,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteComment(List<Long> ids) {
         if (Objects.isNull(ids) || ids.isEmpty()) {
             throw new CustomerException(COMMENT_DELETE_LIST_IS_NULL);
@@ -295,12 +303,12 @@ public class CommentServiceImpl implements CommentService {
 
             // 查询是否有子评论
             // parentId与permId同为0则为一级评论
-            List<Comment> childList_1 = this.commentMapper.queryCommentsByPermId(id);
-            if (!childList_1.isEmpty()) {
+            List<Comment> childList1 = this.commentMapper.queryCommentsByPermId(id);
+            if (!childList1.isEmpty()) {
                 throw new CustomerException(COMMENT_HAS_SON);
             }
-            List<Comment> childList_2 = this.commentMapper.queryCommentsByParentId(id);
-            if (!childList_2.isEmpty()) {
+            List<Comment> childList2 = this.commentMapper.queryCommentsByParentId(id);
+            if (!childList2.isEmpty()) {
                 throw new CustomerException(COMMENT_HAS_SON);
             }
 
@@ -314,7 +322,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateCommentStatus(CommentUpdateStatusVo commentUpdateStatusVo) {
         Long id = commentUpdateStatusVo.getId();
         Integer status = commentUpdateStatusVo.getStatus();

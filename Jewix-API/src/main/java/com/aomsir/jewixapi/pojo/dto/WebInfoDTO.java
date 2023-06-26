@@ -3,10 +3,8 @@ package com.aomsir.jewixapi.pojo.dto;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: Aomsir

@@ -3,7 +3,6 @@ package com.aomsir.jewixapi.pojo.vo;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 

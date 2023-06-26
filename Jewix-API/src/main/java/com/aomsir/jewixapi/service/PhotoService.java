@@ -2,16 +2,39 @@ package com.aomsir.jewixapi.service;
 
 import com.aomsir.jewixapi.pojo.vo.PhotoDeleteVo;
 import com.aomsir.jewixapi.util.PageUtils;
-import com.upyun.UpException;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
-public interface PhotoService {
-    int updatePhoto(MultipartFile file, Integer type) throws IOException, UpException;
 
+/**
+ * @Author: Aomsir
+ * @Date: 2023/6/26
+ * @Description: 相册业务接口
+ * @Email: info@say521.cn
+ * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
+ */
+public interface PhotoService {
+
+    /**
+     * 上传照片
+     * @param file 文件
+     * @param type 类型
+     * @return 上传所影响的行数
+     */
+    int updatePhoto(MultipartFile file, Integer type);
+
+    /**
+     * 分页查询照片列表
+     * @param param 参数列表
+     * @return 分页数据
+     */
     PageUtils searchPhotoByPage(Map<String, Object> param);
 
-    int deletePhoto(PhotoDeleteVo photoDeleteVo) throws UpException, IOException;
+    /**
+     * 删除照片
+     * @param photoDeleteVo 封装对象
+     * @return 删除所影响的行数
+     */
+    int deletePhoto(PhotoDeleteVo photoDeleteVo);
 }
