@@ -50,6 +50,7 @@ export default function Comment(props: CommentProps): ReactElement {
                 <Space className="operations">
                     {entity.status !== CommentEnums.Status.开放 ? (
                         <a
+                            style={{ color: "#fc3a52" }}
                             onClick={async () => {
                                 try {
                                     await updateCommentStatus({

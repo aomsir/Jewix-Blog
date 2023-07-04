@@ -36,7 +36,9 @@ export default function Article({ className, ...rest }: ArticleProps): ReactElem
                                     actionRef.current?.reload();
                                 } catch (error) {}
                             }}
-                        />
+                        >
+                            <a style={{ color: "#fc3a52" }}>物理删除</a>
+                        </PopConfirmDelete>
                     </HasOperation>
                 ) : (
                     <>
@@ -61,7 +63,9 @@ export default function Article({ className, ...rest }: ArticleProps): ReactElem
                                         actionRef.current?.reload();
                                     } catch (error) {}
                                 }}
-                            />
+                            >
+                                <a style={{ color: "#fc3a52" }}>逻辑删除</a>
+                            </PopConfirmDelete>
                         </HasOperation>
                     </>
                 )}

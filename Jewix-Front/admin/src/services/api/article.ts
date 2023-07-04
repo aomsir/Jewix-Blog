@@ -25,7 +25,7 @@ export function insertArticle(article: API.InsertArticleBody, options?: Record<a
 
 export const updateArticle = updateFactory<API.UpdateArticleBody>("admin/articles");
 export const fetchArticleByUUID = (uuid: API.FetchArticleResponse["uuid"]) =>
-    request<API.ResponseStructure<API.FetchArticleDetailResponse>>(`articles/${uuid}`);
+    request<API.ResponseStructure<API.FetchArticleDetailResponse>>(`admin/articles/${uuid}`);
 
 export const softDeleteArticles = deleteFactory("admin/articles/archive");
 // 硬删除

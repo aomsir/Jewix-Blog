@@ -31,12 +31,13 @@ export default function ArticleEdit(props: ArticleEditProps): ReactElement {
     const { normalRouteFilter } = useAccess();
     const formRef = useRef<ProFormInstance>(null);
     const [tags, setTags] = useState<API.FetchTagResponse[]>([]);
+    const [newTagsMap, setNewTagsMap] = useState<{ [key: string]: number }>({});
     const [categories, setCategories] = useState<API.FetchCategoryResponse[]>([]);
     const [showLinkInput, setShowLinkInput] = useState(false);
     // 获取url的uuid参数
     const params = new URLSearchParams(location.search);
     const uuid = params.get("uuid");
-    let isUpdateForm = false;
+    const [isUpdateForm, setIsUpdateForm] = useState(false);
     useEffect(() => {
         (async () => {
             try {
@@ -50,7 +51,7 @@ export default function ArticleEdit(props: ArticleEditProps): ReactElement {
                     // 获取文章详情
                     const { result } = await fetchArticleByUUID(uuid);
                     formRef.current?.setFieldsValue(result);
-                    isUpdateForm = true;
+                    setIsUpdateForm(true);
                 }
             } catch (error: any) {
                 message.error(error.message);
@@ -92,11 +93,7 @@ export default function ArticleEdit(props: ArticleEditProps): ReactElement {
                             if (values.tagIds[index]) {
                                 const tag = values.tagIds[index];
                                 if (typeof tag === "string") {
-                                    const {
-                                        result: { id },
-                                    } = await insertTag({ tagName: tag });
-
-                                    values.tagIds[index] = id;
+                                    values.tagIds[index] = newTagsMap[tag];
                                 }
                             }
                         }
@@ -136,6 +133,19 @@ export default function ArticleEdit(props: ArticleEditProps): ReactElement {
                         mode="tags"
                         options={tags.map((tag) => ({ label: tag.tagName, value: tag.id }))}
                         width={300}
+                        fieldProps={{
+                            onSelect: async (tag) => {
+                                if (typeof tag === "string") {
+                                    try {
+                                        const {
+                                            result: { id },
+                                        } = await insertTag({ tagName: tag });
+
+                                        newTagsMap[tag] = id;
+                                    } catch (error) {}
+                                }
+                            },
+                        }}
                     />
                     <ProFormTreeSelect
                         rules={[{ required: true }]}
