@@ -390,7 +390,7 @@
     </select>
 
     <select id="queryArticleByTagId" resultType="Article">
-        SELECT id, uuid, title, cover, content, description, type, origin_url, views, is_top, is_delete, status, create_time, update_time
+        SELECT ta.id, ta.uuid, ta.title, ta.cover, ta.content, ta.description, ta.type, ta.origin_url, ta.views, ta.is_top, ta.is_delete, ta.status, ta.create_time, ta.update_time
         FROM tb_article AS ta
         LEFT JOIN tb_article_tag AS tag ON ta.id = tag.article_id
         WHERE tag.tag_id = #{tagId}
