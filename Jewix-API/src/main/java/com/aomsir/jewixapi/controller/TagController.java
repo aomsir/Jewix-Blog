@@ -64,7 +64,7 @@ public class TagController {
     @ApiOperation(value = "添加新标签")
     @PostMapping("/admin/tags")
     public R addTag(@RequestBody @Validated TagAddVo tagAddVo) {
-         int role = this.tagService.addTagByName(tagAddVo.getTagName());
+         Long role = this.tagService.addTagByName(tagAddVo.getTagName());
          return R.ok()
                  .put("result",role);
     }

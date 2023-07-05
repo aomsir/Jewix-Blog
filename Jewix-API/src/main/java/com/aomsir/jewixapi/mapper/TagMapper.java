@@ -45,7 +45,7 @@ public interface TagMapper {
      * @param tag 标签详情
      * @return 新增标签后的主键值
      */
-    int insertTag(@Param("tag") Tag tag);
+    Long insertTag(@Param("tag") Tag tag);
 
     /**
      * 根据id查询标签详情

@@ -30,7 +30,7 @@ public interface TagService {
      * @param tagName 标签名
      * @return 新增标签的主键值
      */
-    int addTagByName(String tagName);
+    Long addTagByName(String tagName);
 
     /**
      * 根据id更新标签

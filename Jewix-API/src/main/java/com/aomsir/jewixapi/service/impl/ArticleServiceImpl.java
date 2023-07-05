@@ -138,7 +138,7 @@ public class ArticleServiceImpl implements ArticleService {
             param.put("createTime", new Date());
             param.put("updateTime", new Date());
             param.put("views", 0);
-            param.put("is_delete", 0);
+            param.put("isDelete", 0);
 
             this.articleMapper.insertArticle(param);
             BigInteger tempId = (BigInteger) param.get("id");
@@ -421,7 +421,10 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
 
-        resultList = this.articleMapper.queryArticlesByRandomIds(randomList);
+        if (resultList != null) {
+            resultList = this.articleMapper.queryArticlesByRandomIds(randomList);
+        }
+
         if (resultList != null) {
             // 存储至Redis
             this.redisTemplate.opsForValue()

@@ -54,7 +54,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int addTagByName(String tagName) {
+    public Long addTagByName(String tagName) {
         Tag respTag = this.tagMapper.queryTagByName(tagName);
         if (respTag != null) {
             throw new CustomerException(TAG_HAS_EXISTED);
@@ -64,7 +64,8 @@ public class TagServiceImpl implements TagService {
         tag.setTagName(tagName);
         tag.setCreateTime(new Date());
         tag.setUpdateTime(new Date());
-        return this.tagMapper.insertTag(tag);
+        this.tagMapper.insertTag(tag);
+        return tag.getId() == null ? 0 : tag.getId();
     }
 
 

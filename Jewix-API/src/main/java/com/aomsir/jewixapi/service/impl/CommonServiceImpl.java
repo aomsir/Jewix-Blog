@@ -75,7 +75,13 @@ public class CommonServiceImpl implements CommonService {
         Date lastActive = this.articleMapper.queryLastActive();
 
         // 将Date对象转换成LocalDate对象
-        LocalDate date = new java.sql.Date(lastActive.getTime()).toLocalDate();
+        LocalDate date;
+        if (lastActive == null) {
+            date = new java.sql.Date(0).toLocalDate();
+        } else {
+            date = new java.sql.Date(lastActive.getTime()).toLocalDate();
+        }
+
 
         // 获取今天的LocalDate对象、计算差值
         LocalDate today = LocalDate.now();
