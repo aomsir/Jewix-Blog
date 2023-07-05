@@ -137,10 +137,7 @@ export default function ArticleEdit(props: ArticleEditProps): ReactElement {
                             onSelect: async (tag) => {
                                 if (typeof tag === "string") {
                                     try {
-                                        const {
-                                            result: { id },
-                                        } = await insertTag({ tagName: tag });
-
+                                        const { result: id } = await insertTag({ tagName: tag });
                                         newTagsMap[tag] = id;
                                     } catch (error) {}
                                 }
