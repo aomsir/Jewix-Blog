@@ -52,13 +52,13 @@ export default function CategoryContent({ className, categoryName, initialBlogs,
                 {categoryName}
             </div>
             <InfiniteScroll loadMore={fetchItems} hasMore={hasMore} initialLoad={false} loader={<BaseLoading key={0} />}>
-                <Masonry className="grid" breakpointCols={BREAK_POINT_COLUMNS} columnClassName="col">
                     <my-no-data has-data={!!blogs.length}>
-                        {blogs.map((item, index) => (
-                            <CardImage {...item} key={index} />
-                        ))}
+                        <Masonry className="grid" breakpointCols={BREAK_POINT_COLUMNS} columnClassName="col">
+                                {blogs.map((item, index) => (
+                                    <CardImage {...item} key={index} />
+                                ))}
+                        </Masonry>
                     </my-no-data>
-                </Masonry>
             </InfiniteScroll>
         </div>
     )
