@@ -35,6 +35,7 @@ import static com.aomsir.jewixapi.constant.SecurityConstants.PERMISSION_DENIED;
 
 @ControllerAdvice(annotations = RestController.class)
 @ResponseBody
+@Slf4j
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -136,6 +137,45 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({AccessDeniedException.class})
     public R accessDinedException(Exception e) {
         return R.error(500, PERMISSION_DENIED);
+    }
+    
+    // 处理常见的数组异常ArrayIndexOutOfBoundsException
+    @ExceptionHandler(ArrayIndexOutOfBoundsException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public Map<String, Object> handleArraysException(ArrayIndexOutOfBoundsException ex) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("errCode", ErrorCode.OUT_OF_BOUNDS);
+        result.put("errMsg", "index Out of Bounds");
+        result.put("nowTime", LocalDateTime.now(Clock.systemDefaultZone()));
+        log.info("ArrayIndexOutOfBoundsException====>" + ex.getMessage());
+        return result;
+    }
+
+    // 处理常见的栈异常StackOverflowError
+    @ExceptionHandler(StackOverflowError.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, Object> handleStackException(StackOverflowError ex) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("errCode", ErrorCode.OVER_FLOW);
+        result.put("errMsg", "warning internal exception");
+        result.put("nowTime", LocalDateTime.now(Clock.systemDefaultZone()));
+        log.error("StackOverflowError====>" + ex.getMessage());
+        return result;
+    }
+
+    // 处理常见的空指针异常NullPointerException
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, Object> handleNPEException(NullPointerException ex) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("errCode", ex.getLocalizedMessage());
+        result.put("errMsg", ex.getMessage());
+        result.put("nowTime", LocalDateTime.now(Clock.systemDefaultZone()));
+        log.error(result.toString());
+        return result;
     }
 
 }
