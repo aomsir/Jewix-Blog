@@ -6,20 +6,22 @@ import com.aomsir.jewixapi.util.R;
 import org.apache.ibatis.exceptions.IbatisException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
 import java.sql.SQLException;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.aomsir.jewixapi.constant.ExceptionConstants.DATABASE_EXCEPTION;
@@ -35,7 +37,6 @@ import static com.aomsir.jewixapi.constant.SecurityConstants.PERMISSION_DENIED;
 
 @ControllerAdvice(annotations = RestController.class)
 @ResponseBody
-@Slf4j
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -140,30 +141,30 @@ public class GlobalExceptionHandler {
     }
     
     // 处理常见的数组异常ArrayIndexOutOfBoundsException
-    @ExceptionHandler(ArrayIndexOutOfBoundsException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public Map<String, Object> handleArraysException(ArrayIndexOutOfBoundsException ex) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("errCode", ErrorCode.OUT_OF_BOUNDS);
-        result.put("errMsg", "index Out of Bounds");
-        result.put("nowTime", LocalDateTime.now(Clock.systemDefaultZone()));
-        log.info("ArrayIndexOutOfBoundsException====>" + ex.getMessage());
-        return result;
-    }
-
-    // 处理常见的栈异常StackOverflowError
-    @ExceptionHandler(StackOverflowError.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, Object> handleStackException(StackOverflowError ex) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("errCode", ErrorCode.OVER_FLOW);
-        result.put("errMsg", "warning internal exception");
-        result.put("nowTime", LocalDateTime.now(Clock.systemDefaultZone()));
-        log.error("StackOverflowError====>" + ex.getMessage());
-        return result;
-    }
+//    @ExceptionHandler(ArrayIndexOutOfBoundsException.class)
+//    @ResponseBody
+//    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+//    public Map<String, Object> handleArraysException(ArrayIndexOutOfBoundsException ex) {
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("errCode", ErrorCode.OUT_OF_BOUNDS);
+//        result.put("errMsg", "index Out of Bounds");
+//        result.put("nowTime", LocalDateTime.now(Clock.systemDefaultZone()));
+//        log.info("ArrayIndexOutOfBoundsException====>" + ex.getMessage());
+//        return result;
+//    }
+//
+//    // 处理常见的栈异常StackOverflowError
+//    @ExceptionHandler(StackOverflowError.class)
+//    @ResponseBody
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public Map<String, Object> handleStackException(StackOverflowError ex) {
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("errCode", ErrorCode.OVER_FLOW);
+//        result.put("errMsg", "warning internal exception");
+//        result.put("nowTime", LocalDateTime.now(Clock.systemDefaultZone()));
+//        log.error("StackOverflowError====>" + ex.getMessage());
+//        return result;
+//    }
 
     // 处理常见的空指针异常NullPointerException
     @ExceptionHandler(NullPointerException.class)
