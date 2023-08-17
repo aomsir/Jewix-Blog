@@ -41,7 +41,7 @@ Jewix - A minimalist, efficient, and versatile blog system with a decoupled fron
 - **ContainerizedDeployment**: Supports Docker containerized deployment, facilitating quick deployment and management of the blog system.
 
 ## Technology Stack
-- Frontend: React, Nuxt, AntDesign, AntDesignPro, etc.
+- Frontend: React, Next, AntDesign, AntDesignPro, etc.
 - Backend: SpringBoot, SpringMVC, SpringSecurity, Jasypt, JWT, Mybatis, etc.
 - Middleware: MySQL, Redis, ElasticSearch (planned), RocketMQ (planned).
 - Operations: Rocky Linux, Docker.

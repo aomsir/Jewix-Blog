@@ -40,7 +40,7 @@ Jewix - 一款简约、高效、多样化的前后端分离博客系统
 - <b>容器化部署</b>：支持 Docker 容器化部署，方便快速部署和管理博客系统
 
 # 技术栈
-- 前端：React、Nuxt、AntDesign、AntDesignPro等
+- 前端：React、Next、AntDesign、AntDesignPro等
 - 后端：SpringBoot、SpringMVC、SpringSecurity、Jasypt、JWT、Mybatis等
 - 中间件：MySQL、Redis、ElasticSearch(计划)、RocketMQ(计划)
 - 运维：Rocky Linux、Docker
@@ -70,6 +70,6 @@ Jewix - 一款简约、高效、多样化的前后端分离博客系统
 - 欢迎大家踊跃提出Pull Request
 
 # 联系我们
-> - 添加好友，备注Jewix进微信交流群
+> - 添加好友，备注Jewix博客进微信交流群
 
 ![联系我们](./assests/connect.jpg)
