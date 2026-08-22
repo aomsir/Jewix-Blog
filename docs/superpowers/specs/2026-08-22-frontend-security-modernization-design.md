@@ -35,7 +35,7 @@ The admin application retains its existing pages, components, services, styles, 
 - an Axios client that preserves token injection, response handling, notifications, and unauthorized redirects;
 - route and top-level error boundaries.
 
-Generated `.umi` and `.umi-production` code is not copied into the new architecture. Source imports from `@umijs/max` are replaced with focused imports from React Router, the local request client, and the local authentication/access contexts.
+Generated `.umi` and `.umi-production` code is not copied into the new architecture. While Umi remains installed, `tsconfig.json` excludes `src/.umi`, `src/.umi-production`, and `node_modules` so regenerated postinstall output cannot break Vite-era typecheck. Source imports from `@umijs/max` are replaced with focused imports from React Router, the local request client, and the local authentication/access contexts.
 
 ## Routing And Layout
 
@@ -51,21 +51,29 @@ React Router and ProLayout consume this single configuration so navigation and r
 - site settings;
 - login, root redirect, and not-found routes.
 
-Routes marked `layout: false` render outside ProLayout. Protected routes redirect unauthenticated users to `/login` while preserving the intended destination.
+Routes marked `layout: false` render outside ProLayout. `/login` stays public. Every other route—including `/article/edit` and `*`—requires authentication.
+
+The shared route tree stays nested: `/auth` (权限管理) and `/log` (日志管理) remain parent groups with children, and `/account` remains a hidden group for settings. React Router parents use real paths (`/auth`, `/log`, `/account`) with relative child segments so URLs stay `/auth/menu`, `/log/operation`, etc. A pathless route is used only for the ProLayout shell wrapper, never for those groups.
+
+`ProtectedRoute` requires every `useMatches()` entry with `access: "normalRouteFilter"` to pass `normalRouteFilter` (parent and leaf). Example: `/auth/menu` has no leaf access, but missing parent `"权限管理"` still denies. Denial redirects to `/article`. `/article/edit` stays login-only at the router; its page-local `"文章编辑"` check is preserved and is not remapped to `"文章管理"`. ProLayout menus are derived from the same nested tree.
 
 ## Authentication And Access
 
-`AuthProvider` calls the existing `fetchCurrentUserInfo` service during application initialization except on the login route. It exposes `currentUser`, `loading`, and `refreshUser`.
+`AuthProvider` calls the existing `fetchCurrentUserInfo` service during application initialization except on the login route, always with `skipErrorHandler: true`. It exposes `currentUser`, `loading`, `refreshUser`, `setCurrentUser`, and `clearUser`. Login success writes the user through `setCurrentUser`; AvatarDropdown logout calls `clearUser` before clearing the token and navigating to `/login`.
 
-`AccessProvider` derives permissions from the existing access rules and current user. Route guards, menu filtering, and operation-level controls use the same access object. Existing `HasOperation` behavior is preserved by changing its data source from Umi's `useAccess` to the local context.
+`AccessProvider` derives permissions from the existing access rules and current user. `ProtectedRoute` enforces login and, when present, route-level `normalRouteFilter`. Menu filtering and operation-level controls use the same access object. Existing `HasOperation` behavior is preserved by changing its data source from Umi's `useAccess` to the local context.
 
-After login, users return to their original protected destination or `/article`. A 401 response clears the local token and redirects to `/login` once, avoiding redirect loops.
+After login, users return to their original protected destination or `/article`. A 401 response clears the local token, shows the existing error toast unless `skipErrorHandler` is set, and redirects to `/login` once, avoiding redirect loops.
 
 ## Request Flow
 
-The request layer remains Axios-based. A single client applies the existing base URL and timeout, reads `LocalToken` for authorization headers, preserves successful response shapes, displays existing error messages, and handles unauthorized responses.
+The request layer remains Axios-based. A single client uses same-origin `baseURL: "/api/"`, reads `LocalToken` for authorization headers, preserves successful response shapes, displays business errors with Ant Design `message.error`, honors per-request `skipErrorHandler`, and handles unauthorized responses. DELETE list parameters keep the existing repeated-key serializer (`ids=1&ids=2`). Absolute `/config/proxy` `BASE_URL` imports are removed in favor of same-origin `/api` URLs plus the Vite/Nginx proxy.
 
-Service modules import this local client instead of `@umijs/max`. Generated Swagger service files may keep their existing function signatures; only their request import changes.
+Service modules import this local client instead of `@umijs/max`. Generated Swagger service files may keep their existing function signatures; only their request import changes. Absolute `/config/table` imports move to `@/config/table`. TinyMCE skin CSS switches from `raw-loader` to Vite `?raw`.
+
+## Shell And Locale
+
+The Vite entry keeps `public/scripts/loading.js`, document title `Jewix博客系统后台管理`, Ant Design `ConfigProvider` with `zh_CN`, and `react-intl` `IntlProvider` with `defaultLocale: "zh-CN"` and messages from the existing `src/locales/zh-CN.ts` barrel. A local `SelectLang` in `RightContent` replaces `@umijs/max` SelectLang. ProLayout keeps `layoutBgImgList` / `menuHeaderRender: undefined`. After business imports migrate, delete Umi `src/app.tsx`, PWA bootstrap `src/global.tsx` (`pwa: false`), and unused `src/pages/Admin.tsx` before the `src`-scoped zero-Umi gate; package/config cleanup follows when Umi packages are uninstalled.
 
 ## Error Handling
 
@@ -84,10 +92,12 @@ Dependencies used only for the removed Umi runtime and legacy Pro tooling are de
 
 The admin application uses current Vitest and Testing Library packages. Tests are written before the replacement shell behavior and cover:
 
-- protected-route redirects and return destinations;
-- current-user initialization and refresh;
+- protected-route login redirects; full match-chain `normalRouteFilter` checks including parent `/auth` inheritance for `/auth/menu`; nested `/log` menus; leaf permission non-regression; authenticated `*` / login-only `/article/edit`;
+- current-user initialization/refresh with `skipErrorHandler`, plus `setCurrentUser` / `clearUser` write contract;
+- login-page success (write user + navigate redirect) and failure dual-channel tests;
 - access denial and menu filtering;
-- Axios token injection and one-time 401 redirect handling;
+- Axios token injection, `message.error` business errors, `skipErrorHandler`, and one-time 401 redirect handling;
+- DELETE `paramsSerializer` producing `ids=1&ids=2`;
 - route rendering for layout and layout-free pages.
 
 The public application uses Next.js type checking and production builds as the framework migration regression gate. Browser smoke tests verify the public home, detail, and carousel views and the admin login route without console runtime errors.
