@@ -3,7 +3,7 @@
 
 import { ArticleEnums, BlogrollEnums, PageEnums, PhotoEnums, UserEnums } from "@/config/enums";
 // 与后端约定的响应数据格式
-declare namespace API {
+export namespace API {
     type FetchWebSiteSetting = {
         config: string;
         createTime: string;
@@ -72,7 +72,7 @@ declare namespace API {
         totalPage: number;
     };
     type DeleteParams = {
-        ids: (string | number)[];
+        ids: import("react").Key[];
     };
     type FetchArticleResponse = {
         content: string;
@@ -253,7 +253,7 @@ declare namespace API {
         url: string;
     };
     type DeleteCommentParams = {
-        ids: (number | string)[];
+        ids: import("react").Key[];
     };
     type UpdateCommentStatusParams = Pick<API.UpdateCommentParams, "id", "status">;
     type FetchBlogrollParams = API.PaginationParams & {
@@ -409,7 +409,7 @@ declare namespace API {
         id: number;
     } & API.InsertRoleBody;
     type DeleteRolesParams = {
-        roleIds: (number | string)[];
+        roleIds: import("react").Key[];
     };
 
     type LoginParams = {

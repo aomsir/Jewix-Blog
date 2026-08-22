@@ -14,7 +14,6 @@ import { UnauthorizedBridge } from "@/app/UnauthorizedBridge";
 import App from "@/App";
 import defaultSettings from "@/config/defaultSettings";
 import { notifyUnauthorized, setUnauthorizedHandler } from "@/lib/http/unauthorized";
-import zhCNMessages from "@/locales/zh-CN";
 import AdminLayout from "@/layouts/AdminLayout";
 import { buildMenuRoutes, flattenRoutePaths, routeMeta, type AdminRouteMeta } from "./routeMeta";
 import { router } from "./routes";
@@ -129,16 +128,6 @@ function typeNames(node: ReactNode): string[] {
   if (!isValidElement(node)) return [];
   const kids = (node.props as { children?: ReactNode }).children;
   return [elementName(node) ?? "Anonymous", ...Children.toArray(kids).flatMap(typeNames)];
-}
-
-function providerElement(node: ReactNode, name: string): ReactElement | undefined {
-  if (!isValidElement(node)) return undefined;
-  if (elementName(node) === name) return node;
-  const kids = (node.props as { children?: ReactNode }).children;
-  for (const child of Children.toArray(kids)) {
-    const found = providerElement(child, name);
-    if (found) return found;
-  }
 }
 
 describe("routeMeta", () => {
@@ -413,18 +402,14 @@ describe("App", () => {
     const names = typeNames(tree);
     expect(names).toEqual(expect.arrayContaining([
       "HelmetProvider",
-      "IntlProvider",
-      "ConfigProvider",
+      "LocaleProvider",
+      "LocaleIntlProvider",
       "App",
       "Helmet",
       "AuthProvider",
       "AccessProvider",
     ]));
     expect(names.some((name) => name.startsWith("RouterProvider"))).toBe(true);
-    const intl = providerElement(tree, "IntlProvider");
-    expect(intl?.props.locale).toBe("zh-CN");
-    expect(intl?.props.defaultLocale).toBe("zh-CN");
-    expect(intl?.props.messages).toBe(zhCNMessages);
     expect(defaultSettings.title).toBe("Jewix博客系统后台管理");
   });
 });

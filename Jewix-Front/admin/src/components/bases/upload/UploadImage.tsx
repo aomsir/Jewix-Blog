@@ -1,4 +1,3 @@
-import { BASE_URL } from '/config/proxy';
 import { LocalToken } from '@/utils/token';
 import { PlusOutlined } from '@ant-design/icons';
 import { message, Upload, UploadFile, UploadProps } from 'antd';
@@ -44,8 +43,6 @@ const UploadImage: FC<Props> = ({
       .map((file) => {
         if (file.response) {
           // Component will show file.url as link
-          // file.url = `${BASE_URL}/api/photos/download?name=${file.response.data}`;
-          // file.thumbUrl = '';
         }
 
         return file;

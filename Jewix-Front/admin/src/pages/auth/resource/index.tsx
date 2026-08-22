@@ -6,7 +6,7 @@ import { PageContainer, ProColumns, ProTable } from "@ant-design/pro-components"
 import { Tag } from "antd";
 import { HTMLAttributes, ReactElement } from "react";
 import css from "./AuthResource.module.scss";
-import { tableConfig } from "/config/table";
+import { tableConfig } from "@/config/table";
 type AuthResourceProps = HTMLAttributes<HTMLDivElement>;
 export default function AuthAuthResource(props: AuthResourceProps): ReactElement {
   const { ...rest } = props;

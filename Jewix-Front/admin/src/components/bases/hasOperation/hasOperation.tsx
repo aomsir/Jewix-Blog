@@ -1,4 +1,5 @@
-import { useAccess, useRouteProps } from "@umijs/max";
+import { useAuthorization } from "@/app/access";
+import { useRouteMeta } from "@/router/routeMeta";
 import { message } from "antd";
 import { HTMLAttributes, ReactElement, useEffect, useRef } from "react";
 import css from "./HasOperation.module.scss";
@@ -8,10 +9,10 @@ type HasOperationProps = HTMLAttributes<HTMLDivElement> & {
 };
 export default function HasOperation(props: HasOperationProps): ReactElement {
   const { operation, children, routerProps: routerProps2, ...rest } = props;
-  const { operationFilter } = useAccess();
-  const routeProps = useRouteProps();
+  const { operationFilter } = useAuthorization();
+  const routeMeta = useRouteMeta();
 
-  const access = operationFilter(routerProps2 ?? routeProps, operation);
+  const access = operationFilter(routerProps2 ?? routeMeta, operation);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -16,6 +16,18 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { lazy, type ComponentType, type LazyExoticComponent, type ReactNode } from "react";
+import { useMatches } from "react-router-dom";
+
+export function useRouteMeta() {
+  const matches = useMatches();
+  for (let i = matches.length - 1; i >= 0; i -= 1) {
+    const handle = matches[i]?.handle as { name?: string } | undefined;
+    if (handle?.name) {
+      return { name: handle.name };
+    }
+  }
+  return { name: "" };
+}
 
 export type AdminRouteMeta = {
   path: string;

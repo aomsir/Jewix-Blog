@@ -1,6 +1,10 @@
 // @ts-ignore
 /* eslint-disable */
-import { request } from '@umijs/max';
+import { http, type HttpRequestConfig } from '@/lib/http/client';
+
+function request<T>(url: string, options: HttpRequestConfig = {}) {
+  return http.request<T>({ url, ...options }).then((response) => response.data);
+}
 
 /** Returns pet inventories by status Returns a map of status codes to quantities GET /store/inventory */
 export async function getInventory(options?: { [key: string]: any }) {

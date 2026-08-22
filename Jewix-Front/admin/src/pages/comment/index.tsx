@@ -28,7 +28,7 @@ import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react
 import { fetchWidthNormalizedResponse } from "../article";
 import EditCommentForm from "./components/EditCommentForm";
 import css from "./index.module.scss";
-import { tableConfig } from "/config/table";
+import { tableConfig } from "@/config/table";
 type CommentProps = HTMLAttributes<HTMLDivElement>;
 // 评论列表
 export default function Comment(props: CommentProps): ReactElement {

@@ -16,7 +16,7 @@ import { HTMLAttributes, ReactElement, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import css from "./Article.module.scss";
 import ProTableToolBar from "./components/ProTableToolBar";
-import { tableConfig } from "/config/table";
+import { tableConfig } from "@/config/table";
 type ArticleProps = HTMLAttributes<HTMLDivElement>;
 // 文章列表页面
 export default function Article({ className, ...rest }: ArticleProps): ReactElement {

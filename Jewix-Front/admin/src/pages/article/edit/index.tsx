@@ -20,7 +20,7 @@ import {
     ProFormTextArea,
     ProFormTreeSelect,
 } from "@ant-design/pro-components";
-import { useAccess } from "@umijs/max";
+import { useAuthorization } from "@/app/access";
 import { Form, message } from "antd";
 import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +29,7 @@ import css from "./ArticleEdit.module.scss";
 type ArticleEditProps = HTMLAttributes<HTMLDivElement>;
 
 export default function ArticleEdit(props: ArticleEditProps): ReactElement {
-    const { normalRouteFilter } = useAccess();
+    const { normalRouteFilter } = useAuthorization();
     return (
         <ArticleEditAccessGate filter={normalRouteFilter}>
             <ArticleEditContent {...props} />
@@ -168,7 +168,6 @@ function ArticleEditContent(props: ArticleEditProps): ReactElement {
                             fieldNames: {
                                 label: "categoryName",
                                 value: "id",
-                                key: "id",
                                 children: "sonList",
                             },
                             treeData: categories,

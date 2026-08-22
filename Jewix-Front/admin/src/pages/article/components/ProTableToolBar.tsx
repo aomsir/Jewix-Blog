@@ -1,8 +1,10 @@
 import { OPERATIONS } from "@/access";
+import { useAuthorization } from "@/app/access";
+import { useRouteMeta } from "@/router/routeMeta";
 import { PlusOutlined } from "@ant-design/icons";
-import { FormattedMessage, useAccess, useRouteProps } from "@umijs/max";
 import { Button, message } from "antd";
 import { HTMLAttributes, ReactElement, useEffect, useRef } from "react";
+import { FormattedMessage } from "react-intl";
 type TableToolBarProps = HTMLAttributes<HTMLDivElement> & {
   onInsertButtonClick?: () => void;
   routerProps?: { name: string };
@@ -10,10 +12,10 @@ type TableToolBarProps = HTMLAttributes<HTMLDivElement> & {
 export default function TableToolBar(props: TableToolBarProps): ReactElement {
   const { onInsertButtonClick, routerProps: routerProps2, ...rest } = props;
   const containerRef = useRef<HTMLDivElement>(null);
-  const { operationFilter } = useAccess();
-  const routeProps = useRouteProps();
+  const { operationFilter } = useAuthorization();
+  const routeMeta = useRouteMeta();
 
-  const access = operationFilter(routerProps2 ?? routeProps, OPERATIONS.CREATE);
+  const access = operationFilter(routerProps2 ?? routeMeta, OPERATIONS.CREATE);
 
   useEffect(() => {
     containerRef.current?.addEventListener(

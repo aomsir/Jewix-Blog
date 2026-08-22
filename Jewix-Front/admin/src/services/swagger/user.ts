@@ -1,6 +1,10 @@
 // @ts-ignore
 /* eslint-disable */
-import { request } from '@umijs/max';
+import { http, type HttpRequestConfig } from '@/lib/http/client';
+
+function request<T>(url: string, options: HttpRequestConfig = {}) {
+  return http.request<T>({ url, ...options }).then((response) => response.data);
+}
 
 /** Create user This can only be done by the logged in user. POST /user */
 export async function createUser(body: API.User, options?: { [key: string]: any }) {

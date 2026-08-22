@@ -1727,6 +1727,9 @@ describe("Login page", () => {
   });
 
   it("failure dual-channel: login error toasts; post-login current-user uses skipErrorHandler", async () => {
+    // Dual-channel: login() does not pass skipErrorHandler (HTTP interceptor toasts).
+    // ApiError also writes the existing inline LoginMessage; network errors only return
+    // (interceptor toast, no second inline Alert). current-user uses skipErrorHandler.
     const errorSpy = vi.spyOn(message, "error").mockImplementation(() => undefined as never);
     login.mockRejectedValue(Object.assign(new Error("bad credentials"), { name: "ApiError" }));
     renderLogin();
@@ -1754,7 +1757,7 @@ Run RED then implement the login rewrite using `useAuth().setCurrentUser`, `Loca
 npm test -- src/pages/login/index.test.tsx
 ```
 
-Expected: both login-page tests pass. Adjust label matchers only if the existing ProForm field labels require exact zh-CN strings from `src/locales/zh-CN/pages.ts`.
+Expected: login-page tests pass. Dual-channel: `login()` never sets `skipErrorHandler` (interceptor toasts); `ApiError` also sets inline `LoginMessage`; ordinary network errors return without inline Alert (toast only, covered by `src/lib/http/client.test.ts`); post-login `fetchCurrentUserInfo({ skipErrorHandler: true })`. Adjust label matchers only if the existing ProForm field labels require exact zh-CN strings from `src/locales/zh-CN/pages.ts`.
 
 - [ ] **Step 8: Delete Umi runtime entry, global bootstrap, and unused Admin scaffold**
 
@@ -1773,14 +1776,14 @@ Scope this gate to **`src` only**. `package.json` scripts/deps (`max build`, `UM
 Run:
 
 ```bash
-rg '@umijs|useModel\(|useAccess\(|useRouteProps\(|raw-loader|/config/table|/config/proxy|!!raw-loader' src --glob '!**/.umi/**' --glob '!**/.umi-production/**'
+rg '@umijs|useModel\(|useAccess\(|useRouteProps\(|raw-loader|/config/proxy|!!raw-loader' src --glob '!**/.umi/**' --glob '!**/.umi-production/**'
 ls src | grep -qx 'app.tsx' && exit 1 || true
 ls src | grep -qx 'App.tsx'
 test ! -e src/global.tsx
 test ! -e src/pages/Admin.tsx
 ```
 
-Expected: `rg` prints no matches; the three `test ! -e` checks succeed; login imports `@/components/bases/RightContent` `SelectLang`.
+Expected: `rg` prints no matches (`@/config/table` is the intended final form and must NOT match — only bare `/config/table`/`/config/proxy` count); the three `test ! -e` checks succeed; login imports `@/components/bases/RightContent` `SelectLang`.
 
 Disposition of every current non-generated hit (verified by repo `rg` before this edit):
 

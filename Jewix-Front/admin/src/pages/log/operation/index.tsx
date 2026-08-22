@@ -11,7 +11,7 @@ import { ActionType, PageContainer, ProColumns, ProTable } from "@ant-design/pro
 import { Drawer, message, Space, Tag } from "antd";
 import { HTMLAttributes, ReactElement, useRef, useState } from "react";
 import LogOperationDetail from "./components/detail";
-import { tableConfig } from "/config/table";
+import { tableConfig } from "@/config/table";
 type LogOperationProps = HTMLAttributes<HTMLDivElement>;
 export default function LogOperation(props: LogOperationProps): ReactElement {
   const { ...rest } = props;

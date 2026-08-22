@@ -1,17 +1,20 @@
+import { useAuth } from "@/app/auth";
 import Footer from "@/components/bases/Footer";
-// import { login } from '@/services/ant-design-pro/api';
+import { SelectLang } from "@/components/bases/RightContent";
+import Settings from "@/config/defaultSettings";
 import { API } from "@/services/ant-design-pro/typings";
+import { ApiError } from "@/lib/http/errors";
 import { fetchCurrentUserInfo, login } from "@/services/api/user";
 import { LocalToken } from "@/utils/token";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { LoginForm, ProFormText } from "@ant-design/pro-components";
 import { useEmotionCss } from "@ant-design/use-emotion-css";
-import { FormattedMessage, Helmet, SelectLang, useIntl, useModel } from "@umijs/max";
 import { Alert, message } from "antd";
 import React, { useState } from "react";
 import { flushSync } from "react-dom";
-import { useNavigate } from "react-router-dom";
-import Settings from "../../../config/defaultSettings";
+import { Helmet } from "react-helmet-async";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import css from "./index.module.scss";
 
 const Lang = () => {
@@ -52,57 +55,58 @@ const LoginMessage: React.FC<{
 
 const Login: React.FC = () => {
   console.log("login page");
-  // 登录状态
   const [userLoginState, setUserLoginState] = useState<API.ResponseStructure>();
-  // 获取初始登录状态
-  const { initialState, setInitialState, refresh } = useModel("@@initialState");
+  const { setCurrentUser } = useAuth();
   const navigate = useNavigate();
-  // 国际化
+  const [searchParams] = useSearchParams();
   const intl = useIntl();
-  // 登录
   const handleSubmit = async (values: API.LoginParams) => {
-    const data = await login(values);
-    LocalToken.set(data.token);
+    let data: API.ResponseStructure;
+    try {
+      data = await login(values);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setUserLoginState({ code: error.code, msg: error.message });
+      }
+      return;
+    }
 
-    // 如果成功
     if (data.msg === "success") {
+      LocalToken.set(data.token);
       message.success(
         intl.formatMessage({
           id: "pages.login.success",
           defaultMessage: "登录成功！",
         }),
       );
-      // 等待initialState刷新，不然initialState为空值
-      await refresh();
-      const userInfo =
-        (await initialState?.fetchUserInfo?.()) ??
-        (
+      try {
+        const userInfo = (
           await fetchCurrentUserInfo({
             skipErrorHandler: true,
           })
         ).status;
-      if (userInfo) {
-        // flushSync 用于同步更新 state
-        flushSync(() => {
-          setInitialState((s) => ({
-            ...s,
-            currentUser: userInfo,
-          }));
+        if (userInfo) {
+          flushSync(() => {
+            setCurrentUser(userInfo);
+          });
+        }
+        navigate(searchParams.get("redirect") || "/");
+      } catch (error) {
+        LocalToken.remove();
+        const fallback = intl.formatMessage({
+          id: "pages.login.failure",
+          defaultMessage: "登录失败，请重试！",
         });
+        const text =
+          error instanceof Error && error.message.trim() ? error.message : fallback;
+        message.error(text);
       }
-      // 获取到之前的页面
-      const urlParams = new URL(window.location.href).searchParams;
-      // 跳转到之前的页面
-      navigate(urlParams.get("redirect") || "/");
     } else {
-      // 如果失败去设置用户错误信息
       setUserLoginState(data);
     }
   };
-  // 返回
   return (
     <div className={css.login}>
-      {/* 网页标题 */}
       <Helmet>
         <title>
           {intl.formatMessage({
@@ -112,7 +116,6 @@ const Login: React.FC = () => {
           - {Settings.title}
         </title>
       </Helmet>
-      {/* 内容 */}
       <div
         style={{
           flex: "1",
@@ -177,9 +180,7 @@ const Login: React.FC = () => {
           />
         </LoginForm>
       </div>
-      {/* 页脚 */}
       <Footer />
-      {/* 右上角语言 */}
       <Lang />
     </div>
   );

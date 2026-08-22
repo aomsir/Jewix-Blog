@@ -21,7 +21,7 @@ import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react
 import { fetchWidthNormalizedResponse } from "../article";
 import ProTableToolBar from "../article/components/ProTableToolBar";
 import EditBlogrollForm from "./components/EditBlogrollForm";
-import { tableConfig } from "/config/table";
+import { tableConfig } from "@/config/table";
 type BlogrollProps = HTMLAttributes<HTMLDivElement>;
 // 评论列表
 export default function Blogroll(props: BlogrollProps): ReactElement {

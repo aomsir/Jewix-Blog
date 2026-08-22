@@ -12,7 +12,7 @@ const Settings: ProLayoutProps & {
   fixSiderbar: true,
   colorWeak: false,
   title: "Jewix博客系统后台管理",
-  pwa: true,
+  pwa: false,
   logo: "/admin/favicon.ico",
   iconfontUrl: "",
   token: {},

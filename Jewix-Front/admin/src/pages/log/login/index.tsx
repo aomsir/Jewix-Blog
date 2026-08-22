@@ -8,7 +8,7 @@ import { timestampToTime } from "@/utils";
 import { ActionType, PageContainer, ProColumns, ProTable } from "@ant-design/pro-components";
 import { message, Space } from "antd";
 import { HTMLAttributes, ReactElement, useRef } from "react";
-import { tableConfig } from "/config/table";
+import { tableConfig } from "@/config/table";
 type LogLoginProps = HTMLAttributes<HTMLDivElement>;
 export default function LogLogin(props: LogLoginProps): ReactElement {
   const { ...rest } = props;

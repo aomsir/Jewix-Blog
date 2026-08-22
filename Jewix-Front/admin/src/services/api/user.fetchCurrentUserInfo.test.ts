@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { request } from "@umijs/max";
+import { http } from "@/lib/http/client";
 import { fetchCurrentUserInfo } from "./user";
 
-vi.mock("@umijs/max", () => ({
-  request: vi.fn(),
+vi.mock("@/lib/http/client", () => ({
+  http: {
+    request: vi.fn(),
+  },
 }));
 
 vi.mock("@/utils", () => ({
@@ -11,27 +13,25 @@ vi.mock("@/utils", () => ({
   updateFactory: vi.fn(),
 }));
 
-const requestMock = vi.mocked(request);
+const requestMock = vi.mocked(http.request);
 
 describe("fetchCurrentUserInfo", () => {
   beforeEach(() => {
     requestMock.mockReset();
-    requestMock.mockResolvedValue({ code: 200, msg: "ok" });
+    requestMock.mockResolvedValue({ data: { code: 200, msg: "ok" } } as never);
   });
 
-  it("forwards options into the Umi request config", async () => {
+  it("forwards options into the http request config", async () => {
     await fetchCurrentUserInfo({ skipErrorHandler: true });
     expect(requestMock).toHaveBeenCalledWith(
-      "users/current",
-      expect.objectContaining({ skipErrorHandler: true }),
+      expect.objectContaining({ url: "users/current", skipErrorHandler: true }),
     );
   });
 
   it("forces GET even when options try to override method", async () => {
     await fetchCurrentUserInfo({ method: "POST", skipErrorHandler: true });
     expect(requestMock).toHaveBeenCalledWith(
-      "users/current",
-      expect.objectContaining({ method: "GET", skipErrorHandler: true }),
+      expect.objectContaining({ url: "users/current", method: "get", skipErrorHandler: true }),
     );
   });
 });

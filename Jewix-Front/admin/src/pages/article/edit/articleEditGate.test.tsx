@@ -1,7 +1,7 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { useAccess } from "@umijs/max";
+import { useAuthorization } from "@/app/access";
 import {
   fetchAllCategories,
   fetchAllTags,
@@ -10,8 +10,8 @@ import {
 import { ArticleEditAccessGate } from "./articleEditAccess";
 import ArticleEdit from "./index";
 
-vi.mock("@umijs/max", () => ({
-  useAccess: vi.fn(),
+vi.mock("@/app/access", () => ({
+  useAuthorization: vi.fn(),
 }));
 
 vi.mock("@/components/bases/editor/Editor", () => ({
@@ -31,7 +31,7 @@ vi.mock("@/services/api", () => ({
   updateArticle: vi.fn(),
 }));
 
-const useAccessMock = vi.mocked(useAccess);
+const useAuthorizationMock = vi.mocked(useAuthorization);
 const fetchAllTagsMock = vi.mocked(fetchAllTags);
 const fetchAllCategoriesMock = vi.mocked(fetchAllCategories);
 const fetchArticleByUUIDMock = vi.mocked(fetchArticleByUUID);
@@ -61,7 +61,7 @@ Object.defineProperty(window, "matchMedia", {
 function flattenConsole(spy: ReturnType<typeof vi.spyOn>) {
   return spy.mock.calls
     .flat()
-    .map((value) => String(value))
+    .map((value: unknown) => String(value))
     .join("\n");
 }
 
@@ -118,7 +118,7 @@ describe("ArticleEdit page skips data loading when denied", () => {
     fetchAllTagsMock.mockReset();
     fetchAllCategoriesMock.mockReset();
     fetchArticleByUUIDMock.mockReset();
-    useAccessMock.mockReset();
+    useAuthorizationMock.mockReset();
     const tags = deferred<unknown[]>();
     const categories = deferred<{ result: unknown[] }>();
     const article = deferred<{ result: unknown }>();
@@ -132,7 +132,7 @@ describe("ArticleEdit page skips data loading when denied", () => {
   });
 
   it("does not mount the form or call tag/category/article fetches", async () => {
-    useAccessMock.mockReturnValue({
+    useAuthorizationMock.mockReturnValue({
       normalRouteFilter: (route: { name?: string }) => route.name !== "文章编辑",
       operationFilter: () => false,
     });
@@ -154,7 +154,7 @@ describe("ArticleEdit page skips data loading when denied", () => {
   });
 
   it("does not continue tag/category/article updates after unmount", async () => {
-    useAccessMock.mockReturnValue({
+    useAuthorizationMock.mockReturnValue({
       normalRouteFilter: (route: { name?: string }) => route.name === "文章编辑",
       operationFilter: () => false,
     });

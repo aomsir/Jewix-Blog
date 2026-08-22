@@ -1,15 +1,14 @@
 import { API } from "@/services/ant-design-pro/typings";
 import { updateCurrentUserInfo } from "@/services/api";
 import { PageContainer, ProForm, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { useModel } from "@umijs/max";
+import { useAuth } from "@/app/auth";
 import { message } from "antd";
 import { HTMLAttributes, ReactElement } from "react";
 // import css from './AccountSettings.module.scss';
 type AccountSettingsProps = HTMLAttributes<HTMLDivElement>;
 export default function AccountSettings(props: AccountSettingsProps): ReactElement {
   const { ...rest } = props;
-  const { initialState } = useModel("@@initialState");
-  const { currentUser } = initialState || {};
+  const { currentUser } = useAuth();
 
   return (
     <PageContainer className={`${rest.className ?? ""} `} {...rest}>

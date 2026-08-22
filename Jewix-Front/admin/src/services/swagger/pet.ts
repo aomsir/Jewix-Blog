@@ -1,6 +1,10 @@
 // @ts-ignore
 /* eslint-disable */
-import { request } from '@umijs/max';
+import { http, type HttpRequestConfig } from '@/lib/http/client';
+
+function request<T>(url: string, options: HttpRequestConfig = {}) {
+  return http.request<T>({ url, ...options }).then((response) => response.data);
+}
 
 /** Update an existing pet PUT /pet */
 export async function updatePet(body: API.Pet, options?: { [key: string]: any }) {
@@ -117,7 +121,6 @@ export async function uploadFile(
     method: 'POST',
     params: { ...queryParams },
     data: formData,
-    requestType: 'form',
     ...(options || {}),
   });
 }

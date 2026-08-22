@@ -20,7 +20,7 @@ import {
   ProColumns,
   ProTable,
 } from "@ant-design/pro-components";
-import { useModel } from "@umijs/max";
+import { useAuth } from "@/app/auth";
 import { message, Space, Table } from "antd";
 import { map } from "lodash";
 import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
@@ -34,7 +34,7 @@ export default function User(props: UserProps): ReactElement {
   const actionRef = useRef<ActionType>();
   const [initialValues, setInitialValues] = useState<API.UpdateUserParams>();
   // 获取初始登录状态
-  const { initialState } = useModel("@@initialState");
+  const { currentUser } = useAuth();
 
   // columns[3].filter = (dom, entity) => <>操作</>;
   // 创建时间
@@ -52,9 +52,9 @@ export default function User(props: UserProps): ReactElement {
           编辑
         </a>
       </HasOperation>
-      {initialState?.currentUser?.user.id === entity.id ? (
+      {currentUser?.user.id === entity.id ? (
         <a
-          aria-disabled={initialState?.currentUser?.user.id === entity.id}
+          aria-disabled={currentUser?.user.id === entity.id}
           onClick={() => message.warning("禁止删除自己")}
         >
           删除
@@ -75,11 +75,11 @@ export default function User(props: UserProps): ReactElement {
       <HasOperation operation={OPERATIONS.UPDATE_STATUS}>
         {entity.status === UserEnums.Status.正常 ? (
           <a
-            aria-disabled={initialState?.currentUser?.user.id === entity.id}
+            aria-disabled={currentUser?.user.id === entity.id}
             style={{ color: "red" }}
             onClick={async () => {
               try {
-                if (initialState?.currentUser?.user.id === entity.id) {
+                if (currentUser?.user.id === entity.id) {
                   message.warning("禁止禁用自己");
                   return;
                 }

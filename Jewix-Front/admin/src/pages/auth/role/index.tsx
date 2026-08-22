@@ -29,7 +29,7 @@ import { message, Space, Tag } from "antd";
 import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
 import css from "./AuthRole.module.scss";
 import EditRoleForm from "./components/EditRoleForm";
-import { tableConfig } from "/config/table";
+import { tableConfig } from "@/config/table";
 type AuthRoleProps = HTMLAttributes<HTMLDivElement>;
 export default function AuthRole(props: AuthRoleProps): ReactElement {
     const { ...rest } = props;

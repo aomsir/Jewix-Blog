@@ -17,7 +17,7 @@ import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react
 import { fetchWidthNormalizedResponse } from "../article";
 import ProTableToolBar from "../article/components/ProTableToolBar";
 import EditCategoryForm from "./components/EditCategoryForm";
-import { tableConfig } from "/config/table";
+import { tableConfig } from "@/config/table";
 type CategoryProps = HTMLAttributes<HTMLDivElement>;
 export default function Category(props: CategoryProps): ReactElement {
   const { ...rest } = props;

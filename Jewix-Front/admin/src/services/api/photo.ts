@@ -1,14 +1,12 @@
-import { deleteFactory, fetchFactory } from '@/utils/request';
-import { API } from '@/services/ant-design-pro/typings';
-import { PhotoEnums } from '@/config/enums';
-import { BASE_URL } from '/config/proxy';
+import { PhotoEnums } from "@/config/enums";
+import { API } from "@/services/ant-design-pro/typings";
+import { deleteFactory, fetchFactory } from "@/utils/request";
 
 export const fetchPhotos = fetchFactory<API.FetchPhotosResponse, API.FetchPhotosParams>(
-  'admin/photos',
+  "admin/photos",
 );
-export const deletePhoto = deleteFactory<API.DeletePhotoParams>('admin/photos');
-// 获取上传图片的地址
+export const deletePhoto = deleteFactory<API.DeletePhotoParams>("admin/photos");
 export const getInsertImageUrl = (type = PhotoEnums.type.又拍云) =>
-  `${BASE_URL}/api/admin/photos?type=${type}`;
+  `/api/admin/photos?type=${type}`;
 export const getFetchImageUrl = (res: API.FetchPhotosResponse) =>
-  res.url ?? `${BASE_URL}/api/photos/download?name=${res.fileName}`;
+  res.url ?? `/api/photos/download?name=${res.fileName}`;

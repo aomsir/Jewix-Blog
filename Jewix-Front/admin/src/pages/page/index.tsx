@@ -19,7 +19,7 @@ import { fetchWidthNormalizedResponse } from "../article";
 import ProTableToolBar from "../article/components/ProTableToolBar";
 import EditPageForm from "./components/EditPageForm";
 import css from "./index.module.scss";
-import { tableConfig } from "/config/table";
+import { tableConfig } from "@/config/table";
 
 type PageProps = HTMLAttributes<HTMLDivElement>;
 export default function Page(props: PageProps): ReactElement {

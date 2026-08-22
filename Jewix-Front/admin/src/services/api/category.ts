@@ -1,25 +1,12 @@
-// import { fetchAll } from '@/utils/request';
-import { API } from '@/services/ant-design-pro/typings';
-import { deleteFactory, fetchAllFactory, fetchFactory, insertFactory } from '@/utils/request';
-import { request } from '@umijs/max';
+import { http } from "@/lib/http/client";
+import { API } from "@/services/ant-design-pro/typings";
+import { deleteFactory, fetchAllFactory, fetchFactory, insertFactory } from "@/utils/request";
 
-// export function fetchCategories(params: API.PaginationParams, options?: Record<any, any>) {
-//   return request<API.ResponseStructure<API.PaginationResult<API.CategoryResponse[]>>>(
-//     'categories',
-//     {
-//       params: {
-//         page: params.current,
-//         length: params.pageSize,
-//       },
-//       ...(options || {}),
-//     },
-//   );
-// }
 export const fetchSonCategories = fetchFactory<API.FetchCategoryResponse, { parentId: number }>(
-  'categories/son',
+  "categories/son",
 );
 export const fetchAllSonCategories = fetchAllFactory(fetchSonCategories);
-export const fetchParentCategories = fetchFactory<API.FetchCategoryResponse>('categories/parent');
+export const fetchParentCategories = fetchFactory<API.FetchCategoryResponse>("categories/parent");
 export const fetchAllParentCategories = fetchAllFactory(fetchParentCategories);
 // 分页获取顶级+子级分类
 export async function fetchCategories(
@@ -41,17 +28,15 @@ export async function fetchCategories(
 
   return res;
 }
-export const insertCategory = insertFactory<API.InsertCategoryParams>('admin/categories');
-// export const UpdateFactory = <P>(url: string) => writeFactory<P>(url, 'put');
+export const insertCategory = insertFactory<API.InsertCategoryParams>("admin/categories");
 
 export async function fetchAllCategories(options?: Record<any, any>) {
-  return request<API.ResponseStructure<API.PaginationResponse<API.FetchCategoryResponse[]>>>(
-    'categories',
-    {
+  return http
+    .request<API.ResponseStructure<API.PaginationResponse<API.FetchCategoryResponse[]>>>({
+      url: "categories",
       ...(options || {}),
-    },
-  );
+    })
+    .then((response) => response.data);
 }
-// export const fetchAllCategories = fetchAllFactory(fetchCategories);
 
-export const deleteCategories = deleteFactory('admin/categories');
+export const deleteCategories = deleteFactory("admin/categories");

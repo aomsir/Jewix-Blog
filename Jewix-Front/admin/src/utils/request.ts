@@ -1,5 +1,6 @@
-import { API } from '@/services/ant-design-pro/typings';
-import { request } from '@umijs/max';
+import { http, type HttpRequestConfig } from "@/lib/http/client";
+import { serializeParams } from "@/lib/http/paramsSerializer";
+import { API } from "@/services/ant-design-pro/typings";
 /**
  * 将分页函数转换为获取全部数据的异步请求函数
  * @param fetchFunc 分页fetch函数
@@ -45,61 +46,63 @@ export function fetchFactory<R, P = unknown>(url: string) {
     { current: page, pageSize: length, ...rest }: P & API.PaginationParams,
     options?: Record<any, any>,
   ) => {
-    return request<API.ResponseStructure<API.PaginationResponse<R[]>>>(url, {
-      params: {
-        page,
-        length,
-        ...rest,
-      },
-      ...(options || {}),
-    });
+    return http
+      .request<API.ResponseStructure<API.PaginationResponse<R[]>>>({
+        url,
+        params: {
+          page,
+          length,
+          ...rest,
+        },
+        ...(options || {}),
+      })
+      .then((response) => response.data);
   };
 }
 export function fetchRowFactory<R, P = undefined>(url: string) {
   return (params?: P, paths?: string[], options?: Record<any, any>) => {
-      return request<API.ResponseStructure<R>>(url + (paths?.length ? "/" + paths.join("/") : ""), {
-          params,
-          ...(options || {}),
+    return http
+      .request<API.ResponseStructure<R>>({
+        url: url + (paths?.length ? "/" + paths.join("/") : ""),
+        params,
+        ...(options || {}),
       })
-  }
+      .then((response) => response.data);
+  };
 }
 /**
  * 通用write函数工厂，生成发送post,put请求的函数
  * @param url 远程路径
  * @returns 发送post,put请求的函数
  */
-export function writeFactory<P>(url: string, method: 'post' | 'put') {
+export function writeFactory<P>(url: string, method: "post" | "put") {
   return (data: P, options?: Record<string, any>) => {
-    return request<API.ResponseStructure>(url, {
-      method,
-      data,
-      ...(options ?? {}),
-    });
+    return http
+      .request<API.ResponseStructure>({
+        url,
+        method,
+        data,
+        ...(options ?? {}),
+      })
+      .then((response) => response.data);
   };
 }
 
-export const insertFactory = <P>(url: string) => writeFactory<P>(url, 'post');
-export const updateFactory = <P>(url: string) => writeFactory<P>(url, 'put');
+export const insertFactory = <P>(url: string) => writeFactory<P>(url, "post");
+export const updateFactory = <P>(url: string) => writeFactory<P>(url, "put");
 
 export function deleteFactory<P = API.DeleteParams>(url: string) {
   return ({ ...rest }: P, options?: Record<string, any>) => {
-    return request<API.ResponseStructure>(url, {
-      method: 'delete',
-      params: {
-        ...rest,
-      },
-      // 重写paramsSerializer，使得delete请求能够处理数组
-      paramsSerializer: (params) =>
-        Object.keys(params)
-          .map((key) => {
-            const value = params[key];
-            if (Array.isArray(value)) {
-              return value.map((v) => `${key}=${v}`).join('&');
-            }
-            return `${key}=${value}`;
-          })
-          .join('&'),
-      ...(options ?? {}),
-    });
+    return http
+      .request<API.ResponseStructure>({
+        url,
+        method: "delete",
+        params: {
+          ...rest,
+        },
+        paramsSerializer: serializeParams,
+        ...(options ?? {}),
+      } as HttpRequestConfig)
+      .then((response) => response.data);
   };
 }

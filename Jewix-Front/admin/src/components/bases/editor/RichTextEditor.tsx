@@ -4,7 +4,7 @@ import css from './RichTextEditor.module.scss';
 
 type RichTextEditorProps = HTMLAttributes<HTMLDivElement> & {
   initialValue?: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 };
 export default function RichTextEditor(props: RichTextEditorProps): ReactElement {
   const { initialValue, onChange, ...rest } = props;
