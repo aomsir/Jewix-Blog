@@ -361,9 +361,9 @@ Expected: `package-lock.json` is visible as a tracked candidate and `.gitignore`
 - Modify later: `Jewix-Front/admin/src/utils/request.ts`
 
 Parity target is the current `config/request.ts` + `src/utils/request.ts#deleteFactory`:
-global `message.error` for business errors, 401 token clear + login redirect, per-request `skipErrorHandler`, and DELETE array query form `ids=1&ids=2`.
+global `message.error` for business errors, 401 token clear + login redirect, per-request `skipErrorHandler`, and DELETE array query form `ids=1&ids=2`. Encode both keys and values with `encodeURIComponent`; omit null/undefined keys so they never become `q=null`.
 
-- [ ] **Step 1: Write failing DELETE paramsSerializer tests**
+- [x] **Step 1: Write failing DELETE paramsSerializer tests**
 
 Create `src/lib/http/paramsSerializer.test.ts`:
 
@@ -379,10 +379,30 @@ describe("serializeParams", () => {
   it("keeps scalar keys", () => {
     expect(serializeParams({ ids: [9], status: 1 })).toBe("ids=9&status=1");
   });
+
+  it("omits null and undefined keys", () => {
+    expect(serializeParams({ ids: [1], q: null, foo: undefined, status: 1 })).toBe(
+      "ids=1&status=1",
+    );
+  });
+
+  it("encodes both keys and values", () => {
+    expect(serializeParams({ q: "a&b=c", "x y": "hello world" })).toBe(
+      "q=a%26b%3Dc&x%20y=hello%20world",
+    );
+  });
+
+  it("encodes keys with special characters", () => {
+    expect(serializeParams({ "a&b": "1", "x y": "z" })).toBe("a%26b=1&x%20y=z");
+  });
+
+  it("encodes array item values", () => {
+    expect(serializeParams({ tags: ["a&b", "c d"] })).toBe("tags=a%26b&tags=c%20d");
+  });
 });
 ```
 
-- [ ] **Step 2: Verify RED for paramsSerializer**
+- [x] **Step 2: Verify RED for paramsSerializer**
 
 Run:
 
@@ -390,25 +410,31 @@ Run:
 npm test -- src/lib/http/paramsSerializer.test.ts
 ```
 
-Expected: FAIL because `paramsSerializer.ts` does not exist.
+Expected: FAIL because `paramsSerializer.ts` does not exist (or omit/encoding cases fail: nullish keys leak as `q=null`, special chars in keys/values remain unescaped).
 
-- [ ] **Step 3: Implement paramsSerializer and turn GREEN**
+- [x] **Step 3: Implement paramsSerializer and turn GREEN**
 
 Create `src/lib/http/paramsSerializer.ts`:
 
 ```typescript
 export function serializeParams(params: Record<string, unknown>): string {
   return Object.keys(params)
+    .filter((key) => params[key] !== null && params[key] !== undefined)
     .map((key) => {
+      const encodedKey = encodeURIComponent(key);
       const value = params[key];
       if (Array.isArray(value)) {
-        return value.map((item) => `${key}=${item}`).join("&");
+        return value
+          .map((item) => `${encodedKey}=${encodeURIComponent(String(item))}`)
+          .join("&");
       }
-      return `${key}=${value}`;
+      return `${encodedKey}=${encodeURIComponent(String(value))}`;
     })
     .join("&");
 }
 ```
+
+Encode both keys and values with `encodeURIComponent`; omit null/undefined keys (keep `0` / `""` / `false`). Numeric arrays like `{ ids: [1, 2] }` still serialize as `ids=1&ids=2`.
 
 Run:
 
@@ -418,7 +444,7 @@ npm test -- src/lib/http/paramsSerializer.test.ts
 
 Expected: both serializer tests pass.
 
-- [ ] **Step 4: Write failing HTTP client tests (token, errors, skip, 401, login dual-channel)**
+- [x] **Step 4: Write failing HTTP client tests (token, errors, skip, 401, login dual-channel)**
 
 Create `src/lib/http/client.test.ts`:
 
@@ -505,7 +531,7 @@ describe("createHttpClient", () => {
 });
 ```
 
-- [ ] **Step 5: Verify RED for the client**
+- [x] **Step 5: Verify RED for the client**
 
 Run:
 
@@ -515,7 +541,7 @@ npm test -- src/lib/http/client.test.ts
 
 Expected: FAIL because `client.ts`, `errors.ts`, and `unauthorized.ts` do not exist.
 
-- [ ] **Step 6: Implement typed errors and unauthorized redirect hook**
+- [x] **Step 6: Implement typed errors and unauthorized redirect hook**
 
 Create `src/lib/http/errors.ts`:
 
@@ -554,7 +580,7 @@ export function notifyUnauthorized(redirectPath: string) {
 }
 ```
 
-- [ ] **Step 7: Implement the Axios client with full error parity**
+- [x] **Step 7: Implement the Axios client with full error parity**
 
 Create `src/lib/http/client.ts`:
 
@@ -617,7 +643,7 @@ export const http = createHttpClient();
 
 In a later Task 5/6 step, `App` must call `setUnauthorizedHandler((path) => navigate(path, { replace: true }))` once so 401 uses React Router instead of a full reload.
 
-- [ ] **Step 8: Verify GREEN**
+- [x] **Step 8: Verify GREEN**
 
 Run:
 
