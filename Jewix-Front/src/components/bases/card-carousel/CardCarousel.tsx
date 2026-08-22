@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { ReactElement } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
-import { Pagination, Mousewheel, Autoplay } from "swiper"
+import { Pagination, Mousewheel, Autoplay } from "swiper/modules"
 import css from "./CardCarousel.module.scss"
 import Link from "next/link"
 export interface CardCarouselProps {

@@ -36,7 +36,6 @@ import 'tinymce/plugins/quickbars';
 import 'tinymce/plugins/save';
 import 'tinymce/plugins/searchreplace';
 import 'tinymce/plugins/table';
-import 'tinymce/plugins/template';
 import 'tinymce/plugins/visualchars';
 import 'tinymce/plugins/wordcount';
 
