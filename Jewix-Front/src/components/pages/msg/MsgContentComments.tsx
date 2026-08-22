@@ -39,6 +39,7 @@ export default function Comments({ className, comments, onConfirm, actionRef, fe
         <div className={`${className}`} {...rest}>
             <h2 className="totalMessageCount">{comments.length}条评论</h2>
             <MyInfiniteScroll
+                initialLoad={false}
                 /* @ts-ignore */
                 initialList={comments}
                 request={fetchItems}

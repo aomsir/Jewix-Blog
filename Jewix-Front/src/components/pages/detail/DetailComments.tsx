@@ -8,7 +8,7 @@ import { HTMLAttributes } from "react"
 import { DetailArticleProps } from "./DetailArticle"
 import css from "./DetailComment.module.scss"
 import { transformCommentToBackend } from "@/servers/transformers"
-import InfiniteScroll from "react-infinite-scroller"
+import GatedInfiniteScroll from "@/components/bases/myInfiniteScroll/GatedInfiniteScroll"
 import BaseLoading from "@/components/bases/loading/BaseLoading"
 
 interface DetailCommentProps extends HTMLAttributes<HTMLDivElement> {
@@ -24,6 +24,7 @@ export default function DetailComment({ className, comments: initialComments, ar
     const fetchItems = async () => {
         try {
             if (!isLoaded) {
+                isLoaded = true
                 const result = await fetchCommentsById_TypeTransformed({
                     current: Math.ceil(comments.length / size) + 1,
                     pageSize: size,
@@ -42,7 +43,13 @@ export default function DetailComment({ className, comments: initialComments, ar
     return (
         <div className={`${className ?? ""} ${css["detail-comment"]}`} {...rest}>
             <div className="comments">
-                <InfiniteScroll loadMore={fetchItems} hasMore={hasMore} loader={<BaseLoading key={0} />} initialLoad={false}>
+                <GatedInfiniteScroll
+                    initialLoad={false}
+                    dataLength={comments.length}
+                    next={fetchItems}
+                    hasMore={hasMore}
+                    loader={<BaseLoading key={0} />}
+                >
                     {comments.map(comment => (
                         <CardComment
                             className="comment"
@@ -66,7 +73,7 @@ export default function DetailComment({ className, comments: initialComments, ar
                             }}
                         />
                     ))}
-                </InfiniteScroll>
+                </GatedInfiniteScroll>
             </div>
             <h3>发表评论</h3>
             <FormComment

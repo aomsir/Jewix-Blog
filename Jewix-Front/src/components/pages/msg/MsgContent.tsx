@@ -16,7 +16,7 @@ interface MsgContentProps extends HTMLAttributes<HTMLDivElement> {
 export default function MsgContent({ className, initialComments, pageInfo, ...rest }: MsgContentProps): ReactElement {
     // BUG 评论加载第二页后，数量翻倍
     const [commentsLength, setCommentsLength] = useState(initialComments.length)
-    const actionRef = useRef<ActionRefType>()
+    const actionRef = useRef<ActionRefType | undefined>(undefined)
 
     const fetchItems = async (current: number) => {
         const result = await fetchCommentsById_TypeTransformed({

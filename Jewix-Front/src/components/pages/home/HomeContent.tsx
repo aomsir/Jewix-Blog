@@ -1,12 +1,12 @@
 import CardImage from "@/components/bases/card-image/Card"
 import BaseLoading from "@/components/bases/loading/BaseLoading"
+import GatedInfiniteScroll from "@/components/bases/myInfiniteScroll/GatedInfiniteScroll"
 import { BREAK_POINT_COLUMNS } from "@/configs/others"
 import { ArticlePageSize, HomeProps } from "@/pages"
 import { fetchArticles } from "@/servers/api/article"
 import { createArticle } from "@/servers/models/article"
 import { useRouter } from "next/router"
 import { ReactElement, useEffect, useState } from "react"
-import InfiniteScroll from "react-infinite-scroller"
 import Masonry from "react-masonry-css"
 
 export default function HomeContent({ initialBlogs }: { initialBlogs: HomeProps["initialBlogs"] }): ReactElement {
@@ -23,6 +23,7 @@ export default function HomeContent({ initialBlogs }: { initialBlogs: HomeProps[
     const fetchItems = async () => {
         if (!isLoaded) {
             try {
+                isLoaded = true
                 const { data } = await fetchArticles({
                     current: Math.ceil(blogs.length / ArticlePageSize) + 1,
                     pageSize: ArticlePageSize,
@@ -40,17 +41,25 @@ export default function HomeContent({ initialBlogs }: { initialBlogs: HomeProps[
             }
         }
     }
+
     if (!blogs.length) {
         return <my-no-data />
     }
 
     return (
-        <InfiniteScroll loadMore={fetchItems} hasMore={hasMore} loader={<BaseLoading key={0} />} initialLoad={true}>
+        <GatedInfiniteScroll
+            initialLoad={true}
+            dataLength={blogs.length}
+            next={fetchItems}
+            hasMore={hasMore}
+            hasChildren
+            loader={<BaseLoading key={0} />}
+        >
             <Masonry className="grid" breakpointCols={BREAK_POINT_COLUMNS} columnClassName="col">
                 {blogs.map(item => (
                     <CardImage {...item} key={item.id} />
                 ))}
             </Masonry>
-        </InfiniteScroll>
+        </GatedInfiniteScroll>
     )
 }

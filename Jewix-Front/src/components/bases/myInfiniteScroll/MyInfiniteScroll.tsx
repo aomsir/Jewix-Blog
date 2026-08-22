@@ -1,7 +1,7 @@
 import { ReactElement, useState } from "react"
-import InfiniteScroll from "react-infinite-scroller"
 import { HTMLAttributes } from "react"
 import BaseLoading from "../loading/BaseLoading"
+import GatedInfiniteScroll from "./GatedInfiniteScroll"
 type InfiniteScrollProps<List> = HTMLAttributes<HTMLDivElement> & {
     request: (current: number) => Promise<List>
     initialList: List
@@ -9,13 +9,14 @@ type InfiniteScrollProps<List> = HTMLAttributes<HTMLDivElement> & {
     noDataText?: string
     contentRender: (list: List) => ReactElement | ReactElement[] | string
     actionRef?: React.MutableRefObject<ActionRefType | undefined>
+    initialLoad: boolean
 }
 export type ActionRefType = {
     reload: () => void
 }
 
 export const MyInfiniteScroll = <List extends unknown[]>(props: InfiniteScrollProps<List>) => {
-    const { request, noDataText, initialList, pageSize, children, contentRender, actionRef, ...rest } = props
+    const { request, noDataText, initialList, pageSize, children, contentRender, actionRef, initialLoad, ...rest } = props
     const [list, setList] = useState(props.initialList)
     const [hasMore, setHasMore] = useState(true)
     const [lastPageList, setLastPageList] = useState<List>(props.initialList)
@@ -34,13 +35,12 @@ export const MyInfiniteScroll = <List extends unknown[]>(props: InfiniteScrollPr
                 const isSameListInSamePage = lastPageList.length === _list.length
                 const isAddedListInSamePage = _list.length > lastPageList.length
 
-                // console.log(isDeletedListInSamePage, isSameListInSamePage, isAddedListInSamePage)
                 // 如果是同一页，覆盖数据
                 if (isDeletedListInSamePage || isSameListInSamePage || isAddedListInSamePage) {
-                    setList(pre => [...pre.slice(0, lastPageList.length ? -lastPageList.length : undefined), ..._list] as any)
+                    setList(pre => [...pre.slice(0, lastPageList.length ? -lastPageList.length : undefined), ..._list] as List)
                 } else {
                     // 如果是下一页，追加数据
-                    setList(pre => [...pre, ..._list] as any)
+                    setList(pre => [...pre, ..._list] as List)
                 }
                 // 如果获取的数据小于pageSize，说明没有更多数据了
                 if (_list.length < pageSize) {
@@ -63,11 +63,18 @@ export const MyInfiniteScroll = <List extends unknown[]>(props: InfiniteScrollPr
     }
 
     return (
-        <InfiniteScroll loadMore={fetchItems} hasMore={hasMore} initialLoad={false} loader={<BaseLoading key={0} />}>
+        <GatedInfiniteScroll
+            initialLoad={initialLoad}
+            dataLength={list.length}
+            next={fetchItems}
+            hasMore={hasMore}
+            hasChildren
+            loader={<BaseLoading key={0} />}
+        >
             <my-no-data has-data={!!list.length} text={noDataText}>
                 {contentRender(list)}
             </my-no-data>
-        </InfiniteScroll>
+        </GatedInfiniteScroll>
     )
 }
 

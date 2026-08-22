@@ -6,7 +6,7 @@ import Links, { LinksProps } from "../header/links/links"
 import Menu, { MenuProps } from "../header/menu/Menu"
 import css from "./Cover.module.scss"
 type CoverProps = HTMLAttributes<HTMLDivElement> & {
-    menuToggleRef: RefObject<MenuToggleRef>
+    menuToggleRef: RefObject<MenuToggleRef | null>
     menuData: MenuProps["menuData"]
     links: LinksProps["links"]
 }

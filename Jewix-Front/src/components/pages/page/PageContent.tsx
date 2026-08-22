@@ -16,7 +16,7 @@ type PageContentProps = HTMLAttributes<HTMLDivElement> & {
 }
 export default function PageContent(props: PageContentProps): ReactElement {
     const { pageInfo, initialComments, ...rest } = props
-    const actionRef = useRef<ActionRefType>()
+    const actionRef = useRef<ActionRefType | undefined>(undefined)
     const { query } = useRouter()
 
     const fetchItems = async (current: number) => {
@@ -41,6 +41,7 @@ export default function PageContent(props: PageContentProps): ReactElement {
                 <div dangerouslySetInnerHTML={{ __html: pageInfo.content }}></div>
             </BoardInfo>
             <MyInfiniteScroll
+                initialLoad={false}
                 request={fetchItems}
                 noDataText="暂无评论"
                 // @ts-ignore

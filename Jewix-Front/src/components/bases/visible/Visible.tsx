@@ -1,8 +1,7 @@
 import { MouseEvent, ReactElement, ReactNode, useEffect, useRef } from "react"
 import { HTMLAttributes } from "react"
 import css from "./Visible.module.scss"
-interface VisibleProps extends HTMLAttributes<HTMLDivElement> {
-    // 显示内容
+interface VisibleProps extends Omit<HTMLAttributes<HTMLDivElement>, "content"> {
     content: ReactNode
 }
 /**

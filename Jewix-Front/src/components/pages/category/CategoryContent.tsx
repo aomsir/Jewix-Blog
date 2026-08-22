@@ -1,5 +1,6 @@
 import CardImage from "@/components/bases/card-image/Card"
 import BaseLoading from "@/components/bases/loading/BaseLoading"
+import GatedInfiniteScroll from "@/components/bases/myInfiniteScroll/GatedInfiniteScroll"
 import { BREAK_POINT_COLUMNS } from "@/configs/others"
 import { categoryArticlePageSize, CategoryProps } from "@/pages/category/[id]"
 import { fetchArticlesByCategoryIdTransformed } from "@/servers/api"
@@ -7,7 +8,6 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { ReactElement, useEffect, useState } from "react"
 import { HTMLAttributes } from "react"
-import InfiniteScroll from "react-infinite-scroller"
 import Masonry from "react-masonry-css"
 import css from "./CategoryContent.module.scss"
 interface CategoryContentProps extends HTMLAttributes<HTMLDivElement> {
@@ -28,6 +28,7 @@ export default function CategoryContent({ className, categoryName, initialBlogs,
     const fetchItems = async () => {
         try {
             if (!isLoaded) {
+                isLoaded = true
                 const result = await fetchArticlesByCategoryIdTransformed({
                     current: Math.ceil(blogs.length / categoryArticlePageSize) + 1,
                     pageSize: categoryArticlePageSize,
@@ -51,15 +52,22 @@ export default function CategoryContent({ className, categoryName, initialBlogs,
                 <span>/</span>
                 {categoryName}
             </div>
-            <InfiniteScroll loadMore={fetchItems} hasMore={hasMore} initialLoad={false} loader={<BaseLoading key={0} />}>
-                    <my-no-data has-data={!!blogs.length}>
-                        <Masonry className="grid" breakpointCols={BREAK_POINT_COLUMNS} columnClassName="col">
-                                {blogs.map((item, index) => (
-                                    <CardImage {...item} key={index} />
-                                ))}
-                        </Masonry>
-                    </my-no-data>
-            </InfiniteScroll>
+            <GatedInfiniteScroll
+                initialLoad={false}
+                dataLength={blogs.length}
+                next={fetchItems}
+                hasMore={hasMore}
+                hasChildren
+                loader={<BaseLoading key={0} />}
+            >
+                <my-no-data has-data={!!blogs.length}>
+                    <Masonry className="grid" breakpointCols={BREAK_POINT_COLUMNS} columnClassName="col">
+                        {blogs.map((item, index) => (
+                            <CardImage {...item} key={index} />
+                        ))}
+                    </Masonry>
+                </my-no-data>
+            </GatedInfiniteScroll>
         </div>
     )
 }

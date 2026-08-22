@@ -9,13 +9,29 @@ const nextConfig = {
   },
   // 严格模式
   reactStrictMode: true,
-  // sass配置
+  // sass配置（Next16 dart-sass 不走 webpack alias，用绝对路径注入 variables）
   sassOptions: {
-    // prependData 选项用来在每个 SCSS 文件的开头添加自定义的 SCSS 代码
-    prependData: `@import "@styles/variables";`
+    additionalData: `@import "${join(__dirname, 'src/styles/variables.scss').replace(/\\/g, '/')}";`,
   },
   images: {
-    domains: ['img.say521.cn', "aomblogtu.test.upcdn.net", "localhost", "www.gravatar.com"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.say521.cn',
+      },
+      {
+        protocol: 'https',
+        hostname: 'aomblogtu.test.upcdn.net',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.gravatar.com',
+      },
+    ],
   }
 }
 

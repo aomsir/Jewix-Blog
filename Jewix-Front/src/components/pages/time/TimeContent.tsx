@@ -25,7 +25,7 @@ export default function TimeContent({ className, initialComments, pageInfo, ...r
         return result.list
     }
 
-    const actionRef = useRef<ActionRefType>()
+    const actionRef = useRef<ActionRefType | undefined>(undefined)
 
     useEffect(() => {
         setHasToken(!!LocalToken.get())
@@ -50,6 +50,7 @@ export default function TimeContent({ className, initialComments, pageInfo, ...r
                 />
             )}
             <MyInfiniteScroll
+                initialLoad={false}
                 actionRef={actionRef}
                 request={fetchItems}
                 /* @ts-ignore */

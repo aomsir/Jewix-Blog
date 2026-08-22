@@ -8,7 +8,7 @@ import router from "next/router"
 import { forwardRef, ReactElement, Ref, useContext, useImperativeHandle, useRef } from "react"
 import { HTMLAttributes } from "react"
 import css from "./Header.module.scss"
-export interface SmallHeaderProps extends HTMLAttributes<HTMLDivElement> {
+export interface SmallHeaderProps extends Omit<HTMLAttributes<HTMLDivElement>, "onToggle"> {
     onToggle: MenuToggleProps["onToggle"]
 }
 export default forwardRef(({ className, onToggle, ...rest }: SmallHeaderProps, ref: Ref<MenuToggleRef>): ReactElement => {

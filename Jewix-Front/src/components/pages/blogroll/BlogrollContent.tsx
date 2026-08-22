@@ -22,7 +22,7 @@ interface BlogrollContentProps {
  * @returns 友情链接
  */
 export default function BlogrollContent({ pageInfo, initialComments, globalBlogroll }: BlogrollContentProps): ReactElement {
-    const actionRef = useRef<ActionRefType>()
+    const actionRef = useRef<ActionRefType | undefined>(undefined)
     const fetchItems = async (current: number) => {
         const result = await fetchCommentsById_TypeTransformed({
             current,
@@ -63,6 +63,7 @@ export default function BlogrollContent({ pageInfo, initialComments, globalBlogr
             </BoardInfo>
             {/* 历史评论 */}
             <MyInfiniteScroll
+                initialLoad={false}
                 actionRef={actionRef}
                 request={fetchItems}
                 /* @ts-ignore */

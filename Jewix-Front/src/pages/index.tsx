@@ -52,7 +52,9 @@ export const getServerSideProps: GetServerSideProps = async context => {
         console.log(error)
 
         return {
-            notFound: true,
+            props: {
+                initialBlogs: [],
+            },
         }
     }
 }

@@ -1,7 +1,7 @@
 import { forwardRef, MouseEvent, ReactElement, Ref, useImperativeHandle, useRef } from "react"
 import { HTMLAttributes } from "react"
 import css from "./MenuToggle.module.scss"
-export interface MenuToggleProps extends HTMLAttributes<HTMLDivElement> {
+export interface MenuToggleProps extends Omit<HTMLAttributes<HTMLDivElement>, "onToggle"> {
     onToggle?: (active: boolean) => void
 }
 export type MenuToggleRef = {

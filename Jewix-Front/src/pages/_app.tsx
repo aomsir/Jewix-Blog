@@ -116,11 +116,9 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
     // 隐藏模块
     const hiddenModules = [] as string[]
 
+    const appProps = await App.getInitialProps!(appContext)
+    const isMobile = _isMobile(req?.headers["user-agent"] ?? "")
     try {
-        // 获取app的初始props
-        const appProps = await App.getInitialProps!(appContext)
-        // 判断是否是移动设备
-        const isMobile = _isMobile(req?.headers["user-agent"] ?? "")
         //  获取友链
         const blogroll = (await fetchAllGlobalBlogroll()).map(item => ({
             ...convertKey(item, {
@@ -167,10 +165,44 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
         }
     } catch (error) {
         console.log(error)
-
-        // return {
-
-        // }
+        return {
+            ...appProps,
+            theme: theme ?? THEME.LIGHT,
+            isMobile,
+            layoutProps: {
+                links: webSiteConfig.links,
+                menu: [
+                    { id: "999", label: "分类", children: [] },
+                    { id: "1000", label: "页面", children: [] },
+                    { id: "1001", label: "友链", children: [] },
+                ],
+                siteInfo: {
+                    name: webSiteConfig.title,
+                    email: "",
+                    desc: webSiteConfig.description,
+                    articleCount: 0,
+                    commentCount: 0,
+                    runTime: "0",
+                    lastActive: 0,
+                    keywords: webSiteConfig.keywords,
+                    socialInfo: {},
+                    title: webSiteConfig.title,
+                    webDescription: webSiteConfig.description,
+                    police: "",
+                    icp: "",
+                    image: "/avatar.png",
+                    contents: [
+                        ["文章数目", "0"],
+                        ["评论数目", "0"],
+                        ["运行天数", "0"],
+                        ["最后活动", "0天前"],
+                    ],
+                    links: webSiteConfig.links,
+                },
+                recommendedArticles: [],
+                hiddenModules,
+            },
+        }
     }
 }
 /*
