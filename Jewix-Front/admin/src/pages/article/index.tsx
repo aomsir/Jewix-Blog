@@ -11,9 +11,9 @@ import {
     softDeleteArticles,
 } from "@/services/api/article";
 import { ActionType, PageContainer, ProList, ProListMetas } from "@ant-design/pro-components";
-import { history } from "@umijs/max";
 import { Image, message, Space } from "antd";
 import { HTMLAttributes, ReactElement, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import css from "./Article.module.scss";
 import ProTableToolBar from "./components/ProTableToolBar";
 import { tableConfig } from "/config/table";
@@ -22,6 +22,7 @@ type ArticleProps = HTMLAttributes<HTMLDivElement>;
 export default function Article({ className, ...rest }: ArticleProps): ReactElement {
     const [selectionState, selectionProps] = useSelection();
     const actionRef = useRef<ActionType>();
+    const navigate = useNavigate();
 
     metas.actions!.render = (dom, entity) => {
         return (
@@ -47,7 +48,7 @@ export default function Article({ className, ...rest }: ArticleProps): ReactElem
                                 onClick={async () => {
                                     try {
                                         const data = await fetchArticleByUUID(entity.uuid);
-                                        history.push(`/article/edit?uuid=${entity.uuid}`);
+                                        navigate(`/article/edit?uuid=${entity.uuid}`);
                                     } catch (error) {}
                                 }}
                             >
@@ -80,7 +81,7 @@ export default function Article({ className, ...rest }: ArticleProps): ReactElem
                 toolBarRender={() => [
                     <ProTableToolBar
                         key={1}
-                        onInsertButtonClick={() => history.push(`/article/edit`)}
+                        onInsertButtonClick={() => navigate(`/article/edit`)}
                     />,
                 ]}
                 metas={metas}

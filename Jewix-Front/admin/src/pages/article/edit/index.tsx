@@ -20,15 +20,26 @@ import {
     ProFormTextArea,
     ProFormTreeSelect,
 } from "@ant-design/pro-components";
-import { history, useAccess } from "@umijs/max";
+import { useAccess } from "@umijs/max";
 import { Form, message } from "antd";
 import { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArticleEditAccessGate } from "./articleEditAccess";
 import css from "./ArticleEdit.module.scss";
 type ArticleEditProps = HTMLAttributes<HTMLDivElement>;
 
 export default function ArticleEdit(props: ArticleEditProps): ReactElement {
-    const { ...rest } = props;
     const { normalRouteFilter } = useAccess();
+    return (
+        <ArticleEditAccessGate filter={normalRouteFilter}>
+            <ArticleEditContent {...props} />
+        </ArticleEditAccessGate>
+    );
+}
+
+function ArticleEditContent(props: ArticleEditProps): ReactElement {
+    const { ...rest } = props;
+    const navigate = useNavigate();
     const formRef = useRef<ProFormInstance>(null);
     const [tags, setTags] = useState<API.FetchTagResponse[]>([]);
     const [newTagsMap, setNewTagsMap] = useState<{ [key: string]: number }>({});
@@ -39,29 +50,33 @@ export default function ArticleEdit(props: ArticleEditProps): ReactElement {
     const uuid = params.get("uuid");
     const [isUpdateForm, setIsUpdateForm] = useState(false);
     useEffect(() => {
+        let active = true;
         (async () => {
             try {
                 // 获取标签
                 const tags = await fetchAllTags();
+                if (!active) return;
                 // 获取分类
                 const categories = await fetchAllCategories();
+                if (!active) return;
                 setCategories((categories.result as any) ?? []);
                 setTags(tags);
                 if (uuid) {
                     // 获取文章详情
                     const { result } = await fetchArticleByUUID(uuid);
+                    if (!active) return;
                     formRef.current?.setFieldsValue(result);
                     setIsUpdateForm(true);
                 }
             } catch (error: any) {
+                if (!active) return;
                 message.error(error.message);
             }
         })();
+        return () => {
+            active = false;
+        };
     }, []);
-
-    if (!normalRouteFilter({ name: "文章编辑" })) {
-        history.push("/exception/403");
-    }
 
     return (
         <div className={`${rest.className ?? ""} ${css.ArticleEdit}`} {...rest}>
@@ -75,7 +90,7 @@ export default function ArticleEdit(props: ArticleEditProps): ReactElement {
                         resetText: "取消",
                     },
                 }}
-                onReset={() => history.push("/article")}
+                onReset={() => navigate("/article")}
                 onFinish={async (values: API.InsertArticleBody | API.UpdateArticleBody) => {
                     try {
                         let _article = {
@@ -105,7 +120,7 @@ export default function ArticleEdit(props: ArticleEditProps): ReactElement {
                             await updateArticle(_article as API.UpdateArticleBody);
                             message.success("修改成功");
                         }
-                        history.back();
+                        navigate(-1);
                         return true;
                     } catch (error) {
                         return false;

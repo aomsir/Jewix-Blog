@@ -14,13 +14,16 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@/pages/*": ["./src/shims/lazy-page.tsx"],
       "@/*": ["./src/*"],
-      "/*": ["./*"]
+      "/*": ["./*"],
+      "@umijs/max": ["./src/shims/umijs-max.tsx"]
     },
     "types": ["vite/client", "vitest/globals"]
   },
   "include": [
     "src/main.tsx",
+    "src/App.tsx",
     "src/test/**/*.ts",
     "src/test/**/*.tsx",
     "src/lib/**/*.ts",
@@ -33,13 +36,14 @@
     "src/layouts/**/*.tsx",
     "src/config/**/*.ts",
     "src/config/**/*.tsx",
+    "src/shims/**/*.ts",
+    "src/shims/**/*.tsx",
     "vite.config.ts",
     "vitest.config.ts"
   ],
   "exclude": [
     "node_modules",
     "src/.umi",
-    "src/.umi-production",
-    "src/app.tsx"
+    "src/.umi-production"
   ]
 }

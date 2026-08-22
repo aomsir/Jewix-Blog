@@ -262,7 +262,7 @@ Keep repository-root `/*` → `./*` **temporarily** so the still-installed Umi b
 }
 ```
 
-Do **not** put `src/App.tsx` in Task 2 `include`: on case-insensitive filesystems (default macOS) it collides with the legacy Umi file `src/app.tsx` and would typecheck the whole Umi graph. Explicitly `exclude` `src/app.tsx`. Use `src/app/**/*.ts(x)` for the future `src/app/` directory (auth/access). Task 5 writes the real `App.tsx` content only after Task 6 deletes `src/app.tsx` (or in the same cutover); until then keep `App.tsx` out of `include`. Remove legacy `@@/*` and `@@test/*` path aliases while editing this file. Do **not** remove repository-root `/*` in Task 2.
+Do **not** put `src/App.tsx` in Task 2 `include`: on case-insensitive filesystems (default macOS) it collides with the legacy Umi file `src/app.tsx` and would typecheck the whole Umi graph. Explicitly `exclude` `src/app.tsx`. Use `src/app/**/*.ts(x)` for the future `src/app/` directory (auth/access). **Task 5** deletes legacy `src/app.tsx` and writes `src/App.tsx`; Task 6 must not delete it again. Until Task 5, keep `App.tsx` out of `include`. Remove legacy `@@/*` and `@@test/*` path aliases while editing this file. Do **not** remove repository-root `/*` in Task 2.
 
 Also create the minimal Vite entry stub `src/main.tsx` (Task 5 **modifies** this file into the real App mount — do not create a second entry):
 
@@ -689,7 +689,7 @@ Expected: DELETE with `{ ids: [1, 2] }` becomes query string `ids=1&ids=2`.
 `/article/edit` and `*` sit under the authenticated branch (login required).
 
 **Decision — `/article/edit` permission (do not change business rules):**
-Route-level `normalRouteFilter({ name: "文章编辑" })` would always fail: `config/routes.ts` sets no `access` on `/article/edit`; menus use names like `"文章管理"`. Keep status quo: login-only at ProtectedRoute; keep page-local check via mechanical `useAuthorization` + `navigate`; do **not** remap `"文章编辑"` → `"文章管理"`.
+Route-level `normalRouteFilter({ name: "文章编辑" })` would always fail: `config/routes.ts` sets no `access` on `/article/edit`; menus use names like `"文章管理"`. Keep status quo: login-only at ProtectedRoute; keep page-local check via mechanical `useAuthorization` + `navigate`; do **not** remap `"文章编辑"` → `"文章管理"`. There is no `/exception/403` route after migration; page-local denial navigates to `/article` with `{ replace: true }`.
 
 - [ ] **Step 1: Write failing protected-route tests**
 
@@ -984,13 +984,13 @@ Expected: unauthenticated redirect; leaf denial for `/user`; `/auth/menu` denied
 - Create: `Jewix-Front/admin/src/router/routeMeta.tsx`
 - Create: `Jewix-Front/admin/src/layouts/AdminLayout.tsx`
 - Create: `Jewix-Front/admin/src/app/UnauthorizedBridge.tsx`
-- Create: `Jewix-Front/admin/src/App.tsx` (only after legacy `src/app.tsx` is removed — case-insensitive FS collision; prefer doing this in the Task 6 cutover that deletes `src/app.tsx`, or delete `src/app.tsx` first in Task 5 before writing `App.tsx`)
+- Create: `Jewix-Front/admin/src/App.tsx` (Task 5 deletes/replaces legacy `src/app.tsx` first — case-insensitive FS collision; Task 6 must not delete `app.tsx`/`App.tsx` again)
 - Modify: `Jewix-Front/admin/src/main.tsx` (replace Task 2 stub with real App mount)
 - Create: `Jewix-Front/admin/src/router/routes.test.tsx`
 - Move: `Jewix-Front/admin/config/defaultSettings.ts` to `Jewix-Front/admin/src/config/defaultSettings.ts`
 - Keep: `Jewix-Front/admin/public/scripts/loading.js`
 
-- [ ] **Step 1: Write failing route metadata + menu nesting tests**
+- [x] **Step 1: Write failing route metadata + menu nesting tests**
 
 Create `src/router/routes.test.tsx`. `routeMeta` is a **tree** (not a flat list). Complete inventory from `config/routes.ts`:
 
@@ -1069,7 +1069,7 @@ describe("routeMeta", () => {
 });
 ```
 
-- [ ] **Step 2: Verify RED**
+- [x] **Step 2: Verify RED**
 
 Run:
 
@@ -1079,7 +1079,7 @@ npm test -- src/router/routes.test.tsx
 
 Expected: FAIL because `routeMeta.tsx` helpers do not exist.
 
-- [ ] **Step 3: Create typed nested route metadata**
+- [x] **Step 3: Create typed nested route metadata**
 
 Define this type in `src/router/routeMeta.tsx` and transcribe **every** `config/routes.ts` entry, preserving parent groups as nodes with `children` (do not flatten `/auth` / `/log` / `/account`):
 
@@ -1124,7 +1124,7 @@ export function buildMenuRoutes(
 
 Use `lazy(() => import("@/pages/..."))` for leaf page components and Ant Design icons matching existing names. Set `layout: false` only for `/article/edit`, `/login`, and `*`. Set `hidden: true` on `/article/edit` and the `/account` group (and/or settings child) to match `hideInMenu`. Copy `access: "normalRouteFilter"` **only** where `config/routes.ts` declares it — including parent `/auth` and `/log`, and **not** on `/auth/menu` or `/article/edit`.
 
-- [ ] **Step 4: Create React Router route objects from the same tree**
+- [x] **Step 4: Create React Router route objects from the same tree**
 
 In `src/router/routes.tsx`:
 
@@ -1184,7 +1184,7 @@ export const router = createBrowserRouter(routeObjects, { basename: "/admin" });
 
 Implementers must assemble `routeObjects` so layout leaves/groups nest under `<AdminLayout />`, while `/article/edit`, `*`, and `/login` follow the Task 4 placement rules. Add the missing `Suspense` import from React.
 
-- [ ] **Step 5: Implement the explicit ProLayout shell from the nested tree**
+- [x] **Step 5: Implement the explicit ProLayout shell from the nested tree**
 
 In `src/layouts/AdminLayout.tsx`, preserve current `src/app.tsx` chrome: `layoutBgImgList`, `menuHeaderRender: undefined`, avatar dropdown, SettingDrawer, and document title from `defaultSettings.title`. Build menus with `buildMenuRoutes(routeMeta, access)` so `/auth` and `/log` remain nested groups:
 
@@ -1258,21 +1258,26 @@ export default function AdminLayout() {
 }
 ```
 
-- [ ] **Step 6: Create providers and browser entry with ConfigProvider zhCN**
+- [x] **Step 6: Create providers and browser entry with ConfigProvider zhCN**
 
 Create `src/app/UnauthorizedBridge.tsx`:
 
 ```tsx
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "@/app/auth-context";
 import { setUnauthorizedHandler } from "@/lib/http/unauthorized";
 
 export function UnauthorizedBridge() {
   const navigate = useNavigate();
+  const { clearUser } = useAuth();
   useEffect(() => {
-    setUnauthorizedHandler((path) => navigate(path, { replace: true }));
+    setUnauthorizedHandler((path) => {
+      clearUser();
+      navigate(path, { replace: true });
+    });
     return () => setUnauthorizedHandler(undefined);
-  }, [navigate]);
+  }, [clearUser, navigate]);
   return <Outlet />;
 }
 ```
@@ -1334,7 +1339,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 );
 ```
 
-- [ ] **Step 7: Verify route and shell tests**
+- [x] **Step 7: Verify route and shell tests**
 
 Run:
 
@@ -1344,6 +1349,12 @@ npm run typecheck
 ```
 
 Expected: nested route inventory (`/auth`, `/log`, `/account` groups), `/log` menu nesting, ProtectedRoute parent-inheritance tests, and layout shell tests pass; TypeScript exposes only remaining Umi imports in business files; Ant Design + zh-CN strings render.
+
+**Task 5 cutover notes (do not repeat in Task 6):**
+
+- Legacy Umi `src/app.tsx` is gone; Vite entry is `src/App.tsx`. On macOS, `test -e src/app.tsx` is **true** because the FS is case-insensitive — use `ls src | grep -qx 'app.tsx'` (must be false) and `ls src | grep -qx 'App.tsx'` (must be true).
+- Mechanical forwards required so Vite can bundle still-Umi pages: `AvatarDropdown` (`clearUser` + object `navigate`), login/404/article/article-edit `useNavigate`, `BundledEditor` `?raw`, `@umijs/max` + `/config/` aliases, `src/shims/{umijs-max,umi-compat,umi-request}.tsx`. The shim is a runtime compat layer (`useModel` → `useAuth`, `useAccess` → real `createAccess`). Task 6 should verify these, not redo them.
+- `tsconfig.json` maps `@/pages/*` to `src/shims/lazy-page.tsx` so Task 5 `tsc` stays on the Vite surface. Vite still resolves real pages via `@` -> `src`. **Task 6 must remove the `@/pages/*` stub** when widening `include` to all of `src`.
 
 ### Task 6: Migrate Umi Runtime Imports Without Changing Business Logic
 
@@ -1366,25 +1377,29 @@ Expected: nested route inventory (`/auth`, `/log`, `/account` groups), `/log` me
   - `Jewix-Front/admin/src/components/bases/upload/UploadImage.tsx`
 - Modify: `Jewix-Front/admin/src/components/bases/editor/BundledEditor.tsx`
 - Create: `Jewix-Front/admin/src/pages/login/index.test.tsx`
-- Modify: `Jewix-Front/admin/src/pages/login/index.tsx`
-- Modify: `Jewix-Front/admin/src/pages/404.tsx`
-- Modify: `Jewix-Front/admin/src/pages/article/**/*.tsx`
+- Modify: `Jewix-Front/admin/src/pages/login/index.tsx` (Task 5 already mapped `history.push` → `useNavigate`; login still uses shim `useModel`/`setInitialState`)
+- Modify: `Jewix-Front/admin/src/pages/404.tsx` (Task 5 already mapped `history.push` → `useNavigate`)
+- Modify: `Jewix-Front/admin/src/pages/article/index.tsx` (Task 5 already mapped `history.push` → `useNavigate`)
+- Modify: `Jewix-Front/admin/src/pages/article/edit/index.tsx` (Task 5 already mapped `history.push`/`back` → `navigate`/`navigate(-1)`)
+- Modify: `Jewix-Front/admin/src/pages/article/**/*.tsx` (remaining article files besides index/edit)
 - Modify: `Jewix-Front/admin/src/pages/user/index.tsx`
 - Modify: `Jewix-Front/admin/src/pages/account/settings/index.tsx`
 - Modify: `Jewix-Front/admin/src/components/bases/RightContent/index.tsx` (local `SelectLang`)
-- Modify: `Jewix-Front/admin/src/components/bases/RightContent/AvatarDropdown.tsx` (`clearUser` + object `navigate`)
+- Modify: `Jewix-Front/admin/src/components/bases/RightContent/AvatarDropdown.tsx` (`clearUser` + object `navigate`; already done in Task 5 — verify only)
 - Modify: `Jewix-Front/admin/src/components/bases/hasOperation/hasOperation.tsx`
 - Modify: `Jewix-Front/admin/src/hooks/auth.ts`
 - Modify: `Jewix-Front/admin/src/services/**/*.ts`
 - Modify: `Jewix-Front/admin/src/utils/request.ts`
 - Modify: `Jewix-Front/admin/src/config/defaultSettings.ts` (set `pwa: false`)
-- Delete: `Jewix-Front/admin/src/app.tsx` (Umi runtime entry; replaced by `src/App.tsx` + `src/main.tsx` + `src/layouts/AdminLayout.tsx`)
+- Confirm already deleted in Task 5 (do not delete again): `Jewix-Front/admin/src/app.tsx`
 - Delete: `Jewix-Front/admin/src/global.tsx`
 - Delete: `Jewix-Front/admin/src/pages/Admin.tsx`
 
 Do **not** create `src/vite-env.d.ts`. Task 2 `tsconfig.json` already sets `"types": ["vite/client"]`, and Vite's client types already declare `*?raw`.
 
 - [ ] **Step 1: Replace navigation imports**
+
+Task 5 already applied this mapping in `pages/login/index.tsx`, `pages/404.tsx`, `pages/article/index.tsx`, `pages/article/edit/index.tsx`, and `AvatarDropdown`. The Task 5 `@umijs/max` shim is a **runtime compat layer**: `useModel("@@initialState")` writes through `useAuth`, and `useAccess()` is `useAuthorization()` / real `createAccess` (not always-true). Do not delete remaining business logic. Continue the mapping only for files that still import `history` / `Link` / `Helmet` from `@umijs/max`.
 
 Apply these mechanical mappings only in non-generated source:
 
@@ -1407,7 +1422,8 @@ const navigate = useNavigate();
 const { normalRouteFilter } = useAuthorization();
 
 if (!normalRouteFilter({ name: "文章编辑" })) {
-  navigate("/exception/403");
+  // navigate in useEffect, not during render; return null while denied
+  navigate("/article", { replace: true });
 }
 
 // onReset
@@ -1463,11 +1479,11 @@ In `src/pages/article/edit/index.tsx`, keep the page-local gate exactly (status 
 const { normalRouteFilter } = useAuthorization();
 const navigate = useNavigate();
 if (!normalRouteFilter({ name: "文章编辑" })) {
-  navigate("/exception/403");
+  navigate("/article", { replace: true });
 }
 ```
 
-Do not remap the permission name and do not delete this branch in this migration.
+Call that `navigate` inside `useEffect` (not during render) and return `null` while denied. Keep `ArticleEdit` as a thin wrapper: `<ArticleEditAccessGate><ArticleEditContent /></ArticleEditAccessGate>` so form hooks and `fetchAllTags` / `fetchAllCategories` / `fetchArticleByUUID` live in `ArticleEditContent` and never run when the gate denies. `ArticleEditContent` cancels in-flight tag/category/article loads on unmount (`active` flag after each await) so stale resolves do not write form state. `AuthProvider` combines `requestSeq` (stale refresh) with `mountedRef` and an instance `initializedRef`: StrictMode's second effect setup sets `mountedRef` true but does not call `refreshUser` again; a brand-new mount still initializes once. Effect cleanup sets `mounted=false` and bumps `requestSeq` only after init has already run (so the in-flight first refresh can still commit). Do not remap the permission name and do not delete this branch in this migration. There is no `/exception/403` route; denial returns to the article list.
 
 - [ ] **Step 3: Replace all Umi request imports and keep DELETE serializer**
 
@@ -1545,9 +1561,9 @@ In `UploadImage.tsx`, delete the unused `/config/proxy` import. Do not keep a cl
 
 Immediately after the 11 `/config/table` + 2 `/config/proxy` call sites are gone (and other legacy `@umijs/max` imports in this task are migrated), update `tsconfig.json` and the App entry cutover:
 
-1. Delete legacy `src/app.tsx` (Umi runtime). On case-insensitive filesystems this must happen before `src/App.tsx` can exist as a distinct path; if Task 5 deferred `App.tsx`, create it here.
-2. Delete the temporary Task 2 repository-root `/*` alias so `paths` contains only `@/*`.
-3. Drop `src/app.tsx` from `exclude`, and widen `"include"` from the Task 2 Vite surface to all of `"src"` (plus `vite.config.ts` / `vitest.config.ts`) so the migrated tree is fully typechecked.
+1. Confirm Task 5 already replaced legacy `src/app.tsx` with `src/App.tsx`. Do **not** delete `App.tsx`. On macOS use case-sensitive `ls src | grep -qx 'app.tsx'` (false) / `grep -qx 'App.tsx'` (true); `test ! -e src/app.tsx` is **not** reliable.
+2. Delete the temporary Task 2 repository-root `/*` alias so `paths` contains only `@/*`. Also remove the Task 5 `@/pages/*` -> `src/shims/lazy-page.tsx` stub so real pages are typechecked.
+3. Drop `src/app.tsx` from `exclude` if still listed, and widen `"include"` from the Task 2 Vite surface to all of `"src"` (plus `vite.config.ts` / `vitest.config.ts`) so the migrated tree is fully typechecked.
 
 Verify with:
 
@@ -1560,7 +1576,7 @@ node -e 'const t=require("./tsconfig.json"); console.log(Object.keys(t.compilerO
 
 Expected: zero `/config` / `BASE_URL` matches; `paths` is only `@/*`; `include` covers all of `src`.
 
-- [ ] **Step 5: Convert BundledEditor raw-loader to Vite `?raw`**
+- [ ] **Step 5: Convert BundledEditor raw-loader to Vite `?raw`** (already done in Task 5 — verify only)
 
 In `src/components/bases/editor/BundledEditor.tsx`, replace:
 
@@ -1742,13 +1758,13 @@ Expected: both login-page tests pass. Adjust label matchers only if the existing
 
 - [ ] **Step 8: Delete Umi runtime entry, global bootstrap, and unused Admin scaffold**
 
-After Steps 1–7 have moved layout/auth/request/locale off Umi, delete these three `src` files together:
+After Steps 1–7 have moved layout/auth/request/locale off Umi, delete the remaining two `src` files together. **Do not delete `src/App.tsx`.**
 
-1. `src/app.tsx` — Umi `getInitialState` / `layout` / `request` export; superseded by `src/App.tsx`, `src/main.tsx`, `src/layouts/AdminLayout.tsx`, and `src/lib/http/client.ts`.
+1. `src/app.tsx` — already removed in Task 5 (replaced by `src/App.tsx`). Confirm with case-sensitive `ls src | grep -qx 'app.tsx'` (must print nothing).
 2. `src/global.tsx` — Umi/Pro PWA service-worker listeners via `@umijs/max` `useIntl`. Set `pwa: false` in `src/config/defaultSettings.ts` first. Vite will not ship that SW; do not reintroduce a Service Worker in this migration.
 3. `src/pages/Admin.tsx` — not referenced by `config/routes.ts`; unused Pro scaffold.
 
-Do not leave `src/app.tsx` for Task 7; the Task 6 zero-Umi `src` gate below must see it gone.
+Do not leave a legacy Umi `app.tsx` for Task 7; the Task 6 zero-Umi `src` gate below must see it gone.
 
 - [ ] **Step 9: Verify zero Umi references under `src` (gate must be reachable now)**
 
@@ -1758,7 +1774,8 @@ Run:
 
 ```bash
 rg '@umijs|useModel\(|useAccess\(|useRouteProps\(|raw-loader|/config/table|/config/proxy|!!raw-loader' src --glob '!**/.umi/**' --glob '!**/.umi-production/**'
-test ! -e src/app.tsx
+ls src | grep -qx 'app.tsx' && exit 1 || true
+ls src | grep -qx 'App.tsx'
 test ! -e src/global.tsx
 test ! -e src/pages/Admin.tsx
 ```
@@ -1774,7 +1791,8 @@ Disposition of every current non-generated hit (verified by repo `rg` before thi
 | `src/pages/**/index.tsx` with `/config/table` (11 files) | Step 4 → `@/config/table` |
 | `src/components/bases/editor/BundledEditor.tsx` | Step 5 `?raw` |
 | `src/pages/login/index.tsx`, `src/pages/404.tsx`, `src/pages/article/index.tsx`, `src/pages/article/edit/index.tsx`, `src/pages/article/components/ProTableToolBar.tsx`, `src/pages/user/index.tsx`, `src/pages/account/settings/index.tsx`, `src/components/bases/RightContent/{index,AvatarDropdown}.tsx`, `src/components/bases/hasOperation/hasOperation.tsx`, `src/hooks/auth.ts` | Steps 1–2 + 6–7 |
-| `src/app.tsx`, `src/global.tsx`, `src/pages/Admin.tsx` | Step 8 delete |
+| `src/app.tsx` | Task 5 deleted; Step 8 confirm only |
+| `src/global.tsx`, `src/pages/Admin.tsx` | Step 8 delete |
 | `package.json` scripts/deps, `config/{config,routes,request,proxy}.ts`, `jest.config.ts`, `src/.umi*` | **Task 7 only** — intentionally outside this gate |
 
 - [ ] **Step 10: Run focused and full tests**
@@ -1800,7 +1818,8 @@ Expected: login-page Auth write/navigate tests, migrated services, and shell tes
 - Delete: `Jewix-Front/admin/jest.config.ts`
 - Delete: `Jewix-Front/admin/src/.umi/`
 - Delete: `Jewix-Front/admin/src/.umi-production/`
-- Confirm already deleted in Task 6 (do not delete again): `Jewix-Front/admin/src/app.tsx`, `Jewix-Front/admin/src/global.tsx`, `Jewix-Front/admin/src/pages/Admin.tsx`
+- Confirm already deleted in Task 5 (do not delete again): `Jewix-Front/admin/src/app.tsx`
+- Confirm already deleted in Task 6 (do not delete again): `Jewix-Front/admin/src/global.tsx`, `Jewix-Front/admin/src/pages/Admin.tsx`
 - Delete if unreferenced: `Jewix-Front/admin/config/oneapi.json`
 - Modify: `Jewix-Front/admin/package.json`
 - Modify: `Jewix-Front/admin/package-lock.json`
@@ -1826,7 +1845,7 @@ Remove `i18n-remove`, Umi environment scripts, `postinstall: max setup`, Jest sc
 
 - [ ] **Step 2: Delete generated and superseded Umi files**
 
-Delete only the Task 7 file list after the Vite build passes. Preserve `defaultSettings.ts` and `table.ts` only under `src/config/`. Confirm `config/proxy.ts` is gone and no source imports `BASE_URL`. Confirm `src/app.tsx` / `src/global.tsx` / `src/pages/Admin.tsx` were already removed in Task 6 (not present to delete again).
+Delete only the Task 7 file list after the Vite build passes. Preserve `defaultSettings.ts` and `table.ts` only under `src/config/`. Confirm `config/proxy.ts` is gone and no source imports `BASE_URL`. Confirm legacy `src/app.tsx` was already removed in Task 5 and `src/global.tsx` / `src/pages/Admin.tsx` in Task 6 (not present to delete again). On macOS do not use `test ! -e src/app.tsx` — that is true for `App.tsx`.
 
 After scripts/deps cleanup, close the package-level gate left open by Task 6 Step 9:
 
@@ -1838,11 +1857,12 @@ Expected: no matches.
 
 - [ ] **Step 3: Remove obsolete aliases and generated includes**
 
-Confirm Task 6 already removed the temporary repository-root `/*` alias, deleted legacy `src/app.tsx`, and widened `include` to all of `src`. Verify `tsconfig.json` has no `@@/*`, `@@test/*`, or `/*` alias (only `@/*`), `include` covers `src` (not the Task 2 surface-only list), `exclude` no longer lists `src/app.tsx`, and that `node_modules` / `src/.umi` / `src/.umi-production` remain excluded until those directories are deleted in this task.
+Confirm Task 6 already removed the temporary repository-root `/*` alias and the Task 5 `@/pages/*` stub, and widened `include` to all of `src`. Legacy `src/app.tsx` was deleted in Task 5. Verify `tsconfig.json` has no `@@/*`, `@@test/*`, `/*`, or `@/pages/*` alias (only `@/*`), `include` covers `src` (not the Task 2 surface-only list), `exclude` no longer lists `src/app.tsx`, and that `node_modules` / `src/.umi` / `src/.umi-production` remain excluded until those directories are deleted in this task.
 
 ```bash
 node -e 'const t=require("./tsconfig.json"); console.log(Object.keys(t.compilerOptions.paths||{}).sort().join(",")||"(none)"); console.log((t.include||[]).join(",")); console.log(t.exclude.join(","))'
-test ! -e src/app.tsx && echo "legacy app.tsx gone"
+ls src | grep -qx 'app.tsx' && echo "legacy app.tsx still present" && exit 1 || echo "legacy app.tsx gone"
+ls src | grep -qx 'App.tsx' && echo "Vite App.tsx present"
 # expect paths: @/*
 # expect include: src,vite.config.ts,vitest.config.ts
 # expect exclude: node_modules,src/.umi,src/.umi-production

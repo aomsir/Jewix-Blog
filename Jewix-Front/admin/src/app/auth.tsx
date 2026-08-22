@@ -1,77 +1,83 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import type { API } from "@/services/ant-design-pro/typings";
 import { fetchCurrentUserInfo } from "@/services/api/user";
+import { AuthContext } from "./auth-context";
 
-export type AuthState = {
-  currentUser?: API.FetchUserDetailResponse;
-  loading: boolean;
-  refreshUser: () => Promise<API.FetchUserDetailResponse | undefined>;
-  setCurrentUser: (user?: API.FetchUserDetailResponse) => void;
-  clearUser: () => void;
-};
-
-export const AuthContext = createContext<AuthState | undefined>(undefined);
-
-export function useAuth() {
-  const value = useContext(AuthContext);
-  if (!value) throw new Error("useAuth must be used inside AuthProvider");
-  return value;
-}
+export type { AuthState } from "./auth-context";
+export { AuthContext, useAuth } from "./auth-context";
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [currentUser, setCurrentUserState] = useState<API.FetchUserDetailResponse>();
   const [loading, setLoading] = useState(true);
   const requestSeq = useRef(0);
+  const mountedRef = useRef(true);
+  const initializedRef = useRef(false);
+
+  const commit = useCallback((seq: number, write: () => void) => {
+    if (!mountedRef.current || seq !== requestSeq.current) {
+      return false;
+    }
+    write();
+    return true;
+  }, []);
 
   const setCurrentUser = useCallback((user?: API.FetchUserDetailResponse) => {
+    if (!mountedRef.current) {
+      return;
+    }
     requestSeq.current += 1;
     setCurrentUserState(user);
     setLoading(false);
   }, []);
 
   const clearUser = useCallback(() => {
+    if (!mountedRef.current) {
+      return;
+    }
     requestSeq.current += 1;
     setCurrentUserState(undefined);
     setLoading(false);
   }, []);
 
   const refreshUser = useCallback(async () => {
+    if (!mountedRef.current) {
+      return undefined;
+    }
     const seq = ++requestSeq.current;
     setLoading(true);
     try {
       const response = await fetchCurrentUserInfo({ skipErrorHandler: true });
-      if (seq !== requestSeq.current) {
+      if (!commit(seq, () => setCurrentUserState(response.status))) {
         return undefined;
       }
-      setCurrentUserState(response.status);
       return response.status;
     } catch {
-      if (seq === requestSeq.current) {
-        setCurrentUserState(undefined);
-      }
+      commit(seq, () => setCurrentUserState(undefined));
       return undefined;
     } finally {
-      if (seq === requestSeq.current) {
-        setLoading(false);
-      }
+      commit(seq, () => setLoading(false));
     }
-  }, []);
+  }, [commit]);
 
   useEffect(() => {
+    mountedRef.current = true;
+    const alreadyInitialized = initializedRef.current;
+    const cleanup = () => {
+      mountedRef.current = false;
+      if (alreadyInitialized) {
+        requestSeq.current += 1;
+      }
+    };
     if (window.location.pathname.endsWith("/login")) {
       setLoading(false);
-      return;
+      return cleanup;
     }
+    if (alreadyInitialized) {
+      return cleanup;
+    }
+    initializedRef.current = true;
     void refreshUser();
+    return cleanup;
   }, [refreshUser]);
 
   const value = useMemo(

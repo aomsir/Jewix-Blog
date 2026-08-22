@@ -6,10 +6,11 @@ import { LocalToken } from "@/utils/token";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { LoginForm, ProFormText } from "@ant-design/pro-components";
 import { useEmotionCss } from "@ant-design/use-emotion-css";
-import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from "@umijs/max";
+import { FormattedMessage, Helmet, SelectLang, useIntl, useModel } from "@umijs/max";
 import { Alert, message } from "antd";
 import React, { useState } from "react";
 import { flushSync } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import Settings from "../../../config/defaultSettings";
 import css from "./index.module.scss";
 
@@ -55,6 +56,7 @@ const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.ResponseStructure>();
   // 获取初始登录状态
   const { initialState, setInitialState, refresh } = useModel("@@initialState");
+  const navigate = useNavigate();
   // 国际化
   const intl = useIntl();
   // 登录
@@ -91,7 +93,7 @@ const Login: React.FC = () => {
       // 获取到之前的页面
       const urlParams = new URL(window.location.href).searchParams;
       // 跳转到之前的页面
-      history.push(urlParams.get("redirect") || "/");
+      navigate(urlParams.get("redirect") || "/");
     } else {
       // 如果失败去设置用户错误信息
       setUserLoginState(data);

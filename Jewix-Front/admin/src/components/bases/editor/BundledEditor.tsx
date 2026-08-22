@@ -43,8 +43,8 @@ import 'tinymce/plugins/wordcount';
 import 'tinymce/plugins/emoticons/js/emojis';
 
 // Content styles, including inline UI like fake cursors
-import contentCss from '!!raw-loader!tinymce/skins/content/default/content.min.css';
-import contentUiCss from '!!raw-loader!tinymce/skins/ui/oxide/content.min.css';
+import contentCss from 'tinymce/skins/content/default/content.min.css?raw';
+import contentUiCss from 'tinymce/skins/ui/oxide/content.min.css?raw';
 import { IAllProps } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
 
 export default function BundledEditor(props: IAllProps) {
