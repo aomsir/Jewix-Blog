@@ -79,6 +79,8 @@ Expected: retain the already-approved TinyMCE and dependency changes. Do not com
 - Create: `Jewix-Front/admin/vite.config.ts`
 - Create: `Jewix-Front/admin/vitest.config.ts`
 - Create: `Jewix-Front/admin/src/test/setup.ts`
+- Create: `Jewix-Front/admin/src/test/setup.test.tsx`
+- Create: `Jewix-Front/admin/src/main.tsx` (minimal stub; Task 5 replaces with real App mount)
 - Move: `Jewix-Front/admin/src/global.less` to `Jewix-Front/admin/src/global.scss`
 - Move: `Jewix-Front/admin/src/styles/global.less` to `Jewix-Front/admin/src/styles/global.scss`
 - Move: `Jewix-Front/admin/src/pages/login/index.less` to `Jewix-Front/admin/src/pages/login/index.module.scss`
@@ -119,7 +121,9 @@ Do not remove Umi yet; the old build remains available until the replacement she
 
 - [ ] **Step 2: Write the Vite entry HTML**
 
-Create `index.html` (title matches `config/defaultSettings.ts`; keep `public/scripts/loading.js` for first-paint white-screen cover):
+Create `index.html` (title matches `config/defaultSettings.ts`; keep `public/scripts/loading.js` for first-paint white-screen cover). Reference public assets with **root-absolute paths without** the `/admin` prefix (`/favicon.ico`, `/scripts/loading.js`). Vite's HTML URL rewriter joins `base: "/admin/"` once in bothdev and production.
+
+Do **not** hardcode `/admin/favicon.ico` (breaks if `base` changes) and do **not** use `%BASE_URL%favicon.ico` on Vite 7: `%BASE_URL%` is first substituted to `/admin/...`, then `processNodeUrl` runs `path.posix.join(base, url)` and yields `/admin/admin/...` indev.
 
 ```html
 <!doctype html>
@@ -127,9 +131,9 @@ Create `index.html` (title matches `config/defaultSettings.ts`; keep `public/scr
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/admin/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" />
     <title>Jewix博客系统后台管理</title>
-    <script src="/admin/scripts/loading.js" async></script>
+    <script src="/scripts/loading.js" async></script>
   </head>
   <body>
     <div id="root"></div>
@@ -137,6 +141,8 @@ Create `index.html` (title matches `config/defaultSettings.ts`; keep `public/scr
   </body>
 </html>
 ```
+
+After `npm run build`, `dist/index.html` must contain `/admin/favicon.ico` and `/admin/scripts/loading.js` (single `/admin/` prefix). Dev HTML/requests must not contain `/admin/admin/`.
 
 - [ ] **Step 3: Write the Vite configuration**
 
@@ -204,6 +210,10 @@ import "@testing-library/jest-dom/vitest";
 
 Replace `tsconfig.json` with this full file. Explicitly `exclude` Umi generated dirs: `postinstall` / `max setup` can recreate `src/.umi` and `src/.umi-production` until Task 7 removes Umi, and those trees would otherwise break Vite-era `tsc --noEmit`.
 
+Keep repository-root `/*` → `./*` **temporarily** so the still-installed Umi bundler can resolve the 13 absolute `/config/*` imports and prove “old build remains available.” Remove only the Umi-generated `@@/*` / `@@test/*` aliases here (do **not** restore them — `max build` does not need `@@` for compilation). Task 6 deletes `/*` immediately after those imports migrate to `@/config/*`, and widens `include` to all of `src`.
+
+**Vite-era `include` boundary:** typecheck only the new Vite surface (Tasks 2–5) plus pre-listed dirs that later tasks will create. Do **not** include unmigrated legacy pages/services that still import `@umijs/max`. Missing dirs in `include` are fine until created.
+
 ```json
 {
   "compilerOptions": {
@@ -221,29 +231,77 @@ Replace `tsconfig.json` with this full file. Explicitly `exclude` Umi generated 
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "/*": ["./*"]
     },
     "types": ["vite/client", "vitest/globals"]
   },
-  "include": ["src", "vite.config.ts", "vitest.config.ts"],
-  "exclude": ["node_modules", "src/.umi", "src/.umi-production"]
+  "include": [
+    "src/main.tsx",
+    "src/test/**/*.ts",
+    "src/test/**/*.tsx",
+    "src/lib/**/*.ts",
+    "src/lib/**/*.tsx",
+    "src/app/**/*.ts",
+    "src/app/**/*.tsx",
+    "src/router/**/*.ts",
+    "src/router/**/*.tsx",
+    "src/layouts/**/*.ts",
+    "src/layouts/**/*.tsx",
+    "src/config/**/*.ts",
+    "src/config/**/*.tsx",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/.umi",
+    "src/.umi-production",
+    "src/app.tsx"
+  ]
 }
 ```
 
-Remove legacy `@@/*`, `@@test/*`, and repository-root `/*` path aliases while editing this file.
+Do **not** put `src/App.tsx` in Task 2 `include`: on case-insensitive filesystems (default macOS) it collides with the legacy Umi file `src/app.tsx` and would typecheck the whole Umi graph. Explicitly `exclude` `src/app.tsx`. Use `src/app/**/*.ts(x)` for the future `src/app/` directory (auth/access). Task 5 writes the real `App.tsx` content only after Task 6 deletes `src/app.tsx` (or in the same cutover); until then keep `App.tsx` out of `include`. Remove legacy `@@/*` and `@@test/*` path aliases while editing this file. Do **not** remove repository-root `/*` in Task 2.
+
+Also create the minimal Vite entry stub `src/main.tsx` (Task 5 **modifies** this file into the real App mount — do not create a second entry):
+
+```tsx
+import { createRoot } from "react-dom/client";
+import "./global.scss";
+
+createRoot(document.getElementById("root")!).render(null);
+```
+
+And a foundation smoke test `src/test/setup.test.tsx` that proves jsdom + Testing Library + jest-dom setup (do **not** set `passWithNoTests`):
+
+```tsx
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+
+describe("vitest foundation", () => {
+  it("loads jest-dom matchers via setup", () => {
+    render(<div>foundation</div>);
+    expect(screen.getByText("foundation")).toBeInTheDocument();
+  });
+});
+```
 
 Verify:
 
 ```bash
-node -e 'const t=require("./tsconfig.json"); console.log(t.exclude.join(",")); console.log(Object.keys(t.compilerOptions.paths||{}).join(",")||"(paths:@ only)")'
-# expect: node_modules,src/.umi,src/.umi-production
-# expect: @/*   (no @@/* or /*)
+node -e 'const t=require("./tsconfig.json"); console.log(t.exclude.join(",")); console.log(Object.keys(t.compilerOptions.paths||{}).sort().join(",")||"(none)"); console.log(t.include.join(","))'
+# expect exclude: node_modules,src/.umi,src/.umi-production,src/app.tsx
+# expect paths: /*,@/*   (has @/* and /*; no @@/* or @@test/*)
+# expect include: Vite surface only (main/test/lib/app/**/router/layouts/config + vite/vitest configs; no src/App.tsx while legacy app.tsx exists)
 
-# optional: if .umi exists from postinstall, typecheck must still not type those files
 npm run typecheck
+npm test
+npm run build
+npx max build
 ```
 
-Expected: `exclude` lists all three entries; `paths` contains only `@/*`; typecheck does not fail on regenerated `.umi` sources.
+Expected: `exclude` lists all three entries; `paths` is exactly `@/*` plus temporary `/*` (no `@@/*` / `@@test/*`); `include` is the Vite surface above (not whole `src`); `npm run typecheck`, `npm test`, and `npm run build` exit 0; `npx max build` succeeds (old Umi build remains available until Task 7).
 
 - [ ] **Step 6: Migrate the three Less files to Sass**
 
@@ -900,8 +958,8 @@ Expected: unauthenticated redirect; leaf denial for `/user`; `/auth/menu` denied
 - Create: `Jewix-Front/admin/src/router/routeMeta.tsx`
 - Create: `Jewix-Front/admin/src/layouts/AdminLayout.tsx`
 - Create: `Jewix-Front/admin/src/app/UnauthorizedBridge.tsx`
-- Create: `Jewix-Front/admin/src/App.tsx`
-- Create: `Jewix-Front/admin/src/main.tsx`
+- Create: `Jewix-Front/admin/src/App.tsx` (only after legacy `src/app.tsx` is removed — case-insensitive FS collision; prefer doing this in the Task 6 cutover that deletes `src/app.tsx`, or delete `src/app.tsx` first in Task 5 before writing `App.tsx`)
+- Modify: `Jewix-Front/admin/src/main.tsx` (replace Task 2 stub with real App mount)
 - Create: `Jewix-Front/admin/src/router/routes.test.tsx`
 - Move: `Jewix-Front/admin/config/defaultSettings.ts` to `Jewix-Front/admin/src/config/defaultSettings.ts`
 - Keep: `Jewix-Front/admin/public/scripts/loading.js`
@@ -1233,7 +1291,7 @@ export default function App() {
 }
 ```
 
-Create `src/main.tsx`:
+Replace the Task 2 stub in `src/main.tsx` with the real App mount (file already exists):
 
 ```tsx
 import React from "react";
@@ -1459,13 +1517,22 @@ export const getFetchImageUrl = (res: API.FetchPhotosResponse) =>
 
 In `UploadImage.tsx`, delete the unused `/config/proxy` import. Do not keep a client-side `BASE_URL` constant; the only remaining backend origin is `vite.config.ts` `server.proxy["/api"].target`.
 
+Immediately after the 11 `/config/table` + 2 `/config/proxy` call sites are gone (and other legacy `@umijs/max` imports in this task are migrated), update `tsconfig.json` and the App entry cutover:
+
+1. Delete legacy `src/app.tsx` (Umi runtime). On case-insensitive filesystems this must happen before `src/App.tsx` can exist as a distinct path; if Task 5 deferred `App.tsx`, create it here.
+2. Delete the temporary Task 2 repository-root `/*` alias so `paths` contains only `@/*`.
+3. Drop `src/app.tsx` from `exclude`, and widen `"include"` from the Task 2 Vite surface to all of `"src"` (plus `vite.config.ts` / `vitest.config.ts`) so the migrated tree is fully typechecked.
+
 Verify with:
 
 ```bash
 rg 'from ["/'"'"']/config/|BASE_URL' src --glob '!**/.umi*/**'
+node -e 'const t=require("./tsconfig.json"); console.log(Object.keys(t.compilerOptions.paths||{}).sort().join(",")||"(none)"); console.log((t.include||[]).join(","))'
+# expect paths: @/*   (no /* , no @@/* , no @@test/*)
+# expect include: src,vite.config.ts,vitest.config.ts
 ```
 
-Expected: zero matches.
+Expected: zero `/config` / `BASE_URL` matches; `paths` is only `@/*`; `include` covers all of `src`.
 
 - [ ] **Step 5: Convert BundledEditor raw-loader to Vite `?raw`**
 
@@ -1745,7 +1812,15 @@ Expected: no matches.
 
 - [ ] **Step 3: Remove obsolete aliases and generated includes**
 
-Verify `tsconfig.json` still has no `@@/*`, `@@test/*`, or repository-root `/*` alias, and that Task 2 `exclude` still contains `node_modules`, `src/.umi`, and `src/.umi-production` until those directories are deleted in this task.
+Confirm Task 6 already removed the temporary repository-root `/*` alias, deleted legacy `src/app.tsx`, and widened `include` to all of `src`. Verify `tsconfig.json` has no `@@/*`, `@@test/*`, or `/*` alias (only `@/*`), `include` covers `src` (not the Task 2 surface-only list), `exclude` no longer lists `src/app.tsx`, and that `node_modules` / `src/.umi` / `src/.umi-production` remain excluded until those directories are deleted in this task.
+
+```bash
+node -e 'const t=require("./tsconfig.json"); console.log(Object.keys(t.compilerOptions.paths||{}).sort().join(",")||"(none)"); console.log((t.include||[]).join(",")); console.log(t.exclude.join(","))'
+test ! -e src/app.tsx && echo "legacy app.tsx gone"
+# expect paths: @/*
+# expect include: src,vite.config.ts,vitest.config.ts
+# expect exclude: node_modules,src/.umi,src/.umi-production
+```
 
 - [ ] **Step 4: Regenerate the admin lockfile**
 

@@ -11,7 +11,7 @@ import { Alert, message } from "antd";
 import React, { useState } from "react";
 import { flushSync } from "react-dom";
 import Settings from "../../../config/defaultSettings";
-import css from "./index.less";
+import css from "./index.module.scss";
 
 const Lang = () => {
   const langClassName = useEmotionCss(({ token }) => {

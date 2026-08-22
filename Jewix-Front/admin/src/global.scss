@@ -1,3 +1,5 @@
+@use "./styles/global";
+
 html,
 body,
 #root {
@@ -55,5 +57,3 @@ ol {
     }
   }
 }
-// 自己写的样式
-@import "./styles/global.less";
