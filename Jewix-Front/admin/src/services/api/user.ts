@@ -18,7 +18,10 @@ export const logout = () => request('logout');
  * @returns
  */
 export function fetchCurrentUserInfo(options?: Record<string, any>) {
-  return request<API.ResponseStructure<API.FetchUserDetailResponse>>('users/current');
+  return request<API.ResponseStructure<API.FetchUserDetailResponse>>('users/current', {
+    ...(options ?? {}),
+    method: 'GET',
+  });
 }
 export const updateCurrentUserInfo = updateFactory<API.UpdateUserDetailBody>('admin/users/my');
 // 获取用户列表

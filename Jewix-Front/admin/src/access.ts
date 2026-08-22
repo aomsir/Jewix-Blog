@@ -52,10 +52,10 @@ export default function access(
     return {
         // canAdmin: currentUser && currentUser.access === "admin",
         // adminRouteFilter: () => isAdmin, // 只有管理员可访问
-        normalRouteFilter: (route: any) => hasRoutes.includes(route.name), // initialState 中包含了的路由才有权限访问
-        operationFilter: (route: any, operation: string) =>
-            // @ts-ignore
-            hasOperations[route.name as keyof typeof hasOperations]?.includes(operation), // initialState 中包含了的路由才有权限访问
+        normalRouteFilter: (route: { name?: string }) =>
+            hasRoutes.includes(route.name ?? ""), // initialState 中包含了的路由才有权限访问
+        operationFilter: (route: { name?: string }, operation: string) =>
+            (hasOperations as Record<string, string[]>)[route.name ?? ""]?.includes(operation), // initialState 中包含了的路由才有权限访问
     };
 }
 
