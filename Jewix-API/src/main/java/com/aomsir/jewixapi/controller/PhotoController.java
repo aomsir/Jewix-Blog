@@ -10,8 +10,8 @@ import com.aomsir.jewixapi.service.PhotoService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
 import com.upyun.UpException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +34,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Api(tags = "相册控制器")
+@Tag(name = "相册控制器")
 @RestController
 public class PhotoController {
 
@@ -56,7 +56,7 @@ public class PhotoController {
      */
     @OperateLog(optType = "上传照片")
     @PreAuthorize("hasAuthority('ADMIN_PHOTO_ADD')")
-    @ApiOperation(value = "上传照片到云端")
+    @Operation(summary = "上传照片到云端")
     @PostMapping("/admin/photos")
     public R updatePhoto(MultipartFile file,
                          @Validated PhotoUpdateVo photoUpdateVo) throws UpException, IOException {
@@ -71,7 +71,7 @@ public class PhotoController {
      * @return 相册分页列表
      */
     @PreAuthorize("hasAuthority('ADMIN_PHOTO_LIST')")
-    @ApiOperation(value = "根据类型分页查询相册列表")
+    @Operation(summary = "根据类型分页查询相册列表")
     @GetMapping("/admin/photos")
     public R getPhotoListByPage(PhotoPageVo photoPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(photoPageVo);
@@ -91,7 +91,7 @@ public class PhotoController {
      * @param response ServletResponse
      * @param name 上传后更新的文件名
      */
-    @ApiOperation(value = "根据文件名获取服务器本地相册文件")
+    @Operation(summary = "根据文件名获取服务器本地相册文件")
     @GetMapping("/photos/download")
     public void download(ServletResponse response,
                          @RequestParam("name") String name) {
@@ -129,7 +129,7 @@ public class PhotoController {
      */
     @OperateLog(optType = "删除照片")
     @PreAuthorize("hasAuthority('ADMIN_PHOTO_DELETE')")
-    @ApiOperation(value = "根据文件名与类型删除相册信息")
+    @Operation(summary = "根据文件名与类型删除相册信息")
     @DeleteMapping("/admin/photos")
     public R deletePhoto(PhotoDeleteVo photoDeleteVo) throws UpException, IOException {
         int role = this.photoService.deletePhoto(photoDeleteVo);

@@ -7,8 +7,8 @@ import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.CategoryService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +25,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Api(tags = "分类控制器")
+@Tag(name = "分类控制器")
 @RestController
 public class CategoryController {
 
@@ -38,7 +38,7 @@ public class CategoryController {
      * @param categoryParentPageVo 分页查询一级分类列表VO对象
      * @return 一级分类列表
      */
-    @ApiOperation(value = "分页查询一级分类列表")
+    @Operation(summary = "分页查询一级分类列表")
     @GetMapping("/categories/parent")
     public R getCategoryParentListByPage(CategoryParentPageVo categoryParentPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(categoryParentPageVo);
@@ -57,7 +57,7 @@ public class CategoryController {
      * @param categorySonListById 根据id分页获取二级分类列表VO对象
      * @return 分类分页列表
      */
-    @ApiOperation(value = "根据id分页查询二级分类")
+    @Operation(summary = "根据id分页查询二级分类")
     @GetMapping("/categories/son")
     public R getCategoryListPageByParentId(CategorySonListById categorySonListById) {
         Map<String, Object> param = BeanUtil.beanToMap(categorySonListById);
@@ -76,7 +76,7 @@ public class CategoryController {
      * 查询一级分类及其二级分类
      * @return 分类列表
      */
-    @ApiOperation(value = "获取一级分类及其子分类")
+    @Operation(summary = "获取一级分类及其子分类")
     @GetMapping("/categories")
     public R getCategoryList() {
         List<CategoryListDTO> resultList = this.categoryService.searchCategoryList();
@@ -91,7 +91,7 @@ public class CategoryController {
      */
     @OperateLog(optType = "添加分类")
     @PreAuthorize("hasAuthority('ADMIN_CATEGORY_ADD')")
-    @ApiOperation(value = "添加分类")
+    @Operation(summary = "添加分类")
     @PostMapping("/admin/categories")
     public R addCategory(@RequestBody @Validated CategoryAddVo categoryAddVo) {
         int role = this.categoryService.addCategory(categoryAddVo);
@@ -105,7 +105,7 @@ public class CategoryController {
      * @param articleCategoryVo 根据分类获取文章列表VO对象
      * @return 分类文章分页列表
      */
-    @ApiOperation(value = "根据分类ID分页查询文章预览列表")
+    @Operation(summary = "根据分类ID分页查询文章预览列表")
     @GetMapping("/categories/articles")
     public R getArticlesPageByCategoryId(ArticleCategoryVo articleCategoryVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleCategoryVo);
@@ -127,7 +127,7 @@ public class CategoryController {
      */
     @OperateLog(optType = "删除分类")
     @PreAuthorize("hasAuthority('ADMIN_CATEGORY_DELETE')")
-    @ApiOperation(value = "删除分类信息")
+    @Operation(summary = "删除分类信息")
     @DeleteMapping("/admin/categories")
     public R deleteCategory(@RequestParam List<Long> ids) {
         int role = this.categoryService.deleteCategories(ids);
@@ -143,7 +143,7 @@ public class CategoryController {
      */
     @OperateLog(optType = "修改分类")
     @PreAuthorize("hasAuthority('ADMIN_CATEGORY_UPDATE')")
-    @ApiOperation(value = "更新分类信息")
+    @Operation(summary = "更新分类信息")
     @PutMapping("/admin/categories")
     public R updateCategory(@RequestBody CategoryUpdateVo categoryUpdateVo) {
         int role = this.categoryService.updateCategory(categoryUpdateVo);

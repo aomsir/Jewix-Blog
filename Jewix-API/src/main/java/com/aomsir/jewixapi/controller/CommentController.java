@@ -7,8 +7,8 @@ import com.aomsir.jewixapi.service.CommentService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +25,7 @@ import java.util.Map;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-@Api(tags = "评论控制器")
+@Tag(name = "评论控制器")
 @RestController
 public class CommentController {
 
@@ -38,7 +38,7 @@ public class CommentController {
      * @return 无限制评论列表
      */
     @PreAuthorize("hasAuthority('ADMIN_COMMENT_LIST')")
-    @ApiOperation(value = "后台无限制获取评论列表")
+    @Operation(summary = "后台无限制获取评论列表")
     @GetMapping("/admin/comments")
     public R getCommentsBackendListByPage(CommentBackendPageVo commentBackendPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(commentBackendPageVo);
@@ -62,7 +62,7 @@ public class CommentController {
      * @param commentFrontVo 前台获取评论VO对象
      * @return 评论列表
      */
-    @ApiOperation(value = "前台根据目标id与类型获取评论列表")
+    @Operation(summary = "前台根据目标id与类型获取评论列表")
     @GetMapping("/comments")
     public R getCommentsById(CommentFrontVo commentFrontVo) {
         Map<String, Object> param = BeanUtil.beanToMap(commentFrontVo);
@@ -83,7 +83,7 @@ public class CommentController {
      * @param request request对象
      * @return 添加评论所影响的行数
      */
-    @ApiOperation(value = "添加评论")
+    @Operation(summary = "添加评论")
     @PostMapping("/comments")
     public R addComment(@RequestBody @Validated CommentAddVo commentAddVo,
                         HttpServletRequest request) throws JsonProcessingException {
@@ -100,7 +100,7 @@ public class CommentController {
      */
     @OperateLog(optType = "修改评论")
     @PreAuthorize("hasAuthority('ADMIN_COMMENT_UPDATE')")
-    @ApiOperation(value = "后台修改评论相关内容")
+    @Operation(summary = "后台修改评论相关内容")
     @PutMapping("/admin/comments")
     public R updateComment(@RequestBody @Validated CommentUpdateVo commentUpdateVo) {
         int role = this.commentService.updateComment(commentUpdateVo);
@@ -115,7 +115,7 @@ public class CommentController {
      */
     @OperateLog(optType = "删除评论")
     @PreAuthorize("hasAuthority('ADMIN_COMMENT_DELETE')")
-    @ApiOperation(value = "根据id列表删除文章评论")
+    @Operation(summary = "根据id列表删除文章评论")
     @DeleteMapping("/admin/comments")
     public R deleteComment(@RequestParam("ids") List<Long> ids) {
 
@@ -131,7 +131,7 @@ public class CommentController {
      */
     @OperateLog(optType = "修改评论状态")
     @PreAuthorize("hasAuthority('ADMIN_COMMENT_UPDATE_STATUS')")
-    @ApiOperation(value = "修改评论状态")
+    @Operation(summary = "修改评论状态")
     @PutMapping("/admin/comments/status")
     public R updateCommentStatus(@RequestBody @Validated CommentUpdateStatusVo commentUpdateStatusVo) {
         int role = this.commentService.updateCommentStatus(commentUpdateStatusVo);

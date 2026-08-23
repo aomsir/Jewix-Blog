@@ -11,8 +11,8 @@ import com.aomsir.jewixapi.pojo.vo.ArticleUpdateVo;
 import com.aomsir.jewixapi.service.ArticleService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Api(tags = "文章控制器")
+@Tag(name = "文章控制器")
 @RestController
 public class ArticleController {
 
@@ -45,7 +45,7 @@ public class ArticleController {
      * @return 文章分页列表
      */
     @PreAuthorize("hasAuthority('ADMIN_ARTICLE_LIST')")
-    @ApiOperation(value = "后台无限制分页获取文章列表", notes = "后台无限制分页获取文章列表")
+    @Operation(summary = "后台无限制分页获取文章列表")
     @GetMapping("/admin/articles")
     public R getBackendArticleByPage(ArticleBackendPageVo articleBackendPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleBackendPageVo);
@@ -65,7 +65,7 @@ public class ArticleController {
      * @param articleFrontPageVo 前台分页获取文章预览VO对象
      * @return 预览文章分页列表
      */
-    @ApiOperation(value = "前台获取文章分页列表", notes = "前台获取文章分页列表")
+    @Operation(summary = "前台获取文章分页列表")
     @GetMapping("/articles")
     public R getFrontArticleByPage(ArticleFrontPageVo articleFrontPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(articleFrontPageVo);
@@ -87,7 +87,7 @@ public class ArticleController {
      */
     @OperateLog(optType = "添加文章")
     @PreAuthorize("hasAuthority('ADMIN_ARTICLE_ADD')")
-    @ApiOperation(value = "添加文章", notes = "添加文章")
+    @Operation(summary = "添加文章")
     @PostMapping("/admin/articles")
     public R addArticle(@RequestBody @Validated ArticleAddVo articleAddVo) {
         int role = this.articleService.addArticle(articleAddVo);
@@ -103,7 +103,7 @@ public class ArticleController {
      */
     @OperateLog(optType = "修改文章")
     @PreAuthorize("hasAuthority('ADMIN_ARTICLE_UPDATE')")
-    @ApiOperation(value = "修改文章", notes = "修改文章")
+    @Operation(summary = "修改文章")
     @PutMapping("/admin/articles")
     public R updateArticle(@RequestBody @Validated ArticleUpdateVo articleUpdateVo) {
         int role = this.articleService.updateArticle(articleUpdateVo);
@@ -117,7 +117,7 @@ public class ArticleController {
      * @param uuid 文章uuid
      * @return 文章详情
      */
-    @ApiOperation(value = "文章详情", notes = "文章详情")
+    @Operation(summary = "文章详情")
     @GetMapping("/articles/{uuid}")
     public R getArticleByUuid(@PathVariable("uuid") String uuid,
                               HttpServletRequest httpServletRequest) {
@@ -133,7 +133,7 @@ public class ArticleController {
      * @return 文章详情
      */
     @PreAuthorize("hasAuthority('ADMIN_ARTICLE_BACKEND_DETAIL')")
-    @ApiOperation(value = "后台根据uuid获取文章详情")
+    @Operation(summary = "后台根据uuid获取文章详情")
     @GetMapping("/admin/articles/{uuid}")
     public R getArticleBackendByUuid(@PathVariable("uuid") String uuid) {
         ArticleDetailDTO articleDetailDTO = this.articleService.queryArticleByUuid(uuid);
@@ -149,7 +149,7 @@ public class ArticleController {
      */
     @OperateLog(optType = "理论删除文章")
     @PreAuthorize("hasAuthority('ADMIN_ARTICLE_DELETE_ARCHIVE')")
-    @ApiOperation(value = "理论删除文章", notes = "理论删除文章")
+    @Operation(summary = "理论删除文章")
     @DeleteMapping("/admin/articles/archive")
     public R deleteArticleByArchive(@RequestParam List<Long> ids) {
         int role = this.articleService.deleteArticleByArchive(ids);
@@ -164,7 +164,7 @@ public class ArticleController {
      */
     @OperateLog(optType = "物理删除文章")
     @PreAuthorize("hasAuthority('ADMIN_ARTICLE_DELETE_PHYSICS')")
-    @ApiOperation(value = "物理删除文章", notes = "物理删除文章")
+    @Operation(summary = "物理删除文章")
     @DeleteMapping("/admin/articles/physics")
     public R deleteArticleByPhysics(@RequestParam List<Long> ids) {
         int role = this.articleService.deleteArticleByPhysics(ids);
@@ -177,7 +177,7 @@ public class ArticleController {
      * 获取推荐文章列表
      * @return 预览数据
      */
-    @ApiOperation(value = "获取推荐文章列表", notes = "获取推荐文章列表")
+    @Operation(summary = "获取推荐文章列表")
     @GetMapping("/articles/random")
     public R getArticlesRandom() {
         List<ArticleRandomDTO> list = this.articleService.searchRandomArticle();
@@ -190,7 +190,7 @@ public class ArticleController {
      * 分页查询文章归档
      * @return 归档数据
      */
-    @ApiOperation(value = "分页查询文章归档信息",notes = "分页查询文章归档信息")
+    @Operation(summary = "分页查询文章归档信息")
     @GetMapping("/articles/archive")
     public R getArticlesByArchive(Integer page,
                                   Integer length) {

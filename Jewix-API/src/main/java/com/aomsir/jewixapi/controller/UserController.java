@@ -9,8 +9,8 @@ import com.aomsir.jewixapi.pojo.vo.*;
 import com.aomsir.jewixapi.service.UserService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Api(tags = "用户控制器")
+@Tag(name = "用户控制器")
 @RestController
 public class UserController {
 
@@ -39,7 +39,7 @@ public class UserController {
      * 前台获取站长用户信息
      * @return 站长基本信息
      */
-    @ApiOperation(value = "前台获取站长用户信息")
+    @Operation(summary = "前台获取站长用户信息")
     @GetMapping("/users/10000")
     public R getConfigUser() {
         UserConfigDTO userConfigDTO = this.userService.searchConfigUser();
@@ -53,7 +53,7 @@ public class UserController {
      * @return 用户分页列表
      */
     @PreAuthorize("hasAuthority('ADMIN_USER_LIST')")
-    @ApiOperation(value = "分页查询用户列表")
+    @Operation(summary = "分页查询用户列表")
     @GetMapping("/admin/users")
     public R getUserPage(UserPageVo userPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(userPageVo);
@@ -74,7 +74,7 @@ public class UserController {
      * @return  用户详情
      */
     @PreAuthorize("hasAuthority('ADMIN_USER_DETAIL')")
-    @ApiOperation(value = "后台根据UUID获取用户个人详细信息")
+    @Operation(summary = "后台根据UUID获取用户个人详细信息")
     @GetMapping("/admin/users/{uuid}")
     public R getBackendUserByUuid(@PathVariable String uuid) {
         User user = this.userService.searchUserByUuid(uuid);
@@ -90,7 +90,7 @@ public class UserController {
      */
     @OperateLog(optType = "添加新用户")
     @PreAuthorize("hasAuthority('ADMIN_USER_ADD')")
-    @ApiOperation(value = "添加/注册新用户")
+    @Operation(summary = "添加/注册新用户")
     @PostMapping("/admin/users")
     public R addUser(@RequestBody @Validated UserAddVo userAddVo) {
         int role = this.userService.addUser(userAddVo);
@@ -106,7 +106,7 @@ public class UserController {
      */
     @OperateLog(optType = "更新用户")
     @PreAuthorize("hasAuthority('ADMIN_USER_UPDATE')")
-    @ApiOperation(value = "更新用户")
+    @Operation(summary = "更新用户")
     @PutMapping("/admin/users")
     public R updateUser(@RequestBody @Validated UserUpdateVo userUpdateVo) {
         int role = this.userService.updateUser(userUpdateVo);
@@ -120,7 +120,7 @@ public class UserController {
      * @param userHaveVo 邮箱/用户名是否存在VO对象
      * @return 所查询的行数
      */
-    @ApiOperation(value = "查询邮箱与用户名是否已存在接口")
+    @Operation(summary = "查询邮箱与用户名是否已存在接口")
     @GetMapping("/users/hasUser")
     public R hasUser(UserHaveVo userHaveVo) {
         int role = this.userService.hasUser(userHaveVo);
@@ -135,7 +135,7 @@ public class UserController {
      * @return 更新状态所影响的行数
      */
     @PreAuthorize("hasAuthority('ADMIN_USER_UPDATE_STATUS')")
-    @ApiOperation(value = "根据uuid修改用户状态")
+    @Operation(summary = "根据uuid修改用户状态")
     @PutMapping("/admin/users/status")
     public R updateStatus(@RequestBody @Validated UserStatusVo userStatusVo) {
         int role = this.userService.updateStatus(userStatusVo);
@@ -147,7 +147,7 @@ public class UserController {
      *
      * @return 查询当前登录的用户信息
      */
-    @ApiOperation(value = "查询当前登录的用户信息")
+    @Operation(summary = "查询当前登录的用户信息")
     @GetMapping("/users/current")
     public R getCurrentUser() {
         CurrentUserDTO currentUserDTO = this.userService.searchCurrentUser();
@@ -162,7 +162,7 @@ public class UserController {
      */
     @OperateLog(optType = "理论删除用户")
     @PreAuthorize("hasAuthority('ADMIN_USER_DELETE_ARCHIVE')")
-    @ApiOperation(value = "理论删除用户")
+    @Operation(summary = "理论删除用户")
     @DeleteMapping("/admin/users/archive")
     public R deleteUserByArchive(@RequestParam List<Long> ids) {
         int role = this.userService.deleteUserByArchive(ids);
@@ -177,7 +177,7 @@ public class UserController {
      */
     @OperateLog(optType = "物理删除用户")
     @PreAuthorize("hasAuthority('ADMIN_USER_DELETE_PHYSICS')")
-    @ApiOperation(value = "物理删除用户")
+    @Operation(summary = "物理删除用户")
     @DeleteMapping("/admin/users/physics")
     public R deleteUserByPhysics(@RequestParam List<Long> ids) {
         int role = this.userService.deleteUserByPhysics(ids);
@@ -192,7 +192,7 @@ public class UserController {
      */
     @OperateLog(optType = "用户更新个人信息")
     @PreAuthorize("hasAuthority('ADMIN_USER_UPDATE_MY')")
-    @ApiOperation(value = "用户更新个人信息")
+    @Operation(summary = "用户更新个人信息")
     @PutMapping("/admin/users/my")
     public R updateMyUserInfo(@RequestBody @Validated UserUpdateVo userUpdateVo) {
         int role = this.userService.updateUserByMyself(userUpdateVo);

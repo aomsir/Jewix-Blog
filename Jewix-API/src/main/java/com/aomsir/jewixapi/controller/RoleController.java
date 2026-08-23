@@ -11,8 +11,8 @@ import com.aomsir.jewixapi.pojo.vo.RoleUpdateVo;
 import com.aomsir.jewixapi.service.RoleService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +28,7 @@ import java.util.Map;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-@Api(tags = "角色控制器")
+@Tag(name = "角色控制器")
 @RestController
 public class RoleController {
 
@@ -41,7 +41,7 @@ public class RoleController {
      * @return 通用返回数据
      */
     @PreAuthorize("hasAuthority('ADMIN_ROLE_LIST')")
-    @ApiOperation(value = "分页获取角色列表")
+    @Operation(summary = "分页获取角色列表")
     @GetMapping("/admin/roles")
     public R getRoleList(RolePageVo rolePageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(rolePageVo);
@@ -63,7 +63,7 @@ public class RoleController {
      */
     @PreAuthorize("hasAuthority('ADMIN_ROLE_ADD')")
     @OperateLog(optType = "添加角色")
-    @ApiOperation(value = "添加角色")
+    @Operation(summary = "添加角色")
     @PostMapping("/admin/roles")
     public R addRole(@RequestBody @Validated RoleAddVo roleAddVo) {
         int role = this.roleService.addRole(roleAddVo);
@@ -78,7 +78,7 @@ public class RoleController {
      */
     @PreAuthorize("hasAuthority('ADMIN_ROLE_UPDATE')")
     @OperateLog(optType = "修改角色信息")
-    @ApiOperation(value = "修改角色信息")
+    @Operation(summary = "修改角色信息")
     @PutMapping("/admin/roles")
     public R updateRole(@RequestBody @Validated RoleUpdateVo roleUpdateVo) {
         int role = this.roleService.updateRoleInfo(roleUpdateVo);
@@ -93,7 +93,7 @@ public class RoleController {
      */
     @PreAuthorize("hasAuthority('ADMIN_ROLE_DELETE')")
     @OperateLog(optType = "删除角色")
-    @ApiOperation(value = "删除角色")
+    @Operation(summary = "删除角色")
     @DeleteMapping("/admin/roles")
     public R deleteRoles(@RequestParam List<Integer> roleIds) {
         int role = this.roleService.deleteRoles(roleIds);
@@ -108,7 +108,7 @@ public class RoleController {
      * @return 通用角色id
      */
     @PreAuthorize("hasAuthority('ADMIN_ROLE_DETAIL')")
-    @ApiOperation(value = "根据id获取角色详细信息")
+    @Operation(summary = "根据id获取角色详细信息")
     @GetMapping("/admin/roles/{id}")
     public R getRoleInfoById(@PathVariable("id") Integer id) {
         Role role = this.roleService.searchRoleById(id);
@@ -122,7 +122,7 @@ public class RoleController {
      * @return 角色对应的菜单信息
      */
     @PreAuthorize("hasAuthority('ADMIN_ROLE_MENU_LIST')")
-    @ApiOperation(value = "根据角色id获取菜单列表")
+    @Operation(summary = "根据角色id获取菜单列表")
     @GetMapping("/admin/roles/menu")
     public R getMenusInfoByRoleId(Integer id) {
         RoleOfMenuDTO roleOfMenuDTO = this.roleService.searchRoleOfMenu(id);
@@ -136,7 +136,7 @@ public class RoleController {
      * @return 角色对应的资源信息
      */
     @PreAuthorize("hasAuthority('ADMIN_ROLE_RESOURCE_LIST')")
-    @ApiOperation(value = "根据角色id获取资源列表")
+    @Operation(summary = "根据角色id获取资源列表")
     @GetMapping("/admin/roles/resource")
     public R getResourcesInfoByRoleId(Integer id) {
         RoleOfResourceDTO roleOfResourceDTO = this.roleService.searchRoleOfResource(id);

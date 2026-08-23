@@ -8,8 +8,8 @@ import com.aomsir.jewixapi.pojo.vo.OperateLogPageVo;
 import com.aomsir.jewixapi.service.LogService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +29,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 @RestController
-@Api(tags = "日志控制器")
+@Tag(name = "日志控制器")
 public class LogController {
     @Resource
     private LogService logService;
@@ -41,7 +41,7 @@ public class LogController {
      * @return 分页数据
      */
     @PreAuthorize("hasAuthority('ADMIN_LOG_LOGIN_LIST')")
-    @ApiOperation(value = "分页获取登录日志")
+    @Operation(summary = "分页获取登录日志")
     @GetMapping("/admin/logs/login")
     public R getLoginLogsByPage(@Validated LoginLogPageVo loginLogPageVo) {
         int page = loginLogPageVo.getPage();
@@ -61,7 +61,7 @@ public class LogController {
      * @return 分页数据
      */
     @PreAuthorize("hasAuthority('ADMIN_LOG_OPERATE_LIST')")
-    @ApiOperation(value = "分页获取操作日志")
+    @Operation(summary = "分页获取操作日志")
     @GetMapping("/admin/logs/operate")
     public R getOperateLogsByPage(@Validated OperateLogPageVo operateLogPageVo) {
 
@@ -83,7 +83,7 @@ public class LogController {
      */
     @PreAuthorize("hasAuthority('ADMIN_LOG_LOGIN_DELETE')")
     @OperateLog(optType = "删除登录日志")
-    @ApiOperation(value = "删除登录日志")
+    @Operation(summary = "删除登录日志")
     @DeleteMapping("/admin/logs/login")
     public R deleteLoginLogs(@RequestParam List<Long> ids) {
         int role = this.logService.deleteLoginLogs(ids);
@@ -98,7 +98,7 @@ public class LogController {
      */
     @PreAuthorize("hasAuthority('ADMIN_LOG_OPERATE_DELETE')")
     @OperateLog(optType = "删除操作日志")
-    @ApiOperation(value = "删除操作日志")
+    @Operation(summary = "删除操作日志")
     @DeleteMapping("/admin/logs/operate")
     public R deleteOperateLogs(@RequestParam List<Long> ids) {
         int role = this.logService.deleteOperateLogs(ids);

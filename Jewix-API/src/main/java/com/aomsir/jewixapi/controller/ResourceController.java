@@ -7,8 +7,8 @@ import com.aomsir.jewixapi.pojo.vo.RoleOfResourcesAddVo;
 import com.aomsir.jewixapi.service.ResourceService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +26,7 @@ import java.util.Map;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-@Api(tags = "资源控制器")
+@Tag(name = "资源控制器")
 @RestController
 public class ResourceController {
 
@@ -39,7 +39,7 @@ public class ResourceController {
      * @return 通用返回数据
      */
     @PreAuthorize("hasAuthority('ADMIN_RESOURCE_LIST')")
-    @ApiOperation(value = "分页获取资源列表信息")
+    @Operation(summary = "分页获取资源列表信息")
     @GetMapping("/admin/resources")
     public R getResourceListByPage(ResourcePageVo resourcePageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(resourcePageVo);
@@ -60,7 +60,7 @@ public class ResourceController {
      */
     @PreAuthorize("hasAuthority('ADMIN_RESOURCE_ROLE')")
     @OperateLog(optType = "为角色分配资源")
-    @ApiOperation(value = "给角色分配资源权限")
+    @Operation(summary = "给角色分配资源权限")
     @PostMapping("/admin/resources/doAssign")
     public R doAssignResourceForRole(@RequestBody @Validated RoleOfResourcesAddVo addVo) {
 

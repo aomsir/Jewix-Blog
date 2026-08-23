@@ -6,8 +6,8 @@ import com.aomsir.jewixapi.pojo.vo.InfoWebConfigAddVo;
 import com.aomsir.jewixapi.pojo.vo.InfoWebConfigUpdateVo;
 import com.aomsir.jewixapi.service.WebConfigService;
 import com.aomsir.jewixapi.util.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ import javax.annotation.Resource;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Api(tags = "网站设置控制器")
+@Tag(name = "网站设置控制器")
 @RestController
 public class WebConfigController {
 
@@ -36,7 +36,7 @@ public class WebConfigController {
      */
     @OperateLog(optType = "新增网站信息")
     @PreAuthorize("hasAuthority('ADMIN_CONFIG_ADD')")
-    @ApiOperation(value = "新增网站通用设置信息")
+    @Operation(summary = "新增网站通用设置信息")
     @PostMapping("/admin/configs")
     public R addInfoWebConfig(@RequestBody @Validated InfoWebConfigAddVo infoWebConfigAddVo) {
 
@@ -53,7 +53,7 @@ public class WebConfigController {
      */
     @OperateLog(optType = "修改网站信息")
     @PreAuthorize("hasAuthority('ADMIN_CONFIG_UPDATE')")
-    @ApiOperation(value = "修改网站通用设置信息")
+    @Operation(summary = "修改网站通用设置信息")
     @PutMapping("/admin/configs")
     public R updateInfoWebConfig(@RequestBody @Validated InfoWebConfigUpdateVo infoWebConfigUpdateVo) {
 
@@ -66,7 +66,7 @@ public class WebConfigController {
      * 获取网站设置信息
      * @return 对应的网站信息
      */
-    @ApiOperation(value = "根据类型获取网站设置信息")
+    @Operation(summary = "根据类型获取网站设置信息")
     @GetMapping("/admin/configs")
     public R getInfoAll() {
         WebConfig webConfig = this.webConfigService.searchWebInfo();

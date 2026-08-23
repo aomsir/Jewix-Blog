@@ -7,8 +7,8 @@ import com.aomsir.jewixapi.pojo.vo.PageAddVo;
 import com.aomsir.jewixapi.pojo.vo.PageUpdateVo;
 import com.aomsir.jewixapi.service.PageService;
 import com.aomsir.jewixapi.util.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +24,7 @@ import java.util.List;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Api(tags = "页面控制器")
+@Tag(name = "页面控制器")
 @RestController
 public class PageController {
 
@@ -36,7 +36,7 @@ public class PageController {
      * 查询页面列表数据(前后台使用一个接口)
      * @return 页面列表数据
      */
-    @ApiOperation(value = "查询页面列表数据")
+    @Operation(summary = "查询页面列表数据")
     @GetMapping("/pages")
     public R getPageList() {
         List<PageListDTO> result = this.pageService.searchPageList();
@@ -49,7 +49,7 @@ public class PageController {
      * @param uuid 页面uuid
      * @return 页面详细信息
      */
-    @ApiOperation(value = "获取页面详细内容")
+    @Operation(summary = "获取页面详细内容")
     @GetMapping("/pages/{uuid}")
     public R getPageDetail(@PathVariable("uuid") String uuid) {
         Page page = this.pageService.searchPageByUuid(uuid);
@@ -65,7 +65,7 @@ public class PageController {
      */
     @OperateLog(optType = "新增页面")
     @PreAuthorize("hasAuthority('ADMIN_PAGE_ADD')")
-    @ApiOperation(value = "新增页面")
+    @Operation(summary = "新增页面")
     @PostMapping("/admin/pages")
     public R addPage(@RequestBody @Validated PageAddVo pageAddVo) {
         int role = this.pageService.addPage(pageAddVo);
@@ -81,7 +81,7 @@ public class PageController {
      */
     @OperateLog(optType = "修改页面")
     @PreAuthorize("hasAuthority('ADMIN_PAGE_UPDATE')")
-    @ApiOperation(value = "更新页面")
+    @Operation(summary = "更新页面")
     @PutMapping("/admin/pages")
     public R updatePage(@RequestBody @Validated PageUpdateVo pageUpdateVo) {
         int role = this.pageService.updatePage(pageUpdateVo);
@@ -97,7 +97,7 @@ public class PageController {
      */
     @OperateLog(optType = "删除页面")
     @PreAuthorize("hasAuthority('ADMIN_PAGE_DELETE')")
-    @ApiOperation(value = "删除页面")
+    @Operation(summary = "删除页面")
     @DeleteMapping("/admin/pages")
     public R deletePage(String uuid) {
         int role = this.pageService.deletePage(uuid);

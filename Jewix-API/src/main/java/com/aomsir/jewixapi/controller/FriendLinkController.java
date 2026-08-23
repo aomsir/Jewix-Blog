@@ -9,8 +9,8 @@ import com.aomsir.jewixapi.pojo.vo.FriendLinkUpdateVo;
 import com.aomsir.jewixapi.service.FriendLinkService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
 
-@Api(tags = "友链控制器")
+@Tag(name = "友链控制器")
 @RestController
 public class FriendLinkController {
 
@@ -40,7 +40,7 @@ public class FriendLinkController {
      * @param friendLinkPageVo 分页获取友链列表VO对象
      * @return 友链列表
      */
-    @ApiOperation(value = "分页查询友链列表")
+    @Operation(summary = "分页查询友链列表")
     @GetMapping("/friend-links/page")
     public R getFriendLinksByPage(FriendLinkPageVo friendLinkPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(friendLinkPageVo);
@@ -62,7 +62,7 @@ public class FriendLinkController {
      */
     @OperateLog(optType = "添加友链")
     @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_ADD')")
-    @ApiOperation(value = "添加友情链接")
+    @Operation(summary = "添加友情链接")
     @PostMapping("/admin/friend-links")
     public R addFriendLink(@RequestBody @Validated FriendLinkAddVo friendLinkAddVo) {
         Map<String, Object> param = BeanUtil.beanToMap(friendLinkAddVo);
@@ -79,7 +79,7 @@ public class FriendLinkController {
      */
     @OperateLog(optType = "修改友链")
     @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_UPDATE')")
-    @ApiOperation(value = "修改友情链接信息")
+    @Operation(summary = "修改友情链接信息")
     @PutMapping("/admin/friend-links")
     public R updateFriendLink(@RequestBody @Validated FriendLinkUpdateVo friendLinkUpdateVo) {
         Map<String, Object> param = BeanUtil.beanToMap(friendLinkUpdateVo);
@@ -95,7 +95,7 @@ public class FriendLinkController {
      * @return 友链详情
      */
     @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_DETAIL')")
-    @ApiOperation(value = "根据id获取友情链接详情")
+    @Operation(summary = "根据id获取友情链接详情")
     @GetMapping("/admin/friend-links/{id}")
     public R getFriendLinkInfo(@PathVariable("id") Integer id) {
         FriendLink friendLink = this.friendLinkService.searchFriendLinkInfoById(id);
@@ -111,7 +111,7 @@ public class FriendLinkController {
      */
     @OperateLog(optType = "删除友链")
     @PreAuthorize("hasAuthority('ADMIN_FRIENDLINK_DELETE')")
-    @ApiOperation(value = "删除友情链接")
+    @Operation(summary = "删除友情链接")
     @DeleteMapping("/admin/friend-links")
     public R deleteFriendLink(@RequestParam List<Integer> ids) {
         int role = this.friendLinkService.deleteFriendLinks(ids);

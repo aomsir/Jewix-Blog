@@ -7,8 +7,8 @@ import com.aomsir.jewixapi.pojo.vo.RoleOfMenusAddVo;
 import com.aomsir.jewixapi.service.MenuService;
 import com.aomsir.jewixapi.util.PageUtils;
 import com.aomsir.jewixapi.util.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +26,7 @@ import java.util.Map;
  * @Email: info@say521.cn
  * @GitHub: <a href="https://github.com/aomsir">GitHub</a>
  */
-@Api(tags = "菜单控制器")
+@Tag(name = "菜单控制器")
 @RestController
 public class MenuController {
     @Resource
@@ -38,7 +38,7 @@ public class MenuController {
      * @return 分页数据
      */
     @PreAuthorize("hasAuthority('ADMIN_MENU_LIST')")
-    @ApiOperation(value = "分页获取菜单分页列表")
+    @Operation(summary = "分页获取菜单分页列表")
     @GetMapping("/admin/menus")
     public R getMenuListByPage(MenuPageVo menuPageVo) {
         Map<String, Object> param = BeanUtil.beanToMap(menuPageVo);
@@ -59,7 +59,7 @@ public class MenuController {
      */
     @PreAuthorize("hasAuthority('ADMIN_MENU_ROLE')")
     @OperateLog(optType = "为角色分配菜单")
-    @ApiOperation(value = "为角色分配菜单")
+    @Operation(summary = "为角色分配菜单")
     @PostMapping("/admin/menus/doAssign")
     public R doAssignMenusForRole(@RequestBody @Validated RoleOfMenusAddVo roleOfMenusAddVo) {
         int role = this.menuService.insertMenusForRole(roleOfMenusAddVo);

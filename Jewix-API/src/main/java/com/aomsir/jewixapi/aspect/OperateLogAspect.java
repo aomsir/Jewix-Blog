@@ -7,7 +7,7 @@ import com.aomsir.jewixapi.util.NetUtils;
 import com.aomsir.jewixapi.util.UserHolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -72,12 +72,12 @@ public class OperateLogAspect {
         // 获取切入点所在的方法
         Method method = signature.getMethod();
         // 获取操作
-        Api api = (Api) signature.getDeclaringType().getAnnotation(Api.class);
+        Tag api = (Tag) signature.getDeclaringType().getAnnotation(Tag.class);
         OperateLog optLog = method.getAnnotation(OperateLog.class);
 
         OperatedLog operatedLog = new OperatedLog();
         // 操作模块
-        operatedLog.setOptModule(api.tags()[0]);
+        operatedLog.setOptModule(api.name());
 
         // 操作类型
         operatedLog.setOptType(optLog.optType());
