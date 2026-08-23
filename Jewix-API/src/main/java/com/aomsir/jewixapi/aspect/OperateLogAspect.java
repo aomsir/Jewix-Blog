@@ -1,12 +1,12 @@
 package com.aomsir.jewixapi.aspect;
 
-import com.alibaba.fastjson.JSON;
 import com.aomsir.jewixapi.annotation.OperateLog;
 import com.aomsir.jewixapi.mapper.LogMapper;
 import com.aomsir.jewixapi.pojo.entity.OperatedLog;
 import com.aomsir.jewixapi.util.NetUtils;
 import com.aomsir.jewixapi.util.UserHolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -42,6 +42,9 @@ public class OperateLogAspect {
 
     @Resource
     private LogMapper logMapper;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
     /**
      * 设置操作日志切入点 记录操作日志 在注解的位置切入代码
@@ -91,9 +94,9 @@ public class OperateLogAspect {
         // 请求方法
         operatedLog.setJavaMethod(methodName);
         // 请求参数
-        operatedLog.setOptReqMsg(JSON.toJSONString(joinPoint.getArgs()));
+        operatedLog.setOptReqMsg(this.objectMapper.writeValueAsString(joinPoint.getArgs()));
         // 返回结果
-        operatedLog.setOptRespMsg(JSON.toJSONString(keys));
+        operatedLog.setOptRespMsg(this.objectMapper.writeValueAsString(keys));
         // 请求用户ID
         operatedLog.setUserId(this.userHolder.getUserId());
         // 请求IP
