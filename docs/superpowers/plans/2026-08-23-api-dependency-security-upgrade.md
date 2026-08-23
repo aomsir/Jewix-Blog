@@ -89,13 +89,15 @@ Run:
 mvn -DskipTests compile
 ```
 
-Expected: compilation succeeds before the Springfox configuration migration, with no unrelated service or DTO API breakage.
+Expected: compilation may fail only on the pending Swagger annotation/configuration migration in Task 3; no unrelated service or DTO API breakage is expected.
 
 ### Task 3: Replace Springfox Swagger 2 with Springdoc OpenAPI
 
 **Files:**
 - Modify: `Jewix-API/pom.xml:119-131`
 - Rename/modify: `Jewix-API/src/main/java/com/aomsir/jewixapi/config/Swagger2Configuration.java` to `OpenApiConfiguration.java`
+- Modify: the 14 controllers currently importing `io.swagger.annotations.Api` or `ApiOperation`
+- Modify: `Jewix-API/src/main/java/com/aomsir/jewixapi/aspect/OperateLogAspect.java` to remove its unused Swagger annotation import
 
 - [ ] **Step 1: Add the Springdoc 1.x UI starter**
 
@@ -113,7 +115,7 @@ Use Springdoc `1.8.0`, the latest 1.x release available from Maven Central. Do n
 
 - [ ] **Step 2: Rewrite the development-only configuration**
 
-Replace Springfox imports and `Docket` with `io.swagger.v3.oas.models.info.Info`, `io.swagger.v3.oas.models.info.Contact`, and `org.springdoc.core.models.GroupedOpenApi` or the Springdoc 1.x equivalent. Preserve `@Profile("dev")`, the title, description, version, contact, and `/.*` path coverage. Use the actual package API provided by the selected Springdoc version.
+Replace Springfox imports and `Docket` with `io.swagger.v3.oas.models.info.Info`, `io.swagger.v3.oas.models.info.Contact`, and `org.springdoc.core.models.GroupedOpenApi` or the Springdoc 1.x equivalent. Preserve `@Profile("dev")`, the title, description, version, contact, and `/.*` path coverage. Migrate controller annotations from `io.swagger.annotations.Api` to `io.swagger.v3.oas.annotations.tags.Tag`, and from `io.swagger.annotations.ApiOperation` to `io.swagger.v3.oas.annotations.Operation`, preserving each visible tag and operation summary. Remove unused Swagger imports. Use the actual package API provided by the selected Springdoc version.
 
 - [ ] **Step 3: Verify the configuration compiles and is discoverable**
 
@@ -124,7 +126,7 @@ mvn -DskipTests compile
 rg -n "springfox|Swagger2Configuration|fastjson" pom.xml src || true
 ```
 
-Expected: compilation passes and the only possible `Swagger2Configuration` match is absent because the configuration has been renamed; no Springfox/Fastjson source or POM references remain.
+Expected: compilation passes; no Springfox, Fastjson, or legacy `io.swagger.annotations` source/POM references remain; OpenAPI v3 annotations are present where the old controller annotations were used.
 
 ### Task 4: Add focused regression coverage
 
