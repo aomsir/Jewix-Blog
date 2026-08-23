@@ -22,7 +22,7 @@ public class RedisConfiguration extends CachingConfigurerSupport {
     public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
 
-        // 序列化配置
+        // 序列化配置。上线前须 flush/expire 旧 Fastjson 序列化的 Redis 条目，勿自动删除或加未经测试的兼容序列化器。
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 

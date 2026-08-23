@@ -24,6 +24,7 @@
 		<jwt.version>3.4.0</jwt.version>
 		<upyun.version>4.2.3</upyun.version>
 		<jasypt.version>3.0.5</jasypt.version>
+		<skipITs>true</skipITs>
 	</properties>
 
 	<dependencies>
@@ -186,5 +187,36 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>integration-tests</id>
+			<properties>
+				<skipITs>false</skipITs>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<configuration>
+							<includes>
+								<include>**/*IT.java</include>
+							</includes>
+							<groups>integration</groups>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
