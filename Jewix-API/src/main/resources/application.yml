@@ -1,7 +1,3 @@
-spring:
-  profiles:
-    active: dev
-
 springdoc:
   api-docs:
     enabled: false
