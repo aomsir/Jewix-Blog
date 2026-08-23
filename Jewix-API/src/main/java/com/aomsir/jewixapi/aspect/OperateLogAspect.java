@@ -72,12 +72,13 @@ public class OperateLogAspect {
         // 获取切入点所在的方法
         Method method = signature.getMethod();
         // 获取操作
-        Tag api = (Tag) signature.getDeclaringType().getAnnotation(Tag.class);
+        Class<?> declaringType = signature.getDeclaringType();
+        Tag api = declaringType.getAnnotation(Tag.class);
         OperateLog optLog = method.getAnnotation(OperateLog.class);
 
         OperatedLog operatedLog = new OperatedLog();
         // 操作模块
-        operatedLog.setOptModule(api.name());
+        operatedLog.setOptModule(api != null ? api.name() : declaringType.getSimpleName());
 
         // 操作类型
         operatedLog.setOptType(optLog.optType());

@@ -49,6 +49,12 @@ jewix:
   basePath: ENC(um/IPJ8aGJn5OBNKfn6MJjC3nS5m71BAiBlK8Qd2HoqsZ+JkCkjMeIY16F2GrJHXkW2jb3BLGVY=)  # 相册本地存储位置
   tencent-location-api-key: ENC(nzlEq9wIleBwe/2tgrJN7QmG5BcwS8IBmwmgI3zsrrMXILANBtlsXA4wW18M09CSkQ09ro5VFoY=)  # 腾讯地图密钥
 
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
 cloud:
   upyun:
     bucket: ENC(b2hDZgpNEVURPBCUYxPN0yQOZ14zpt8U3e1IiVpK/dU=)  # 存储空间名
