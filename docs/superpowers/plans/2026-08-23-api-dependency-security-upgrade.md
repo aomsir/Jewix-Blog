@@ -4,7 +4,7 @@
 
 **Goal:** Remove the 23 open Dependabot findings in `Jewix-API/pom.xml` while preserving Java 8, Spring Boot 2.x, API contracts, authentication behavior, and development Swagger documentation.
 
-**Architecture:** Keep the existing Spring Boot application structure and service code. Centralize dependency versions in the Maven parent/BOM, remove unused Fastjson, upgrade Hutool and commons-lang3, and replace the Springfox configuration with Springdoc OpenAPI 1.x. Verification combines source-level dependency checks, Maven tests, clean packaging, and an application-context/OpenAPI smoke check.
+**Architecture:** Keep the existing Spring Boot application structure and service code. Centralize dependency versions in the Maven parent/BOM, replace direct Fastjson usage with Jackson, upgrade Hutool and commons-lang3, and replace the Springfox configuration with Springdoc OpenAPI 1.x. Verification combines source-level dependency checks, Maven tests, clean packaging, and an application-context/OpenAPI smoke check.
 
 **Tech Stack:** Java 8, Maven, Spring Boot 2.7.18, Springdoc OpenAPI 1.8.0, Jackson, Hutool 5.8.47, commons-lang3 3.20.0, JUnit 5.
 
@@ -30,7 +30,7 @@ mvn dependency:tree -DoutputFile=target/dependency-tree-before.txt
 
 Expected: the output confirms Java 8 compatibility and the graph contains Springfox, `fastjson:1.2.49`, Jackson `2.12.1`, Hutool `5.8.12`, and `commons-lang3:3.12.0`.
 
-- [ ] **Step 2: Confirm no direct Fastjson usage**
+- [ ] **Step 2: Inventory direct Fastjson usage**
 
 Run:
 
@@ -38,7 +38,7 @@ Run:
 rg -n "com\.alibaba\.fastjson|JSON\.parse|JSONObject|JSONArray" src/main src/test || true
 ```
 
-Expected: no source import requires Fastjson to remain.
+Expected: record every direct usage before choosing the replacement. The current inventory includes `OperateLogAspect` JSON serialization and `RedisConfiguration`'s `GenericFastJsonRedisSerializer`; both must be migrated to Jackson before Fastjson is removed.
 
 - [ ] **Step 3: Commit the baseline only if it changes tracked files**
 
@@ -55,7 +55,7 @@ Change the parent to Spring Boot `2.7.18`, retain `<java.version>1.8</java.versi
 
 - [ ] **Step 2: Remove unsafe or obsolete declarations**
 
-Remove:
+Remove after migrating the direct usages in Task 2 Step 3:
 
 ```xml
 <dependency>
@@ -67,7 +67,11 @@ Remove:
 
 Remove the explicit Jackson `2.12.1` version and keep Jackson aligned through the parent/BOM or one explicit Jackson BOM override. Remove both Springfox dependencies; Springdoc is added in Task 3.
 
-- [ ] **Step 3: Resolve the dependency graph before compiling**
+- [ ] **Step 3: Migrate direct Fastjson usage to Jackson**
+
+Replace `OperateLogAspect`'s `JSON.toJSONString` call with the application's Jackson `ObjectMapper` convention. Replace `GenericFastJsonRedisSerializer` in `RedisConfiguration` with Spring Data Redis' Jackson serializer, preserving the existing Redis template/key/hash/value wiring. Document that existing Fastjson-encoded Redis entries must expire or be flushed before rollout; do not add a compatibility serializer without a failing regression test.
+
+- [ ] **Step 4: Resolve the dependency graph before compiling**
 
 Run:
 
@@ -77,7 +81,7 @@ mvn -U dependency:tree -Dincludes=org.springframework.boot,com.fasterxml.jackson
 
 Expected: no Springfox or Fastjson nodes; Jackson modules resolve to one version line; Hutool and commons-lang3 resolve to the selected secure versions.
 
-- [ ] **Step 4: Compile the existing source and inspect failures**
+- [ ] **Step 5: Compile the existing source and inspect failures**
 
 Run:
 
@@ -85,7 +89,7 @@ Run:
 mvn -DskipTests compile
 ```
 
-Expected: any failure is limited to the pending Springfox configuration migration, with no unrelated service or DTO API breakage.
+Expected: compilation succeeds before the Springfox configuration migration, with no unrelated service or DTO API breakage.
 
 ### Task 3: Replace Springfox Swagger 2 with Springdoc OpenAPI
 
