@@ -1,0 +1,41 @@
+server:
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: JewixApiApplication
+  autoconfigure:
+    exclude:
+      - com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:jewix;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+    type: com.zaxxer.hikari.HikariDataSource
+
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.aomsir.jewixapi.pojo.entity
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    password: test-only
+
+jewix:
+  basePath: ${java.io.tmpdir}/jewix-test-photos
+  tencent-location-api-key: test-tencent-key
+
+cloud:
+  upyun:
+    bucket: test-bucket
+    operator-name: test-operator
+    operator-pwd: test-operator-pwd
+    url: http://127.0.0.1/test-upyun
