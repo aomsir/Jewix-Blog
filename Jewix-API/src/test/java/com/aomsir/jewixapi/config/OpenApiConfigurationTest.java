@@ -1,6 +1,7 @@
 package com.aomsir.jewixapi.config;
 
 import com.aomsir.jewixapi.pojo.vo.LoginVo;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -8,9 +9,12 @@ import io.swagger.v3.oas.models.info.Info;
 import org.junit.jupiter.api.Test;
 import org.springdoc.core.GroupedOpenApi;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OpenApiConfigurationTest {
@@ -47,11 +51,16 @@ class OpenApiConfigurationTest {
         source.setPassword("secret");
 
         String json = mapper.writeValueAsString(source);
+        JsonNode node = mapper.readTree(json);
 
-        assertTrue(json.contains("\"username\""));
-        assertFalse(json.contains("@class"));
-        assertFalse(json.contains("@type"));
-        assertNull(mapper.getDeserializationConfig().getDefaultTyper(mapper.constructType(LoginVo.class)));
+        Set<String> fieldNames = new HashSet<String>();
+        Iterator<String> names = node.fieldNames();
+        while (names.hasNext()) {
+            fieldNames.add(names.next());
+        }
+        assertEquals(new HashSet<String>(Arrays.asList("username", "password")), fieldNames);
+        assertEquals("info@say521.cn", node.get("username").asText());
+        assertEquals("secret", node.get("password").asText());
 
         LoginVo restored = mapper.readValue(json, LoginVo.class);
         assertEquals("info@say521.cn", restored.getUsername());
